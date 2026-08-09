@@ -1,0 +1,8 @@
+{
+  "name": "HRVL EPI-Analytic",
+  "description": "Epizootiological Surveillance & Disease Intelligence Portal for HRVL.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

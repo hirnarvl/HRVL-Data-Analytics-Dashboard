@@ -1,0 +1,680 @@
+     1→/**
+     2→ * @license
+     3→ * SPDX-License-Identifier: Apache-2.0
+     4→ */
+     5→
+     6→import React, { useState, useEffect } from 'react';
+     7→import { motion } from 'motion/react';
+     8→import { Printer, X, ShieldCheck, FileText, Check, Activity, Building2 } from 'lucide-react';
+     9→import { Navbar } from './components/Navbar';
+    10→import { KPICards } from './components/KPICards';
+    11→import { MELScorecardPanel } from './components/MELScorecardPanel';
+    12→import { OutbreakMap } from './components/OutbreakMap';
+    13→import { TrendCharts } from './components/TrendCharts';
+    14→import { SpeciesDonutChart } from './components/SpeciesDonutChart';
+    15→import { CFRTrendChart } from './components/CFRTrendChart';
+    16→import { DiseaseSummaryTable } from './components/DiseaseSummaryTable';
+    17→import { OutbreakTable } from './components/OutbreakTable';
+    18→import { SurveillanceTable } from './components/SurveillanceTable';
+    19→import { ComplianceTable } from './components/ComplianceTable';
+    20→import { FooterBanner } from './components/FooterBanner';
+    21→import { NewArrivalModal } from './components/NewArrivalModal';
+    22→import { ExcelImportModal } from './components/ExcelImportModal';
+    23→import { YoYTrendAnalysisModal } from './components/YoYTrendAnalysisModal';
+    24→import { AIReportModal } from './components/AIReportModal';
+    25→import { PrintableReportView } from './components/PrintableReportView';
+    26→import { AuthModal } from './components/AuthModal';
+    27→import { SupportModal } from './components/SupportModal';
+    28→import { ExternalResourcesModal } from './components/ExternalResourcesModal';
+    29→import { GoogleDriveModal } from './components/GoogleDriveModal';
+    30→
+    31→import { 
+    32→  FilterState, 
+    33→  SurveillanceRecord, 
+    34→  Outbreak, 
+    35→  WoredaCompliance, 
+    36→  DiseaseSummary,
+    37→  NarrativeReport,
+    38→  Locale
+    39→} from './types';
+    40→
+    41→import { 
+    42→  INITIAL_SURVEILLANCE_RECORDS, 
+    43→  INITIAL_OUTBREAKS, 
+    44→  generateInitialCompliance, 
+    45→  DISEASE_SUMMARIES 
+    46→} from './data/sampleData';
+    47→import { HARARGHE_WOREDAS } from './data/woredas';
+    48→import { exportToCSV } from './utils/export';
+    49→import { loadCachedRecords, saveCachedRecords, clearCachedRecords } from './utils/storage';
+    50→import { subscribeToFirestoreRecords, saveRecordToFirestore } from './utils/firebaseStorage';
+    51→import { useAuth } from './contexts/AuthContext';
+    52→import { soundEngine } from './utils/sound';
+    53→
+    54→export default function App() {
+    55→  const { user, loading } = useAuth();
+    56→  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    57→    const saved = localStorage.getItem('hrvl_theme');
+    58→    if (saved !== null) {
+    59→      return saved === 'dark';
+    60→    }
+    61→    return true;
+    62→  });
+    63→
+    64→  const [locale, setLocale] = useState<Locale>(() => {
+    65→    const saved = localStorage.getItem('hrvl_locale');
+    66→    if (saved === 'en' || saved === 'om' || saved === 'am') {
+    67→      return saved;
+    68→    }
+    69→    return 'en';
+    70→  });
+    71→  
+    72→  // Primary Dashboard State - Initialized from localStorage cache for field offline resilience
+    73→  const [records, setRecords] = useState<SurveillanceRecord[]>(loadCachedRecords);
+    74→  const [outbreaks, setOutbreaks] = useState<Outbreak[]>(INITIAL_OUTBREAKS);
+    75→  const [complianceList, setComplianceList] = useState<WoredaCompliance[]>(generateInitialCompliance());
+    76→  const [diseaseSummaries, setDiseaseSummaries] = useState<DiseaseSummary[]>(DISEASE_SUMMARIES);
+    77→
+    78→  // Network Connectivity State (Field Offline Mode Tracking)
+    79→  const [isOnline, setIsOnline] = useState<boolean>(typeof navigator !== 'undefined' ? navigator.onLine : true);
+    80→
+    81→  // Synchronize network status
+    82→  useEffect(() => {
+    83→    const handleOnline = () => setIsOnline(true);
+    84→    const handleOffline = () => setIsOnline(false);
+    85→
+    86→    window.addEventListener('online', handleOnline);
+    87→    window.addEventListener('offline', handleOffline);
+    88→
+    89→    return () => {
+    90→      window.removeEventListener('online', handleOnline);
+    91→      window.removeEventListener('offline', handleOffline);
+    92→    };
+    93→  }, []);
+    94→
+    95→  // Automatic localStorage Sync Effect whenever surveillance records change
+    96→  useEffect(() => {
+    97→    saveCachedRecords(records);
+    98→  }, [records]);
+    99→
+   100→  // Real-time Firestore sync effect
+   101→  useEffect(() => {
+   102→    const unsub = subscribeToFirestoreRecords((remoteRecords) => {
+   103→      if (remoteRecords && remoteRecords.length > 0) {
+   104→        setRecords(remoteRecords);
+   105→      }
+   106→    });
+   107→    return () => unsub();
+   108→  }, []);
+   109→
+   110→  // Reset local storage cache to initial default data
+   111→  const handleResetCache = () => {
+   112→    clearCachedRecords();
+   113→    setRecords(INITIAL_SURVEILLANCE_RECORDS);
+   114→  };
+   115→
+   116→  // Filters State
+   117→  const [filters, setFilters] = useState<FilterState>({
+   118→    zone: 'All',
+   119→    woreda: 'All',
+   120→    disease: 'All',
+   121→    species: 'All',
+   122→    dateFrom: '',
+   123→    dateTo: '',
+   124→    searchTerm: ''
+   125→  });
+   126→
+   127→  // Simulator, Portrait Layout & Print Mode State
+   128→  const [isSimulatorRunning, setIsSimulatorRunning] = useState(false);
+   129→  const [isPrintFriendlyMode, setIsPrintFriendlyMode] = useState(false);
+   130→  const [isPortraitMode, setIsPortraitMode] = useState(false);
+   131→  const [activeTab, setActiveTab] = useState<'Dashboard' | 'Map' | 'Tables'>('Dashboard');
+   132→
+   133→  // Modals
+   134→  const [isLogModalOpen, setIsLogModalOpen] = useState(false);
+   135→  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+   136→  const [isYoYModalOpen, setIsYoYModalOpen] = useState(false);
+   137→  const [isAIReportModalOpen, setIsAIReportModalOpen] = useState(false);
+   138→  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+   139→  const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
+   140→  const [isGoogleDriveOpen, setIsGoogleDriveOpen] = useState(false);
+   141→  const [isExternalResourcesOpen, setIsExternalResourcesOpen] = useState(false);
+   142→  const [printableReport, setPrintableReport] = useState<NarrativeReport | null>(null);
+   143→
+   144→  // Toggle Dark Class on <html> element with persistent theme storage
+   145→  useEffect(() => {
+   146→    if (darkMode) {
+   147→      document.documentElement.classList.add('dark');
+   148→      localStorage.setItem('hrvl_theme', 'dark');
+   149→    } else {
+   150→      document.documentElement.classList.remove('dark');
+   151→      localStorage.setItem('hrvl_theme', 'light');
+   152→    }
+   153→  }, [darkMode]);
+   154→
+   155→  // Real-time Field Profile Simulator Interval
+   156→  useEffect(() => {
+   157→    let interval: any = null;
+   158→    if (isSimulatorRunning) {
+   159→      interval = setInterval(() => {
+   160→        // Pick random woreda from 36 Hararghe woredas
+   161→        const randomWoreda = HARARGHE_WOREDAS[Math.floor(Math.random() * HARARGHE_WOREDAS.length)];
+   162→        const diseases = [
+   163→          'Foot-and-Mouth Disease (FMD)',
+   164→          'Peste des Petits Ruminants (PPR)',
+   165→          'Lumpy Skin Disease (LSD)',
+   166→          'Contagious Bovine Pleuropneumonia (CBPP)',
+   167→          'Newcastle Disease (ND)'
+   168→        ];
+   169→        const speciesList = ['Cattle', 'Goats', 'Sheep', 'Poultry', 'Equines'];
+   170→        
+   171→        const isZero = Math.random() < 0.25; // 25% chance of zero report
+   172→        const randomDisease = isZero ? 'None (Zero Reporting)' : diseases[Math.floor(Math.random() * diseases.length)];
+   173→        const randomSpecies = isZero ? 'Cattle' : speciesList[Math.floor(Math.random() * speciesList.length)];
+   174→        const cases = isZero ? 0 : Math.floor(Math.random() * 25) + 5;
+   175→        const deaths = isZero ? 0 : Math.floor(cases * (Math.random() * 0.2));
+   176→
+   177→        const now = new Date();
+   178→        const dateStr = now.toISOString().split('T')[0];
+   179→
+   180→        const simRecord: SurveillanceRecord = {
+   181→          id: `SIM-${Date.now()}`,
+   182→          date: dateStr,
+   183→          timestamp: now.getTime(),
+   184→          woreda: randomWoreda.name,
+   185→          zone: randomWoreda.zone,
+   186→          lat: randomWoreda.lat,
+   187→          lng: randomWoreda.lng,
+   188→          disease: randomDisease,
+   189→          species: randomSpecies,
+   190→          cases,
+   191→          deaths,
+   192→          risk: deaths > 3 ? 'Critical' : cases > 15 ? 'High' : 'Medium',
+   193→          comment: `Live simulated field telemetry stream arrival on ${now.toLocaleTimeString()}`,
+   194→          reporter: 'Automated HRVL Stream',
+   195→          isZeroReport: isZero
+   196→        };
+   197→
+   198→        setRecords(prev => [simRecord, ...prev]);
+   199→      }, 4000);
+   200→    }
+   201→    return () => {
+   202→      if (interval) clearInterval(interval);
+   203→    };
+   204→  }, [isSimulatorRunning]);
+   205→
+   206→  // Handle adding new arrival record manually or from quick simulator
+   207→  const handleAddLogArrival = (rec: Partial<SurveillanceRecord>) => {
+   208→    const fullRec: SurveillanceRecord = {
+   209→      id: rec.id || `SR-${Date.now()}`,
+   210→      date: rec.date || new Date().toISOString().split('T')[0],
+   211→      timestamp: rec.timestamp || Date.now(),
+   212→      woreda: rec.woreda || 'Haramaya',
+   213→      zone: rec.zone || 'E/H',
+   214→      lat: rec.lat || 9.4123,
+   215→      lng: rec.lng || 42.0123,
+   216→      disease: rec.disease || 'Foot-and-Mouth Disease (FMD)',
+   217→      species: rec.species || 'Cattle',
+   218→      cases: rec.cases !== undefined ? rec.cases : 10,
+   219→      deaths: rec.deaths !== undefined ? rec.deaths : 1,
+   220→      risk: rec.risk || 'High',
+   221→      comment: rec.comment || 'Field record added manually',
+   222→      reporter: rec.reporter || 'Vet Officer',
+   223→      isZeroReport: rec.isZeroReport || false
+   224→    };
+   225→
+   226→    setRecords(prev => [fullRec, ...prev]);
+   227→    saveRecordToFirestore(fullRec);
+   228→
+   229→    // Recalculate disease summary counts
+   230→    setDiseaseSummaries(prev => prev.map(ds => {
+   231→      if (ds.disease === fullRec.disease) {
+   232→        return {
+   233→          ...ds,
+   234→          totalCases: ds.totalCases + fullRec.cases,
+   235→          totalDeaths: ds.totalDeaths + fullRec.deaths,
+   236→          cfrPercent: Number((((ds.totalDeaths + fullRec.deaths) / (ds.totalCases + fullRec.cases)) * 100).toFixed(1))
+   237→        };
+   238→      }
+   239→      return ds;
+   240→    }));
+   241→  };
+   242→
+   243→  // Handle Excel Batch Import
+   244→  const handleImportRecords = (newRecords: SurveillanceRecord[], minDate?: string, maxDate?: string) => {
+   245→    setRecords(prev => [...newRecords, ...prev]);
+   246→    newRecords.forEach(rec => saveRecordToFirestore(rec));
+   247→    if (minDate && maxDate) {
+   248→      setFilters(prev => ({ ...prev, dateFrom: minDate, dateTo: maxDate }));
+   249→    }
+   250→  };
+   251→
+   252→  // Export All 4 Tables as CSV Bundle
+   253→  const handleExportAllCSV = () => {
+   254→    exportToCSV('HRVL_Surveillance_Records_All', records);
+   255→    exportToCSV('HRVL_Outbreaks_All', outbreaks);
+   256→    exportToCSV('HRVL_Woreda_Compliance_All', complianceList);
+   257→    exportToCSV('HRVL_Disease_Summary_All', diseaseSummaries);
+   258→  };
+   259→
+   260→  // Filtered dataset according to Navbar selection
+   261→  const filteredRecords = records.filter(rec => {
+   262→    if (filters.zone !== 'All' && rec.zone !== filters.zone) return false;
+   263→    return true;
+   264→  });
+   265→
+   266→  const validDates = records
+   267→    .map(r => r.date)
+   268→    .filter(d => Boolean(d) && !isNaN(new Date(d).getTime()))
+   269→    .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+   270→    
+   271→  const dataMinDate = validDates.length > 0 ? validDates[0] : undefined;
+   272→  const dataMaxDate = validDates.length > 0 ? validDates[validDates.length - 1] : undefined;
+   273→
+   274→  if (loading) {
+   275→    return (
+   276→      <div className="min-h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-950">
+   277→        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+   278→      </div>
+   279→    );
+   280→  }
+   281→
+   282→  if (!user) {
+   283→    return (
+   284→      <div className={`min-h-screen font-sans transition-colors duration-200 bg-slate-100 dark:bg-slate-950 flex flex-col items-center justify-center p-4`}>
+   285→         <div className="text-center space-y-6 max-w-md bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800">
+   286→            <div className="mx-auto h-16 w-16 rounded-xl bg-slate-900 border-2 border-emerald-500/50 p-1 flex items-center justify-center shadow-[0_4px_15px_rgba(16,185,129,0.4)] hover:shadow-[0_8px_25px_rgba(16,185,129,0.6)] transform hover:-translate-y-1 transition-all duration-300">
+   287→              <img 
+   288→                 src="/hrvl-emblem.png" 
+   289→                 alt="HRVL Emblem" 
+   290→                 referrerPolicy="no-referrer"
+   291→                 onError={(e) => {
+   292→                  const target = e.target as HTMLImageElement;
+   293→                  if (!target.src.includes('1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C')) {
+   294→                    target.src = 'https://lh3.googleusercontent.com/d/1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C';
+   295→                  }
+   296→                }}
+   297→                className="w-full h-full object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.5)]" 
+   298→               />
+   299→            </div>
+   300→            <div>
+   301→              <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+   302→                Hirna RVL Analytics
+   303→              </h1>
+   304→              <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+   305→                Secure access required. Please sign in to view the geospatial disease surveillance dashboard and epidemiological data.
+   306→              </p>
+   307→            </div>
+   308→            
+   309→            <button
+   310→              onClick={() => {
+   311→                soundEngine.playClick();
+   312→                setIsAuthModalOpen(true);
+   313→              }}
+   314→              className="w-full flex justify-center items-center space-x-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md transition-colors cursor-pointer"
+   315→            >
+   316→              <ShieldCheck className="w-5 h-5" />
+   317→              <span>Sign In to Access Dashboard</span>
+   318→            </button>
+   319→         </div>
+   320→
+   321→         <AuthModal
+   322→           isOpen={isAuthModalOpen}
+   323→           onClose={() => setIsAuthModalOpen(false)}
+   324→         />
+   325→      </div>
+   326→    );
+   327→  }
+   328→
+   329→  // If printable report view is active
+   330→  if (printableReport) {
+   331→    return (
+   332→      <PrintableReportView
+   333→        report={printableReport}
+   334→        outbreaks={outbreaks}
+   335→        records={records}
+   336→        onBack={() => setPrintableReport(null)}
+   337→      />
+   338→    );
+   339→  }
+   340→
+   341→  return (
+   342→    <div className={`min-h-screen font-sans transition-colors duration-200 ${
+   343→      isPrintFriendlyMode 
+   344→        ? 'bg-white text-slate-900 border-t-8 border-amber-500' 
+   345→        : 'bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100'
+   346→    }`}>
+   347→      
+   348→      {/* Sticky Top Field Print Snapshot Alert Banner (Hidden when printing) */}
+   349→      {isPrintFriendlyMode && (
+   350→        <div className="print:hidden sticky top-0 z-50 bg-amber-500 text-slate-950 px-4 py-2.5 shadow-md flex flex-wrap items-center justify-between gap-2 border-b border-amber-600">
+   351→          <div className="flex items-center space-x-2 font-bold text-xs sm:text-sm">
+   352→            <Printer className="w-5 h-5 animate-bounce" />
+   353→            <span>🖨️ FIELD SNAPSHOT PRINT MODE — High-contrast white canvas optimized for physical field meetings & PDF export.</span>
+   354→          </div>
+   355→
+   356→          <div className="flex items-center space-x-2">
+   357→            <button
+   358→              onClick={() => window.print()}
+   359→              className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-slate-950 text-white font-extrabold text-xs rounded-lg hover:bg-slate-800 transition-colors shadow-xs cursor-pointer"
+   360→            >
+   361→              <Printer className="w-3.5 h-3.5" />
+   362→              <span>Print Snapshot (Ctrl+P)</span>
+   363→            </button>
+   364→
+   365→            <button
+   366→              onClick={() => setIsPrintFriendlyMode(false)}
+   367→              className="p-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-slate-950 font-bold text-xs cursor-pointer"
+   368→              title="Exit Print Mode"
+   369→            >
+   370→              <X className="w-4 h-4" />
+   371→            </button>
+   372→          </div>
+   373→        </div>
+   374→      )}
+   375→
+   376→      {/* Sticky Header Navbar */}
+   377→      <div className={isPrintFriendlyMode ? 'print:hidden' : ''}>
+   378→        <Navbar
+   379→          locale={locale}
+   380→          setLocale={setLocale}
+   381→          darkMode={darkMode}
+   382→          setDarkMode={setDarkMode}
+   383→          filters={filters}
+   384→          setFilters={setFilters}
+   385→          onOpenLogModal={() => setIsLogModalOpen(true)}
+   386→          onOpenImportModal={() => setIsImportModalOpen(true)}
+   387→          onOpenYoYModal={() => setIsYoYModalOpen(true)}
+   388→          onOpenReportModal={() => setIsAIReportModalOpen(true)}
+   389→          onOpenAuthModal={() => setIsAuthModalOpen(true)}
+   390→          onOpenSupportModal={() => setIsSupportModalOpen(true)}
+   391→          onOpenExternalResources={() => setIsExternalResourcesOpen(true)}
+   392→          onOpenGoogleDrive={() => setIsGoogleDriveOpen(true)}
+   393→          onExportAllCSV={handleExportAllCSV}
+   394→          onToggleSimulator={() => setIsSimulatorRunning(prev => !prev)}
+   395→          isSimulatorRunning={isSimulatorRunning}
+   396→          onTogglePrintMode={() => setIsPrintFriendlyMode(prev => !prev)}
+   397→          isPrintFriendlyMode={isPrintFriendlyMode}
+   398→          isPortraitMode={isPortraitMode}
+   399→          onTogglePortraitMode={() => setIsPortraitMode(prev => !prev)}
+   400→          activeTab={activeTab}
+   401→          setActiveTab={setActiveTab}
+   402→          isOnline={isOnline}
+   403→          cachedRecordsCount={records.length}
+   404→          onResetCache={handleResetCache}
+   405→          dataMinDate={dataMinDate}
+   406→          dataMaxDate={dataMaxDate}
+   407→        />
+   408→      </div>
+   409→
+   410→      {/* Main Container with Portrait Mode & Desktop Fluid Grid Layout */}
+   411→      <main className={`mx-auto transition-all duration-300 py-6 space-y-6 ${
+   412→        isPortraitMode 
+   413→          ? 'max-w-2xl px-3 sm:px-4 bg-slate-900/40 dark:bg-slate-900/60 rounded-3xl my-4 border border-indigo-500/20 shadow-2xl ring-1 ring-indigo-500/10' 
+   414→          : 'max-w-7xl px-4 sm:px-6 lg:px-8'
+   415→      }`}>
+   416→
+   417→        
+   418→
+   419→        {/* Portrait Mode Field Banner */}
+   420→        {isPortraitMode && (
+   421→          <div className="bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-950 text-indigo-200 border border-indigo-700/60 p-4 rounded-2xl shadow-lg flex items-center justify-between gap-3 text-xs">
+   422→            <div className="flex items-center space-x-2 font-medium">
+   423→              <span className="text-lg">📱</span>
+   424→              <div>
+   425→                <p className="font-extrabold text-white font-heading">Portrait Field Mode Active</p>
+   426→                <p className="text-[11px] text-indigo-300">Optimized vertical stack for handheld tablets & field mobile screens.</p>
+   427→              </div>
+   428→            </div>
+   429→            <button
+   430→              onClick={() => setIsPortraitMode(false)}
+   431→              className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg text-[11px] transition-colors cursor-pointer shrink-0"
+   432→            >
+   433→              Exit Portrait
+   434→            </button>
+   435→          </div>
+   436→        )}
+   437→        
+   438→        {/* Printable Official Header Block (Appears prominently in print mode) */}
+   439→        {isPrintFriendlyMode && (
+   440→          <div className="bg-slate-50 border-2 border-slate-900 p-6 rounded-xl space-y-3 print:border-slate-800">
+   441→            <div className="flex items-center justify-between border-b border-slate-400 pb-3">
+   442→              <div className="flex items-center space-x-3">
+   443→                <div className="w-12 h-12 bg-slate-900 text-white rounded-lg flex items-center justify-center font-black text-xl">
+   444→                  HRVL
+   445→                </div>
+   446→                <div>
+   447→                  <h1 className="text-lg font-black text-slate-950 uppercase tracking-tight">
+   448→                    HIRNA REGIONAL VETERINARY DIAGNOSTIC LABORATORY (HRVL)
+   449→                  </h1>
+   450→                  <h2 className="text-xs font-bold text-slate-700 uppercase">
+   451→                    Field Epidemiology & Disease Surveillance Briefing Snapshot
+   452→                  </h2>
+   453→                </div>
+   454→              </div>
+   455→
+   456→              <div className="text-right text-xs font-mono">
+   457→                <p className="font-bold">DATE: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+   458→                <p className="text-slate-600">ZONE FILTER: {filters.zone}</p>
+   459→                <span className="inline-block mt-1 px-2 py-0.5 bg-slate-900 text-white text-[10px] font-bold uppercase rounded">
+   460→                  PHYSICAL BRIEFING COPY
+   461→                </span>
+   462→              </div>
+   463→            </div>
+   464→
+   465→            <p className="text-xs text-slate-700 leading-relaxed font-serif italic">
+   466→              Official surveillance snapshot summary prepared for regional field veterinary officer consultations across E/H (21 Woredas) & W/H (15 Woredas). Includes active outbreak hot-spots, CFR trends, and woreda zero-reporting compliance status.
+   467→            </p>
+   468→          </div>
+   469→        )}
+   470→
+   471→        
+   472→        {activeTab === 'Dashboard' && (
+   473→          <div className="space-y-6">
+   474→            {/* KPI Cards & Zone Reporting Rates */}
+   475→        <motion.div
+   476→          initial={{ opacity: 0, y: 16 }}
+   477→          animate={{ opacity: 1, y: 0 }}
+   478→          transition={{ duration: 0.4, ease: 'easeOut' }}
+   479→        >
+   480→          <KPICards
+   481→            records={filteredRecords}
+   482→            outbreaks={outbreaks}
+   483→            complianceList={complianceList}
+   484→          />
+   485→        </motion.div>
+   486→
+   487→        {/* WAHO / WOAH MEL Scorecard & Data Quality Panel */}
+   488→        <motion.div
+   489→          initial={{ opacity: 0, y: 18 }}
+   490→          animate={{ opacity: 1, y: 0 }}
+   491→          transition={{ duration: 0.42, delay: 0.1, ease: 'easeOut' }}
+   492→        >
+   493→          <MELScorecardPanel
+   494→            records={filteredRecords}
+   495→            outbreaks={outbreaks}
+   496→            complianceList={complianceList}
+   497→            onSelectZone={(zone) => setFilters(prev => ({ ...prev, zone }))}
+   498→          />
+   499→        </motion.div>
+   500→
+   501→        
+   502→            {/* Reporting Trend Charts & Profile Simulator */}
+   503→        <motion.div
+   504→          initial={{ opacity: 0, y: 20 }}
+   505→          animate={{ opacity: 1, y: 0 }}
+   506→          transition={{ duration: 0.45, delay: 0.25, ease: 'easeOut' }}
+   507→        >
+   508→          <TrendCharts
+   509→            records={filteredRecords}
+   510→            darkMode={isPrintFriendlyMode ? false : darkMode}
+   511→            onAddLogArrival={handleAddLogArrival}
+   512→            isSimulatorRunning={isSimulatorRunning}
+   513→            onToggleSimulator={() => setIsSimulatorRunning(prev => !prev)}
+   514→            onOpenYoYModal={() => setIsYoYModalOpen(true)}
+   515→          />
+   516→        </motion.div>
+   517→
+   518→        {/* 2-Column Section: Species Donut Chart + CFR Trend Line Chart */}
+   519→        <div className={`grid gap-6 ${isPortraitMode ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-2'}`}>
+   520→          <motion.div
+   521→            initial={{ opacity: 0, y: 20 }}
+   522→            animate={{ opacity: 1, y: 0 }}
+   523→            transition={{ duration: 0.45, delay: 0.35, ease: 'easeOut' }}
+   524→          >
+   525→            <SpeciesDonutChart darkMode={isPrintFriendlyMode ? false : darkMode} />
+   526→          </motion.div>
+   527→
+   528→          <motion.div
+   529→            initial={{ opacity: 0, y: 20 }}
+   530→            animate={{ opacity: 1, y: 0 }}
+   531→            transition={{ duration: 0.45, delay: 0.4, ease: 'easeOut' }}
+   532→          >
+   533→            <CFRTrendChart darkMode={isPrintFriendlyMode ? false : darkMode} />
+   534→          </motion.div>
+   535→        </div>
+   536→
+   537→        
+   538→          </div>
+   539→        )}
+   540→
+   541→        {activeTab === 'Map' && (
+   542→          <div className="space-y-6">
+   543→            {/* Interactive Outbreak Map */}
+   544→        <motion.div
+   545→          initial={{ opacity: 0, y: 20 }}
+   546→          animate={{ opacity: 1, y: 0 }}
+   547→          transition={{ duration: 0.45, delay: 0.15, ease: 'easeOut' }}
+   548→        >
+   549→          <OutbreakMap
+   550→            outbreaks={outbreaks}
+   551→            records={filteredRecords}
+   552→            darkMode={isPrintFriendlyMode ? false : darkMode}
+   553→            selectedZone={filters.zone}
+   554→          />
+   555→        </motion.div>
+   556→
+   557→        
+   558→          </div>
+   559→        )}
+   560→
+   561→        {activeTab === 'Tables' && (
+   562→          <div className="space-y-6">
+   563→            {/* Disease Summary & Outbreak Tables */}
+   564→        <div className={`grid gap-6 ${isPortraitMode ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-2'}`}>
+   565→          <motion.div
+   566→            initial={{ opacity: 0, y: 20 }}
+   567→            animate={{ opacity: 1, y: 0 }}
+   568→            transition={{ duration: 0.45, delay: 0.45, ease: 'easeOut' }}
+   569→          >
+   570→            <DiseaseSummaryTable summaries={diseaseSummaries} />
+   571→          </motion.div>
+   572→
+   573→          <motion.div
+   574→            initial={{ opacity: 0, y: 20 }}
+   575→            animate={{ opacity: 1, y: 0 }}
+   576→            transition={{ duration: 0.45, delay: 0.5, ease: 'easeOut' }}
+   577→          >
+   578→            <OutbreakTable outbreaks={outbreaks} />
+   579→          </motion.div>
+   580→        </div>
+   581→
+   582→        {/* Field Surveillance Log Table */}
+   583→        <motion.div
+   584→          initial={{ opacity: 0, y: 20 }}
+   585→          animate={{ opacity: 1, y: 0 }}
+   586→          transition={{ duration: 0.45, delay: 0.55, ease: 'easeOut' }}
+   587→        >
+   588→          <SurveillanceTable records={filteredRecords} />
+   589→        </motion.div>
+   590→
+   591→        {/* Woreda Compliance Progress Bars Table (36 Woredas) */}
+   592→        <motion.div
+   593→          initial={{ opacity: 0, y: 20 }}
+   594→          animate={{ opacity: 1, y: 0 }}
+   595→          transition={{ duration: 0.45, delay: 0.6, ease: 'easeOut' }}
+   596→        >
+   597→          <ComplianceTable complianceList={complianceList} records={filteredRecords} />
+   598→        </motion.div>
+   599→
+   600→        
+   601→          </div>
+   602→        )}
+   603→  {/* Field Officer Sign-Off & Verification Stamp Block (Print Mode Only) */}
+   604→        {isPrintFriendlyMode && (
+   605→          <div className="mt-8 pt-6 border-t-2 border-slate-900 grid grid-cols-2 gap-8 text-xs">
+   606→            <div className="space-y-8">
+   607→              <p className="font-bold text-slate-900">Briefing Lead / Regional Epidemiologist:</p>
+   608→              <div className="border-b border-slate-400 w-3/4"></div>
+   609→              <p className="text-[11px] text-slate-500">Signature & Date</p>
+   610→            </div>
+   611→            <div className="space-y-8 text-right">
+   612→              <p className="font-bold text-slate-900">HRVL Laboratory Director Stamp:</p>
+   613→              <div className="border-b border-slate-400 w-3/4 ml-auto"></div>
+   614→              <p className="text-[11px] text-slate-500">Official Seal & Verification</p>
+   615→            </div>
+   616→          </div>
+   617→        )}
+   618→
+   619→      </main>
+   620→
+   621→      {/* Footer Banner at the bottom of all dashboards */}
+   622→      {!isPrintFriendlyMode && (
+   623→        <FooterBanner onOpenExternalResources={() => setIsExternalResourcesOpen(true)} />
+   624→      )}
+   625→
+   626→      {/* Modals */}
+   627→      <NewArrivalModal
+   628→        isOpen={isLogModalOpen}
+   629→        onClose={() => setIsLogModalOpen(false)}
+   630→        onAddRecord={handleAddLogArrival}
+   631→      />
+   632→
+   633→      <ExcelImportModal
+   634→        isOpen={isImportModalOpen}
+   635→        onClose={() => setIsImportModalOpen(false)}
+   636→        onImportRecords={handleImportRecords}
+   637→        onOpenYoYAnalysis={() => setIsYoYModalOpen(true)}
+   638→      />
+   639→
+   640→      <YoYTrendAnalysisModal
+   641→        isOpen={isYoYModalOpen}
+   642→        onClose={() => setIsYoYModalOpen(false)}
+   643→        records={records}
+   644→        darkMode={darkMode}
+   645→      />
+   646→
+   647→      <AIReportModal
+   648→        isOpen={isAIReportModalOpen}
+   649→        onClose={() => setIsAIReportModalOpen(false)}
+   650→        outbreaks={outbreaks}
+   651→        records={records}
+   652→        complianceList={complianceList}
+   653→        onOpenPrintView={(rep) => setPrintableReport(rep)}
+   654→      />
+   655→
+   656→      <AuthModal
+   657→        isOpen={isAuthModalOpen}
+   658→        onClose={() => setIsAuthModalOpen(false)}
+   659→      />
+   660→
+   661→      <SupportModal
+   662→        isOpen={isSupportModalOpen}
+   663→        onClose={() => setIsSupportModalOpen(false)}
+   664→      />
+   665→
+   666→      <GoogleDriveModal
+   667→        isOpen={isGoogleDriveOpen}
+   668→        onClose={() => setIsGoogleDriveOpen(false)}
+   669→        records={records}
+   670→        onImportRecords={handleImportRecords}
+   671→      />
+   672→
+   673→      <ExternalResourcesModal
+   674→        isOpen={isExternalResourcesOpen}
+   675→        onClose={() => setIsExternalResourcesOpen(false)}
+   676→      />
+   677→    </div>
+   678→  );
+   679→}
+   680→
