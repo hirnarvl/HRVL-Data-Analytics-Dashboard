@@ -1,334 +1,709 @@
-import React, { useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { Upload, Activity, ShieldAlert, FileSpreadsheet, ExternalLink, Menu, X, Database, Map as MapIcon } from 'lucide-react';
-import Papa from 'papaparse';
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import React, { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
+import { Printer, X, ShieldCheck, FileText, Check, Activity, Building2, UserCircle2 } from 'lucide-react';
+import { Navbar } from './components/Navbar';
+import { KPICards } from './components/KPICards';
+import { MELScorecardPanel } from './components/MELScorecardPanel';
 import { OutbreakMap } from './components/OutbreakMap';
-import { INITIAL_OUTBREAKS, INITIAL_SURVEILLANCE_RECORDS } from './data/sampleData';
+import { TrendCharts } from './components/TrendCharts';
+import { SpeciesDonutChart } from './components/SpeciesDonutChart';
+import { CFRTrendChart } from './components/CFRTrendChart';
+import { DiseaseSummaryTable } from './components/DiseaseSummaryTable';
+import { OutbreakTable } from './components/OutbreakTable';
+import { SurveillanceTable } from './components/SurveillanceTable';
+import { ComplianceTable } from './components/ComplianceTable';
+import { FooterBanner } from './components/FooterBanner';
+import { NewArrivalModal } from './components/NewArrivalModal';
+import { ExcelImportModal } from './components/ExcelImportModal';
+import { YoYTrendAnalysisModal } from './components/YoYTrendAnalysisModal';
+import { AIReportModal } from './components/AIReportModal';
+import { PrintableReportView } from './components/PrintableReportView';
+import { AuthModal } from './components/AuthModal';
+import { SupportModal } from './components/SupportModal';
+import { ExternalResourcesModal } from './components/ExternalResourcesModal';
+import { GoogleDriveModal } from './components/GoogleDriveModal';
 
-// Mock Data
-const MOCK_OUTBREAKS = [
-  { zone: 'East Hararghe', disease: 'Anthrax', cases: 45, deaths: 12, date: '2023-10-01' },
-  { zone: 'West Hararghe', disease: 'Rabies', cases: 20, deaths: 18, date: '2023-10-05' },
-  { zone: 'East Hararghe', disease: 'FMD', cases: 150, deaths: 5, date: '2023-10-12' },
-  { zone: 'West Hararghe', disease: 'PPR', cases: 85, deaths: 30, date: '2023-10-15' },
-  { zone: 'East Hararghe', disease: 'LSD', cases: 200, deaths: 10, date: '2023-10-20' },
-];
+import { 
+  FilterState, 
+  SurveillanceRecord, 
+  Outbreak, 
+  WoredaCompliance, 
+  DiseaseSummary,
+  NarrativeReport,
+  Locale
+} from './types';
 
-const MOCK_TIME_SERIES = [
-  { month: 'Jan', cases: 120, deaths: 15 },
-  { month: 'Feb', cases: 150, deaths: 20 },
-  { month: 'Mar', cases: 80, deaths: 10 },
-  { month: 'Apr', cases: 200, deaths: 25 },
-  { month: 'May', cases: 180, deaths: 22 },
-  { month: 'Jun', cases: 250, deaths: 35 },
-];
+import { 
+  INITIAL_SURVEILLANCE_RECORDS, 
+  INITIAL_OUTBREAKS, 
+  generateInitialCompliance, 
+  DISEASE_SUMMARIES 
+} from './data/sampleData';
+import { HARARGHE_WOREDAS } from './data/woredas';
+import { exportToCSV } from './utils/export';
+import { loadCachedRecords, saveCachedRecords, clearCachedRecords } from './utils/storage';
+import { subscribeToFirestoreRecords, saveRecordToFirestore } from './utils/firebaseStorage';
+import { useAuth } from './contexts/AuthContext';
+import { soundEngine } from './utils/sound';
 
-function App() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [outbreaks, setOutbreaks] = useState(MOCK_OUTBREAKS);
-  const [activeTab, setActiveTab] = useState('dashboard');
+export default function App() {
+  const { user, loading, signInAsGuest } = useAuth();
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    const saved = localStorage.getItem('hrvl_theme');
+    if (saved !== null) {
+      return saved === 'dark';
+    }
+    return true;
+  });
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      if (file.name.endsWith('.csv')) {
-        Papa.parse(file, {
-          header: true,
-          complete: (results) => {
-            console.log('Parsed CSV data:', results.data);
-            alert(`Successfully imported ${results.data.length} records from CSV.`);
-            // Mock adding the new data to the state
-            if (results.data.length > 0) {
-              setOutbreaks([...MOCK_OUTBREAKS]); // Re-trigger state for demonstration
-            }
-          }
-        });
-      } else {
-        alert('Excel/Drive integration mock: File selected. In production, this would parse XLSX.');
+  const [locale, setLocale] = useState<Locale>(() => {
+    const saved = localStorage.getItem('hrvl_locale');
+    if (saved === 'en' || saved === 'om' || saved === 'am') {
+      return saved;
+    }
+    return 'en';
+  });
+  
+  // Primary Dashboard State - Initialized from localStorage cache for field offline resilience
+  const [records, setRecords] = useState<SurveillanceRecord[]>(loadCachedRecords);
+  const [outbreaks, setOutbreaks] = useState<Outbreak[]>(INITIAL_OUTBREAKS);
+  const [complianceList, setComplianceList] = useState<WoredaCompliance[]>(generateInitialCompliance());
+  const [diseaseSummaries, setDiseaseSummaries] = useState<DiseaseSummary[]>(DISEASE_SUMMARIES);
+
+  // Network Connectivity State (Field Offline Mode Tracking)
+  const [isOnline, setIsOnline] = useState<boolean>(typeof navigator !== 'undefined' ? navigator.onLine : true);
+
+  // Synchronize network status
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  // Automatic localStorage Sync Effect whenever surveillance records change
+  useEffect(() => {
+    saveCachedRecords(records);
+  }, [records]);
+
+  // Real-time Firestore sync effect
+  useEffect(() => {
+    const unsub = subscribeToFirestoreRecords((remoteRecords) => {
+      if (remoteRecords && remoteRecords.length > 0) {
+        setRecords(remoteRecords);
       }
+    });
+    return () => unsub();
+  }, []);
+
+  // Reset local storage cache to initial default data
+  const handleResetCache = () => {
+    clearCachedRecords();
+    setRecords(INITIAL_SURVEILLANCE_RECORDS);
+  };
+
+  // Filters State
+  const [filters, setFilters] = useState<FilterState>({
+    zone: 'All',
+    woreda: 'All',
+    disease: 'All',
+    species: 'All',
+    dateFrom: '',
+    dateTo: '',
+    searchTerm: ''
+  });
+
+  // Simulator, Portrait Layout & Print Mode State
+  const [isSimulatorRunning, setIsSimulatorRunning] = useState(false);
+  const [isPrintFriendlyMode, setIsPrintFriendlyMode] = useState(false);
+  const [isPortraitMode, setIsPortraitMode] = useState(false);
+  const [activeTab, setActiveTab] = useState<'Dashboard' | 'Map' | 'Tables'>('Dashboard');
+
+  // Modals
+  const [isLogModalOpen, setIsLogModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [isYoYModalOpen, setIsYoYModalOpen] = useState(false);
+  const [isAIReportModalOpen, setIsAIReportModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
+  const [isGoogleDriveOpen, setIsGoogleDriveOpen] = useState(false);
+  const [isExternalResourcesOpen, setIsExternalResourcesOpen] = useState(false);
+  const [printableReport, setPrintableReport] = useState<NarrativeReport | null>(null);
+
+  // Toggle Dark Class on <html> element with persistent theme storage
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('hrvl_theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('hrvl_theme', 'light');
+    }
+  }, [darkMode]);
+
+  // Real-time Field Profile Simulator Interval
+  useEffect(() => {
+    let interval: any = null;
+    if (isSimulatorRunning) {
+      interval = setInterval(() => {
+        // Pick random woreda from 36 Hararghe woredas
+        const randomWoreda = HARARGHE_WOREDAS[Math.floor(Math.random() * HARARGHE_WOREDAS.length)];
+        const diseases = [
+          'Foot-and-Mouth Disease (FMD)',
+          'Peste des Petits Ruminants (PPR)',
+          'Lumpy Skin Disease (LSD)',
+          'Contagious Bovine Pleuropneumonia (CBPP)',
+          'Newcastle Disease (ND)'
+        ];
+        const speciesList = ['Cattle', 'Goats', 'Sheep', 'Poultry', 'Equines'];
+        
+        const isZero = Math.random() < 0.25; // 25% chance of zero report
+        const randomDisease = isZero ? 'None (Zero Reporting)' : diseases[Math.floor(Math.random() * diseases.length)];
+        const randomSpecies = isZero ? 'Cattle' : speciesList[Math.floor(Math.random() * speciesList.length)];
+        const cases = isZero ? 0 : Math.floor(Math.random() * 25) + 5;
+        const deaths = isZero ? 0 : Math.floor(cases * (Math.random() * 0.2));
+
+        const now = new Date();
+        const dateStr = now.toISOString().split('T')[0];
+
+        const simRecord: SurveillanceRecord = {
+          id: `SIM-${Date.now()}`,
+          date: dateStr,
+          timestamp: now.getTime(),
+          woreda: randomWoreda.name,
+          zone: randomWoreda.zone,
+          lat: randomWoreda.lat,
+          lng: randomWoreda.lng,
+          disease: randomDisease,
+          species: randomSpecies,
+          cases,
+          deaths,
+          risk: deaths > 3 ? 'Critical' : cases > 15 ? 'High' : 'Medium',
+          comment: `Live simulated field telemetry stream arrival on ${now.toLocaleTimeString()}`,
+          reporter: 'Automated HRVL Stream',
+          isZeroReport: isZero
+        };
+
+        setRecords(prev => [simRecord, ...prev]);
+      }, 4000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isSimulatorRunning]);
+
+  // Handle adding new arrival record manually or from quick simulator
+  const handleAddLogArrival = (rec: Partial<SurveillanceRecord>) => {
+    const fullRec: SurveillanceRecord = {
+      id: rec.id || `SR-${Date.now()}`,
+      date: rec.date || new Date().toISOString().split('T')[0],
+      timestamp: rec.timestamp || Date.now(),
+      woreda: rec.woreda || 'Haramaya',
+      zone: rec.zone || 'E/H',
+      lat: rec.lat || 9.4123,
+      lng: rec.lng || 42.0123,
+      disease: rec.disease || 'Foot-and-Mouth Disease (FMD)',
+      species: rec.species || 'Cattle',
+      cases: rec.cases !== undefined ? rec.cases : 10,
+      deaths: rec.deaths !== undefined ? rec.deaths : 1,
+      risk: rec.risk || 'High',
+      comment: rec.comment || 'Field record added manually',
+      reporter: rec.reporter || 'Vet Officer',
+      isZeroReport: rec.isZeroReport || false
+    };
+
+    setRecords(prev => [fullRec, ...prev]);
+    saveRecordToFirestore(fullRec);
+
+    // Recalculate disease summary counts
+    setDiseaseSummaries(prev => prev.map(ds => {
+      if (ds.disease === fullRec.disease) {
+        return {
+          ...ds,
+          totalCases: ds.totalCases + fullRec.cases,
+          totalDeaths: ds.totalDeaths + fullRec.deaths,
+          cfrPercent: Number((((ds.totalDeaths + fullRec.deaths) / (ds.totalCases + fullRec.cases)) * 100).toFixed(1))
+        };
+      }
+      return ds;
+    }));
+  };
+
+  // Handle Excel Batch Import
+  const handleImportRecords = (newRecords: SurveillanceRecord[], minDate?: string, maxDate?: string) => {
+    setRecords(prev => [...newRecords, ...prev]);
+    newRecords.forEach(rec => saveRecordToFirestore(rec));
+    if (minDate && maxDate) {
+      setFilters(prev => ({ ...prev, dateFrom: minDate, dateTo: maxDate }));
     }
   };
 
-  const totalCases = outbreaks.reduce((sum, item) => sum + item.cases, 0);
-  const totalDeaths = outbreaks.reduce((sum, item) => sum + item.deaths, 0);
-  const overallCFR = totalCases > 0 ? ((totalDeaths / totalCases) * 100).toFixed(1) : '0';
+  // Export All 4 Tables as CSV Bundle
+  const handleExportAllCSV = () => {
+    exportToCSV('HRVL_Surveillance_Records_All', records);
+    exportToCSV('HRVL_Outbreaks_All', outbreaks);
+    exportToCSV('HRVL_Woreda_Compliance_All', complianceList);
+    exportToCSV('HRVL_Disease_Summary_All', diseaseSummaries);
+  };
+
+  // Filtered dataset according to Navbar selection
+  const filteredRecords = records.filter(rec => {
+    if (filters.zone !== 'All' && rec.zone !== filters.zone) return false;
+    return true;
+  });
+
+  const validDates = records
+    .map(r => r.date)
+    .filter(d => Boolean(d) && !isNaN(new Date(d).getTime()))
+    .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+    
+  const dataMinDate = validDates.length > 0 ? validDates[0] : undefined;
+  const dataMaxDate = validDates.length > 0 ? validDates[validDates.length - 1] : undefined;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-950">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className={`min-h-screen font-sans transition-colors duration-200 bg-slate-100 dark:bg-slate-950 flex flex-col items-center justify-center p-4`}>
+         <div className="text-center space-y-6 max-w-md bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800">
+            <div className="mx-auto h-16 w-16 rounded-xl bg-slate-900 border-2 border-emerald-500/50 p-1 flex items-center justify-center shadow-[0_4px_15px_rgba(16,185,129,0.4)] hover:shadow-[0_8px_25px_rgba(16,185,129,0.6)] transform hover:-translate-y-1 transition-all duration-300">
+              <img 
+                 src="/hrvl-emblem.png" 
+                 alt="HRVL Emblem" 
+                 referrerPolicy="no-referrer"
+                 onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  if (!target.src.includes('1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C')) {
+                    target.src = 'https://lh3.googleusercontent.com/d/1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C';
+                  }
+                }}
+                className="w-full h-full object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.5)]" 
+               />
+            </div>
+            <div>
+              <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                Hirna RVL Analytics
+              </h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+                Secure access required. Please sign in to view the geospatial disease surveillance dashboard and epidemiological data.
+              </p>
+            </div>
+            
+            <button
+              onClick={() => {
+                soundEngine.playClick();
+                setIsAuthModalOpen(true);
+              }}
+              className="w-full flex justify-center items-center space-x-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md transition-colors cursor-pointer"
+            >
+              <ShieldCheck className="w-5 h-5" />
+              <span>Sign In to Access Dashboard</span>
+            </button>
+
+            <div className="relative my-2">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-slate-200 dark:border-slate-700"></div>
+              </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="px-2 bg-white dark:bg-slate-900 text-slate-400">or</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                soundEngine.playClick();
+                signInAsGuest();
+              }}
+              className="w-full flex justify-center items-center space-x-2 px-6 py-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold rounded-xl border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+              title="Skip Firebase authentication — useful on preview domains not yet authorized in the Firebase Console."
+            >
+              <UserCircle2 className="w-5 h-5" />
+              <span>Continue as Guest</span>
+            </button>
+
+            <p className="text-xs text-center text-slate-400 dark:text-slate-500 mt-3">
+              Guest mode bypasses Firebase login so you can explore the dashboard immediately. Cloud sync features will be unavailable until you sign in with a real account.
+            </p>
+         </div>
+
+         <AuthModal
+           isOpen={isAuthModalOpen}
+           onClose={() => setIsAuthModalOpen(false)}
+         />
+      </div>
+    );
+  }
+
+  // If printable report view is active
+  if (printableReport) {
+    return (
+      <PrintableReportView
+        report={printableReport}
+        outbreaks={outbreaks}
+        records={records}
+        complianceList={complianceList}
+        onBack={() => setPrintableReport(null)}
+      />
+    );
+  }
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <aside className={`bg-white border-r border-gray-200 transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'} flex flex-col`}>
-        <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
-          {isSidebarOpen && <span className="font-bold text-lg text-primary">HRVL Portal</span>}
-          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 rounded-md hover:bg-gray-100 text-gray-500">
-            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
-        
-        <nav className="flex-1 p-4 space-y-2">
-          <button 
-            onClick={() => setActiveTab('dashboard')}
-            className={`flex items-center w-full p-3 rounded-lg transition-colors ${activeTab === 'dashboard' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100'}`}
-          >
-            <Activity size={20} />
-            {isSidebarOpen && <span className="ml-3 font-medium">Dashboard</span>}
-          </button>
-          
-          <button 
-            onClick={() => setActiveTab('import')}
-            className={`flex items-center w-full p-3 rounded-lg transition-colors ${activeTab === 'import' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100'}`}
-          >
-            <Upload size={20} />
-            {isSidebarOpen && <span className="ml-3 font-medium">Data Import</span>}
-          </button>
-          
-          <button 
-            onClick={() => setActiveTab('database')}
-            className={`flex items-center w-full p-3 rounded-lg transition-colors ${activeTab === 'database' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100'}`}
-          >
-            <Database size={20} />
-            {isSidebarOpen && <span className="ml-3 font-medium">Firebase Sync</span>}
-          </button>
-          
-          <button 
-            onClick={() => setActiveTab('map')}
-            className={`flex items-center w-full p-3 rounded-lg transition-colors ${activeTab === 'map' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100'}`}
-          >
-            <MapIcon size={20} />
-            {isSidebarOpen && <span className="ml-3 font-medium">Geospatial Map</span>}
-          </button>
-          
-          <div className="pt-8 mt-8 border-t border-gray-200">
-            <a 
-              href="https://www.research4life.org/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center w-full p-3 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+    <div className={`min-h-screen font-sans transition-colors duration-200 ${
+      isPrintFriendlyMode 
+        ? 'bg-white text-slate-900 border-t-8 border-amber-500' 
+        : 'bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100'
+    }`}>
+      
+      {/* Sticky Top Field Print Snapshot Alert Banner (Hidden when printing) */}
+      {isPrintFriendlyMode && (
+        <div className="print:hidden sticky top-0 z-50 bg-amber-500 text-slate-950 px-4 py-2.5 shadow-md flex flex-wrap items-center justify-between gap-2 border-b border-amber-600">
+          <div className="flex items-center space-x-2 font-bold text-xs sm:text-sm">
+            <Printer className="w-5 h-5 animate-bounce" />
+            <span>🖨️ FIELD SNAPSHOT PRINT MODE — High-contrast white canvas optimized for physical field meetings & PDF export.</span>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => window.print()}
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-slate-950 text-white font-extrabold text-xs rounded-lg hover:bg-slate-800 transition-colors shadow-xs cursor-pointer"
             >
-              <ExternalLink size={20} />
-              {isSidebarOpen && <span className="ml-3 font-medium">Research4Life</span>}
-            </a>
+              <Printer className="w-3.5 h-3.5" />
+              <span>Print Snapshot (Ctrl+P)</span>
+            </button>
+
+            <button
+              onClick={() => setIsPrintFriendlyMode(false)}
+              className="p-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-slate-950 font-bold text-xs cursor-pointer"
+              title="Exit Print Mode"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
-        </nav>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col overflow-hidden">
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center px-8 justify-between">
-          <h1 className="text-xl font-semibold text-gray-800">
-            Epizootiological Surveillance & Disease Intelligence
-          </h1>
-          <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-500">Hararghe Zones Active</span>
-            <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm">
-              HR
-            </div>
-          </div>
-        </header>
-
-        <div className="flex-1 overflow-auto p-8">
-          {activeTab === 'dashboard' && (
-            <div className="max-w-7xl mx-auto space-y-8">
-              {/* Scorecards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 mb-1">Total Reported Cases</p>
-                    <p className="text-3xl font-bold text-gray-900">{totalCases}</p>
-                  </div>
-                  <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-600">
-                    <Activity size={24} />
-                  </div>
-                </div>
-                
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 mb-1">Total Mortalities</p>
-                    <p className="text-3xl font-bold text-gray-900">{totalDeaths}</p>
-                  </div>
-                  <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center text-red-600">
-                    <ShieldAlert size={24} />
-                  </div>
-                </div>
-
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 mb-1">Overall CFR (Case Fatality Rate)</p>
-                    <p className="text-3xl font-bold text-gray-900">{overallCFR}%</p>
-                  </div>
-                  <div className="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center text-orange-600">
-                    <Activity size={24} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Charts */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-6">Disease Trends (Monthly)</h3>
-                  <div className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={MOCK_TIME_SERIES}>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                        <XAxis dataKey="month" axisLine={false} tickLine={false} />
-                        <YAxis axisLine={false} tickLine={false} />
-                        <Tooltip />
-                        <Legend />
-                        <Line type="monotone" dataKey="cases" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                        <Line type="monotone" dataKey="deaths" stroke="#ef4444" strokeWidth={3} dot={{ r: 4 }} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-6">Zone CFR Comparison</h3>
-                  <div className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={outbreaks}>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                        <XAxis dataKey="zone" axisLine={false} tickLine={false} />
-                        <YAxis axisLine={false} tickLine={false} />
-                        <Tooltip cursor={{fill: 'transparent'}} />
-                        <Legend />
-                        <Bar dataKey="cases" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                        <Bar dataKey="deaths" fill="#ef4444" radius={[4, 4, 0, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-              </div>
-
-              {/* Recent Outbreaks Table */}
-              <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-                <div className="px-6 py-5 border-b border-gray-200 bg-gray-50/50">
-                  <h3 className="text-lg font-semibold text-gray-800">Recent Outbreak Reports</h3>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
-                    <thead>
-                      <tr className="bg-white border-b border-gray-200 text-sm text-gray-500 uppercase tracking-wider">
-                        <th className="px-6 py-4 font-medium">Date</th>
-                        <th className="px-6 py-4 font-medium">Zone</th>
-                        <th className="px-6 py-4 font-medium">Disease</th>
-                        <th className="px-6 py-4 font-medium">Cases</th>
-                        <th className="px-6 py-4 font-medium">Deaths</th>
-                        <th className="px-6 py-4 font-medium">CFR</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {outbreaks.map((item, idx) => {
-                        const cfr = ((item.deaths / item.cases) * 100).toFixed(1);
-                        return (
-                          <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                            <td className="px-6 py-4 text-sm text-gray-900">{item.date}</td>
-                            <td className="px-6 py-4 text-sm font-medium text-gray-900">{item.zone}</td>
-                            <td className="px-6 py-4 text-sm text-gray-500">
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                                {item.disease}
-                              </span>
-                            </td>
-                            <td className="px-6 py-4 text-sm text-gray-900">{item.cases}</td>
-                            <td className="px-6 py-4 text-sm text-gray-900">{item.deaths}</td>
-                            <td className="px-6 py-4 text-sm font-medium text-orange-600">{cfr}%</td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'import' && (
-            <div className="max-w-3xl mx-auto mt-12">
-              <div className="bg-white p-10 rounded-2xl border border-gray-200 shadow-sm text-center">
-                <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <FileSpreadsheet size={40} className="text-blue-600" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Import Surveillance Data</h2>
-                <p className="text-gray-500 mb-8 max-w-md mx-auto">
-                  Upload CSV or Excel spreadsheets containing outbreak records to update the dashboard in real-time.
-                </p>
-                
-                <div className="border-2 border-dashed border-gray-300 rounded-xl p-10 hover:border-blue-500 transition-colors cursor-pointer relative">
-                  <input 
-                    type="file" 
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    accept=".csv,.xlsx,.xls"
-                    onChange={handleFileUpload}
-                  />
-                  <Upload size={32} className="text-gray-400 mx-auto mb-4" />
-                  <p className="text-sm font-medium text-gray-700">Click to upload or drag and drop</p>
-                  <p className="text-xs text-gray-500 mt-1">CSV, XLSX (max 10MB)</p>
-                </div>
-
-                <div className="mt-8 flex justify-center space-x-4">
-                  <button className="px-6 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors">
-                    Import from Google Drive
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-          
-          {activeTab === 'database' && (
-            <div className="max-w-3xl mx-auto mt-12">
-              <div className="bg-white p-10 rounded-2xl border border-gray-200 shadow-sm">
-                <div className="flex items-center space-x-4 mb-6">
-                  <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center">
-                    <Database size={24} className="text-amber-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Firebase Synchronization</h2>
-                    <p className="text-gray-500">Manage cloud database connections</p>
-                  </div>
-                </div>
-                
-                <div className="space-y-6">
-                  <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-medium text-gray-900">Connection Status</span>
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        <span className="w-2 h-2 bg-green-500 rounded-full mr-1.5"></span>
-                        Connected (Mock)
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-500">
-                      The application is configured to sync Hararghe zone reports with Firebase Cloud Firestore.
-                    </p>
-                  </div>
-                  
-                  <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg">
-                    <h3 className="font-medium text-blue-900 mb-2">Configure Integration</h3>
-                    <p className="text-sm text-blue-800 mb-4">
-                      To fully enable live Firebase syncing, add your Firebase config to the <code>.env</code> file:
-                    </p>
-                    <pre className="bg-white p-3 rounded border border-blue-100 text-xs text-gray-700 overflow-x-auto">
-                      {`VITE_FIREBASE_API_KEY="your-api-key"
-VITE_FIREBASE_AUTH_DOMAIN="your-app.firebaseapp.com"
-VITE_FIREBASE_PROJECT_ID="your-project-id"`}
-                    </pre>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'map' && (
-            <div className="max-w-7xl mx-auto mt-6 h-[calc(100vh-12rem)] min-h-[600px]">
-              <OutbreakMap 
-                outbreaks={INITIAL_OUTBREAKS}
-                records={INITIAL_SURVEILLANCE_RECORDS}
-                darkMode={false}
-                selectedZone="All"
-              />
-            </div>
-          )}
         </div>
+      )}
+
+      {/* Sticky Header Navbar */}
+      <div className={isPrintFriendlyMode ? 'print:hidden' : ''}>
+        <Navbar
+          locale={locale}
+          setLocale={setLocale}
+          darkMode={darkMode}
+          setDarkMode={setDarkMode}
+          filters={filters}
+          setFilters={setFilters}
+          onOpenLogModal={() => setIsLogModalOpen(true)}
+          onOpenImportModal={() => setIsImportModalOpen(true)}
+          onOpenYoYModal={() => setIsYoYModalOpen(true)}
+          onOpenReportModal={() => setIsAIReportModalOpen(true)}
+          onOpenAuthModal={() => setIsAuthModalOpen(true)}
+          onOpenSupportModal={() => setIsSupportModalOpen(true)}
+          onOpenExternalResources={() => setIsExternalResourcesOpen(true)}
+          onOpenGoogleDrive={() => setIsGoogleDriveOpen(true)}
+          onExportAllCSV={handleExportAllCSV}
+          onToggleSimulator={() => setIsSimulatorRunning(prev => !prev)}
+          isSimulatorRunning={isSimulatorRunning}
+          onTogglePrintMode={() => setIsPrintFriendlyMode(prev => !prev)}
+          isPrintFriendlyMode={isPrintFriendlyMode}
+          isPortraitMode={isPortraitMode}
+          onTogglePortraitMode={() => setIsPortraitMode(prev => !prev)}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          isOnline={isOnline}
+          cachedRecordsCount={records.length}
+          onResetCache={handleResetCache}
+          dataMinDate={dataMinDate}
+          dataMaxDate={dataMaxDate}
+        />
+      </div>
+
+      {/* Main Container with Portrait Mode & Desktop Fluid Grid Layout */}
+      <main className={`mx-auto transition-all duration-300 py-6 space-y-6 ${
+        isPortraitMode 
+          ? 'max-w-2xl px-3 sm:px-4 bg-slate-900/40 dark:bg-slate-900/60 rounded-3xl my-4 border border-indigo-500/20 shadow-2xl ring-1 ring-indigo-500/10' 
+          : 'max-w-7xl px-4 sm:px-6 lg:px-8'
+      }`}>
+
+        
+
+        {/* Portrait Mode Field Banner */}
+        {isPortraitMode && (
+          <div className="bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-950 text-indigo-200 border border-indigo-700/60 p-4 rounded-2xl shadow-lg flex items-center justify-between gap-3 text-xs">
+            <div className="flex items-center space-x-2 font-medium">
+              <span className="text-lg">📱</span>
+              <div>
+                <p className="font-extrabold text-white font-heading">Portrait Field Mode Active</p>
+                <p className="text-[11px] text-indigo-300">Optimized vertical stack for handheld tablets & field mobile screens.</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setIsPortraitMode(false)}
+              className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg text-[11px] transition-colors cursor-pointer shrink-0"
+            >
+              Exit Portrait
+            </button>
+          </div>
+        )}
+        
+        {/* Printable Official Header Block (Appears prominently in print mode) */}
+        {isPrintFriendlyMode && (
+          <div className="bg-slate-50 border-2 border-slate-900 p-6 rounded-xl space-y-3 print:border-slate-800">
+            <div className="flex items-center justify-between border-b border-slate-400 pb-3">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-slate-900 text-white rounded-lg flex items-center justify-center font-black text-xl">
+                  HRVL
+                </div>
+                <div>
+                  <h1 className="text-lg font-black text-slate-950 uppercase tracking-tight">
+                    HIRNA REGIONAL VETERINARY DIAGNOSTIC LABORATORY (HRVL)
+                  </h1>
+                  <h2 className="text-xs font-bold text-slate-700 uppercase">
+                    Field Epidemiology & Disease Surveillance Briefing Snapshot
+                  </h2>
+                </div>
+              </div>
+
+              <div className="text-right text-xs font-mono">
+                <p className="font-bold">DATE: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                <p className="text-slate-600">ZONE FILTER: {filters.zone}</p>
+                <span className="inline-block mt-1 px-2 py-0.5 bg-slate-900 text-white text-[10px] font-bold uppercase rounded">
+                  PHYSICAL BRIEFING COPY
+                </span>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-700 leading-relaxed font-serif italic">
+              Official surveillance snapshot summary prepared for regional field veterinary officer consultations across E/H (21 Woredas) & W/H (15 Woredas). Includes active outbreak hot-spots, CFR trends, and woreda zero-reporting compliance status.
+            </p>
+          </div>
+        )}
+
+        
+        {activeTab === 'Dashboard' && (
+          <div className="space-y-6">
+            {/* KPI Cards & Zone Reporting Rates */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+        >
+          <KPICards
+            records={filteredRecords}
+            outbreaks={outbreaks}
+            complianceList={complianceList}
+            locale={locale}
+          />
+        </motion.div>
+
+        {/* WAHO / WOAH MEL Scorecard & Data Quality Panel */}
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.42, delay: 0.1, ease: 'easeOut' }}
+        >
+          <MELScorecardPanel
+            locale={locale}
+            records={filteredRecords}
+            outbreaks={outbreaks}
+            complianceList={complianceList}
+            onSelectZone={(zone) => setFilters(prev => ({ ...prev, zone }))}
+          />
+        </motion.div>
+
+        
+            {/* Reporting Trend Charts & Profile Simulator */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.25, ease: 'easeOut' }}
+        >
+          <TrendCharts
+            locale={locale}
+            records={filteredRecords}
+            darkMode={isPrintFriendlyMode ? false : darkMode}
+            onAddLogArrival={handleAddLogArrival}
+            isSimulatorRunning={isSimulatorRunning}
+            onToggleSimulator={() => setIsSimulatorRunning(prev => !prev)}
+            onOpenYoYModal={() => setIsYoYModalOpen(true)}
+          />
+        </motion.div>
+
+        {/* 2-Column Section: Species Donut Chart + CFR Trend Line Chart */}
+        <div className={`grid gap-6 ${isPortraitMode ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-2'}`}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.35, ease: 'easeOut' }}
+          >
+            <SpeciesDonutChart darkMode={isPrintFriendlyMode ? false : darkMode} />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.4, ease: 'easeOut' }}
+          >
+            <CFRTrendChart darkMode={isPrintFriendlyMode ? false : darkMode} />
+          </motion.div>
+        </div>
+
+        
+          </div>
+        )}
+
+        {activeTab === 'Map' && (
+          <div className="space-y-6">
+            {/* Interactive Outbreak Map */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.15, ease: 'easeOut' }}
+        >
+          <OutbreakMap
+            outbreaks={outbreaks}
+            records={filteredRecords}
+            darkMode={isPrintFriendlyMode ? false : darkMode}
+            selectedZone={filters.zone}
+          />
+        </motion.div>
+
+        
+          </div>
+        )}
+
+        {activeTab === 'Tables' && (
+          <div className="space-y-6">
+            {/* Disease Summary & Outbreak Tables */}
+        <div className={`grid gap-6 ${isPortraitMode ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-2'}`}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.45, ease: 'easeOut' }}
+          >
+            <DiseaseSummaryTable locale={locale} summaries={diseaseSummaries} />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.5, ease: 'easeOut' }}
+          >
+            <OutbreakTable locale={locale} outbreaks={outbreaks} />
+          </motion.div>
+        </div>
+
+        {/* Field Surveillance Log Table */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.55, ease: 'easeOut' }}
+        >
+          <SurveillanceTable locale={locale} records={filteredRecords} />
+        </motion.div>
+
+        {/* Woreda Compliance Progress Bars Table (36 Woredas) */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.6, ease: 'easeOut' }}
+        >
+          <ComplianceTable locale={locale} complianceList={complianceList} records={filteredRecords} />
+        </motion.div>
+
+        
+          </div>
+        )}
+  {/* Field Officer Sign-Off & Verification Stamp Block (Print Mode Only) */}
+        {isPrintFriendlyMode && (
+          <div className="mt-8 pt-6 border-t-2 border-slate-900 grid grid-cols-2 gap-8 text-xs">
+            <div className="space-y-8">
+              <p className="font-bold text-slate-900">Briefing Lead / Regional Epidemiologist:</p>
+              <div className="border-b border-slate-400 w-3/4"></div>
+              <p className="text-[11px] text-slate-500">Signature & Date</p>
+            </div>
+            <div className="space-y-8 text-right">
+              <p className="font-bold text-slate-900">HRVL Laboratory Director Stamp:</p>
+              <div className="border-b border-slate-400 w-3/4 ml-auto"></div>
+              <p className="text-[11px] text-slate-500">Official Seal & Verification</p>
+            </div>
+          </div>
+        )}
+
       </main>
+
+      {/* Footer Banner at the bottom of all dashboards */}
+      {!isPrintFriendlyMode && (
+        <FooterBanner onOpenExternalResources={() => setIsExternalResourcesOpen(true)} />
+      )}
+
+      {/* Modals */}
+      <NewArrivalModal
+        isOpen={isLogModalOpen}
+        onClose={() => setIsLogModalOpen(false)}
+        onAddRecord={handleAddLogArrival}
+      />
+
+      <ExcelImportModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onImportRecords={handleImportRecords}
+        onOpenYoYAnalysis={() => setIsYoYModalOpen(true)}
+      />
+
+      <YoYTrendAnalysisModal
+        isOpen={isYoYModalOpen}
+        onClose={() => setIsYoYModalOpen(false)}
+        records={records}
+        darkMode={darkMode}
+      />
+
+      <AIReportModal
+        isOpen={isAIReportModalOpen}
+        onClose={() => setIsAIReportModalOpen(false)}
+        outbreaks={outbreaks}
+        records={records}
+        complianceList={complianceList}
+        onOpenPrintView={(rep) => setPrintableReport(rep)}
+        locale={locale}
+      />
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
+
+      <SupportModal
+        isOpen={isSupportModalOpen}
+        onClose={() => setIsSupportModalOpen(false)}
+      />
+
+      <GoogleDriveModal
+        isOpen={isGoogleDriveOpen}
+        onClose={() => setIsGoogleDriveOpen(false)}
+        records={records}
+        onImportRecords={handleImportRecords}
+      />
+
+      <ExternalResourcesModal
+        isOpen={isExternalResourcesOpen}
+        onClose={() => setIsExternalResourcesOpen(false)}
+      />
     </div>
   );
 }
-
-export default App;

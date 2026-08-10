@@ -1,0 +1,44 @@
+{
+  "auth": {
+    "providers": {
+      "email": {
+        "enabled": true
+      },
+      "google": {
+        "enabled": true
+      },
+      "phone": {
+        "enabled": true
+      }
+    }
+  },
+  "firestore": {
+    "collections": [
+      {
+        "name": "outbreaks",
+        "description": "Store outbreak records",
+        "fields": [
+          { "name": "region", "type": "string" },
+          { "name": "zone", "type": "string" },
+          { "name": "woreda", "type": "string" },
+          { "name": "disease", "type": "string" },
+          { "name": "species", "type": "string" },
+          { "name": "cases", "type": "number" },
+          { "name": "deaths", "type": "number" },
+          { "name": "date", "type": "string" }
+        ]
+      },
+      {
+        "name": "surveillance",
+        "description": "Store surveillance records",
+        "fields": [
+          { "name": "region", "type": "string" },
+          { "name": "zone", "type": "string" },
+          { "name": "woreda", "type": "string" },
+          { "name": "status", "type": "string" },
+          { "name": "date", "type": "string" }
+        ]
+      }
+    ]
+  }
+}
