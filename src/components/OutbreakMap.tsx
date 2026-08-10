@@ -729,7 +729,7 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
         <div style="font-family: sans-serif; padding: 6px 4px; min-width: 250px; color: #0f172a;">
           <div style="display: flex; align-items: center; gap: 8.5px; margin-bottom: 8px;">
             <div style="width: 42px; height: 42px; background: #0f172a; padding: 3px; border-radius: 10px; border: 1.5px solid #059669; display: flex; align-items: center; justify-content: center; shrink: 0; box-shadow: 0 2px 6px rgba(5,150,105,0.25);">
-              <img src="/hrvl-emblem.png" alt="HRVL Emblem" style="width: 100%; height: 100%; object-fit: contain;" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/11EzymHeJj2N0w6qLhal60Cj6_zJiX3Ww';" />
+              <img src="/hrvl-emblem.png" alt="HRVL Emblem" style="width: 100%; height: 100%; object-fit: contain;" />
             </div>
             <div>
               <h4 style="margin: 0; font-size: 13.5px; font-weight: 800; color: #0f172a; line-height: 1.25;">Hirna Regional Veterinary Laboratory</h4>
@@ -1671,8 +1671,8 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
                       referrerPolicy="no-referrer"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
-                        if (!target.src.includes('11EzymHeJj2N0w6qLhal60Cj6_zJiX3Ww')) {
-                          target.src = 'https://lh3.googleusercontent.com/d/11EzymHeJj2N0w6qLhal60Cj6_zJiX3Ww';
+                        if (!target.src.includes('1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C')) {
+                          target.src = 'https://lh3.googleusercontent.com/d/1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C';
                         }
                       }}
                       className="w-full h-full object-contain"

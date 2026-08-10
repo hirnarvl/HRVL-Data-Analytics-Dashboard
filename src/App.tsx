@@ -277,23 +277,19 @@ export default function App() {
     return (
       <div className={`min-h-screen font-sans transition-colors duration-200 bg-slate-100 dark:bg-slate-950 flex flex-col items-center justify-center p-4`}>
          <div className="text-center space-y-6 max-w-md bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800">
-            <div className="relative mx-auto group shrink-0 cursor-pointer w-fit">
-              <div className="absolute -inset-1.5 bg-gradient-to-tr from-emerald-500 via-teal-400 to-indigo-500 rounded-2xl blur-xs opacity-60 group-hover:opacity-100 transition duration-300 animate-pulse" />
-              <div className="relative h-18 w-18 rounded-2xl bg-gradient-to-b from-white via-slate-50 to-slate-100 dark:from-slate-800 dark:via-slate-850 dark:to-slate-900 border-2 border-emerald-500/40 p-2 flex items-center justify-center shadow-[0_10px_30px_-5px_rgba(16,185,129,0.4)] group-hover:-translate-y-1 group-hover:scale-105 transition-all duration-300 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent pointer-events-none" />
-                <img 
-                  src="/hrvl-emblem.png" 
-                  alt="HRVL Emblem" 
-                  referrerPolicy="no-referrer"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    if (!target.src.includes('11EzymHeJj2N0w6qLhal60Cj6_zJiX3Ww')) {
-                      target.src = 'https://lh3.googleusercontent.com/d/11EzymHeJj2N0w6qLhal60Cj6_zJiX3Ww';
-                    }
-                  }}
-                  className="w-full h-full object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)] dark:drop-shadow-[0_4px_12px_rgba(16,185,129,0.6)] contrast-110" 
-                />
-              </div>
+            <div className="mx-auto h-16 w-16 rounded-xl bg-slate-900 border-2 border-emerald-500/50 p-1 flex items-center justify-center shadow-[0_4px_15px_rgba(16,185,129,0.4)] hover:shadow-[0_8px_25px_rgba(16,185,129,0.6)] transform hover:-translate-y-1 transition-all duration-300">
+              <img 
+                 src="/hrvl-emblem.png" 
+                 alt="HRVL Emblem" 
+                 referrerPolicy="no-referrer"
+                 onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  if (!target.src.includes('1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C')) {
+                    target.src = 'https://lh3.googleusercontent.com/d/1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C';
+                  }
+                }}
+                className="w-full h-full object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.5)]" 
+               />
             </div>
             <div>
               <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">

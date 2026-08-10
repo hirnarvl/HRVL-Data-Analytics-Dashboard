@@ -196,8 +196,8 @@ export const PrintableReportView: React.FC<PrintableReportViewProps> = ({
                 referrerPolicy="no-referrer"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  if (!target.src.includes('11EzymHeJj2N0w6qLhal60Cj6_zJiX3Ww')) {
-                    target.src = 'https://lh3.googleusercontent.com/d/11EzymHeJj2N0w6qLhal60Cj6_zJiX3Ww';
+                  if (!target.src.includes('1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C')) {
+                    target.src = 'https://lh3.googleusercontent.com/d/1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C';
                   }
                 }}
                 className="w-full h-full object-contain" 

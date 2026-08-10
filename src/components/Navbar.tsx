@@ -138,23 +138,19 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Sticky Top Header Bar (visible on small/medium screens) */}
       <div className="lg:hidden sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between shadow-sm">
         <div className="flex items-center space-x-3">
-          {/* 3D Clipped Brand Logo Badge */}
-          <div className="relative group shrink-0 cursor-pointer">
-            <div className="absolute -inset-1 bg-gradient-to-tr from-emerald-500/40 via-teal-400/30 to-indigo-500/40 rounded-2xl blur-xs opacity-60 group-hover:opacity-100 transition duration-300" />
-            <div className="relative h-10 w-10 rounded-2xl bg-gradient-to-b from-white via-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border border-slate-200/90 dark:border-slate-700/80 p-1 flex items-center justify-center shadow-md group-hover:-translate-y-0.5 group-hover:scale-105 transition-all duration-300 overflow-hidden">
-              <img 
-                src="/hrvl-emblem.png" 
-                alt="HRVL Emblem" 
-                referrerPolicy="no-referrer"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  if (!target.src.includes('11EzymHeJj2N0w6qLhal60Cj6_zJiX3Ww')) {
-                    target.src = 'https://lh3.googleusercontent.com/d/11EzymHeJj2N0w6qLhal60Cj6_zJiX3Ww';
-                  }
-                }}
-                className="w-full h-full object-contain filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] dark:drop-shadow-[0_2px_8px_rgba(16,185,129,0.5)] contrast-110" 
-              />
-            </div>
+          <div className="h-9 w-9 flex items-center justify-center shrink-0">
+            <img 
+              src="/hrvl-emblem.png" 
+              alt="HRVL Emblem" 
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if (!target.src.includes('1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C')) {
+                  target.src = 'https://lh3.googleusercontent.com/d/1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C';
+                }
+              }}
+              className="w-full h-full object-contain filter drop-shadow-md" 
+            />
           </div>
           <div>
             <h1 className="text-sm font-extrabold text-slate-900 dark:text-white tracking-tight truncate max-w-[170px] sm:max-w-xs">
@@ -227,29 +223,20 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Sidebar Header & Brand */}
         <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 space-y-4">
           <div className="flex items-center space-x-3">
-            {/* 3D Glass Badge Logo Emblem */}
-            <div className="relative group shrink-0 cursor-pointer">
-              {/* Outer 3D Ambient Ring & Glow */}
-              <div className="absolute -inset-1.5 bg-gradient-to-tr from-emerald-500 via-teal-400 to-indigo-500 rounded-2xl blur-xs opacity-50 group-hover:opacity-100 transition duration-300 animate-pulse" />
-              
-              {/* Beveled Glass Container */}
-              <div className="relative h-13 w-13 rounded-2xl bg-gradient-to-b from-white via-slate-50 to-slate-100 dark:from-slate-800 dark:via-slate-850 dark:to-slate-900 border-2 border-emerald-500/30 dark:border-emerald-400/40 p-1 flex items-center justify-center shadow-[0_8px_20px_-3px_rgba(16,185,129,0.35)] dark:shadow-[0_10px_25px_-5px_rgba(52,211,153,0.35)] group-hover:-translate-y-1 group-hover:scale-105 group-hover:rotate-2 transition-all duration-300 overflow-hidden">
-                {/* 3D Highlight Sheen */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent pointer-events-none" />
-                
-                <img 
-                  src="/hrvl-emblem.png" 
-                  alt="HRVL Emblem" 
-                  referrerPolicy="no-referrer"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    if (!target.src.includes('11EzymHeJj2N0w6qLhal60Cj6_zJiX3Ww')) {
-                      target.src = 'https://lh3.googleusercontent.com/d/11EzymHeJj2N0w6qLhal60Cj6_zJiX3Ww';
-                    }
-                  }}
-                  className="w-full h-full object-contain filter drop-shadow-[0_4px_6px_rgba(0,0,0,0.3)] dark:drop-shadow-[0_4px_10px_rgba(16,185,129,0.6)] contrast-110" 
-                />
-              </div>
+            {/* 3D Logo Emblem */}
+            <div className="h-12 w-12 flex items-center justify-center shrink-0 filter drop-shadow-[0_8px_16px_rgba(16,185,129,0.35)] dark:drop-shadow-[0_10px_22px_rgba(52,211,153,0.45)]">
+              <img 
+                src="/hrvl-emblem.png" 
+                alt="HRVL Emblem" 
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  if (!target.src.includes('1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C')) {
+                    target.src = 'https://lh3.googleusercontent.com/d/1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C';
+                  }
+                }}
+                className="w-full h-full object-contain filter drop-shadow-md" 
+              />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5 flex-wrap">
