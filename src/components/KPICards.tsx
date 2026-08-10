@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { SurveillanceRecord, Outbreak, WoredaCompliance, Locale } from '../types';
 import { translations } from '../utils/translations';
+import { useI18n } from '../contexts/I18nContext';
 
 interface KPICardsProps {
   records: SurveillanceRecord[];
@@ -29,9 +30,11 @@ export const KPICards: React.FC<KPICardsProps> = ({
   records,
   outbreaks,
   complianceList,
-  locale = 'en'
+  locale
 }) => {
-  const t = translations[locale];
+  const { locale: i18nLocale, t: i18nT } = useI18n();
+  const activeLocale = locale || i18nLocale;
+  const t = locale ? translations[locale] : i18nT;
   // Epidemiological Calculations
   const totalReports = records.length;
   const zeroReports = records.filter(r => r.isZeroReport || r.cases === 0).length;

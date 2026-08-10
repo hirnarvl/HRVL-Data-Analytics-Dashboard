@@ -14,6 +14,7 @@ import { TrendingDown, Activity, AlertCircle, Clock } from 'lucide-react';
 import { Locale } from '../types';
 import { translations } from '../utils/translations';
 import { CFR_TREND_DATA } from '../data/sampleData';
+import { useI18n } from '../contexts/I18nContext';
 
 // Multi-year comparative data for major diseases
 const CFR_MULTI_YEAR_BENCHMARK = [
@@ -30,8 +31,9 @@ interface CFRTrendChartProps {
   locale?: Locale;
 }
 
-export const CFRTrendChart: React.FC<CFRTrendChartProps> = ({ darkMode, locale = 'en' }) => {
-  const t = translations[locale];
+export const CFRTrendChart: React.FC<CFRTrendChartProps> = ({ darkMode, locale }) => {
+  const { locale: i18nLocale, t: i18nT } = useI18n();
+  const t = locale ? translations[locale] : i18nT;
   const [viewMode, setViewMode] = useState<'All_Diseases' | 'YoY_Comparative'>('YoY_Comparative');
   const [selectedDisease, setSelectedDisease] = useState<'PPR' | 'FMD' | 'CBPP'>('PPR');
 

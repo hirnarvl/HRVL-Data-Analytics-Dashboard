@@ -16,6 +16,7 @@ import { X, Sparkles, FileText, Loader2, CheckCircle2, Printer, AlertCircle, Bar
 import { NarrativeReport, Outbreak, SurveillanceRecord, WoredaCompliance, Locale } from '../types';
 import { WoredaReportMap } from './WoredaReportMap';
 import { translations } from '../utils/translations';
+import { useI18n } from '../contexts/I18nContext';
 
 interface AIReportModalProps {
   isOpen: boolean;
@@ -34,13 +35,15 @@ export const AIReportModal: React.FC<AIReportModalProps> = ({
   records,
   complianceList,
   onOpenPrintView,
-  locale = 'en'
+  locale
 }) => {
   const [loading, setLoading] = useState(false);
   const [reportData, setReportData] = useState<NarrativeReport | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const t = translations[locale];
+  const { locale: i18nLocale, t: i18nT } = useI18n();
+  const activeLocale = locale || i18nLocale;
+  const t = locale ? translations[locale] : i18nT;
 
   if (!isOpen) return null;
 
@@ -70,7 +73,7 @@ export const AIReportModal: React.FC<AIReportModalProps> = ({
             totalRecords: records.length
           },
           topDiseases: outbreaks.map(o => ({ disease: o.disease, cases: o.cases, cfr: o.cfr })),
-          locale
+          locale: activeLocale
         })
       });
 

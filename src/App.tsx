@@ -49,24 +49,18 @@ import { exportToCSV } from './utils/export';
 import { loadCachedRecords, saveCachedRecords, clearCachedRecords } from './utils/storage';
 import { subscribeToFirestoreRecords, saveRecordToFirestore } from './utils/firebaseStorage';
 import { useAuth } from './contexts/AuthContext';
+import { useI18n } from './contexts/I18nContext';
 import { soundEngine } from './utils/sound';
 
 export default function App() {
   const { user, loading, signInAsGuest } = useAuth();
+  const { locale, setLocale, t } = useI18n();
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     const saved = localStorage.getItem('hrvl_theme');
     if (saved !== null) {
       return saved === 'dark';
     }
     return true;
-  });
-
-  const [locale, setLocale] = useState<Locale>(() => {
-    const saved = localStorage.getItem('hrvl_locale');
-    if (saved === 'en' || saved === 'om' || saved === 'am') {
-      return saved;
-    }
-    return 'en';
   });
   
   // Primary Dashboard State - Initialized from localStorage cache for field offline resilience
@@ -283,19 +277,23 @@ export default function App() {
     return (
       <div className={`min-h-screen font-sans transition-colors duration-200 bg-slate-100 dark:bg-slate-950 flex flex-col items-center justify-center p-4`}>
          <div className="text-center space-y-6 max-w-md bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800">
-            <div className="mx-auto h-16 w-16 rounded-xl bg-slate-900 border-2 border-emerald-500/50 p-1 flex items-center justify-center shadow-[0_4px_15px_rgba(16,185,129,0.4)] hover:shadow-[0_8px_25px_rgba(16,185,129,0.6)] transform hover:-translate-y-1 transition-all duration-300">
-              <img 
-                 src="/hrvl-emblem.png" 
-                 alt="HRVL Emblem" 
-                 referrerPolicy="no-referrer"
-                 onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  if (!target.src.includes('1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C')) {
-                    target.src = 'https://lh3.googleusercontent.com/d/1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C';
-                  }
-                }}
-                className="w-full h-full object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.5)]" 
-               />
+            <div className="relative mx-auto group shrink-0 cursor-pointer w-fit">
+              <div className="absolute -inset-1.5 bg-gradient-to-tr from-emerald-500 via-teal-400 to-indigo-500 rounded-2xl blur-xs opacity-60 group-hover:opacity-100 transition duration-300 animate-pulse" />
+              <div className="relative h-18 w-18 rounded-2xl bg-gradient-to-b from-white via-slate-50 to-slate-100 dark:from-slate-800 dark:via-slate-850 dark:to-slate-900 border-2 border-emerald-500/40 p-2 flex items-center justify-center shadow-[0_10px_30px_-5px_rgba(16,185,129,0.4)] group-hover:-translate-y-1 group-hover:scale-105 transition-all duration-300 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent pointer-events-none" />
+                <img 
+                  src="/hrvl-emblem.png" 
+                  alt="HRVL Emblem" 
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    if (!target.src.includes('11EzymHeJj2N0w6qLhal60Cj6_zJiX3Ww')) {
+                      target.src = 'https://lh3.googleusercontent.com/d/11EzymHeJj2N0w6qLhal60Cj6_zJiX3Ww';
+                    }
+                  }}
+                  className="w-full h-full object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)] dark:drop-shadow-[0_4px_12px_rgba(16,185,129,0.6)] contrast-110" 
+                />
+              </div>
             </div>
             <div>
               <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
@@ -365,42 +363,14 @@ export default function App() {
   }
 
   return (
-    <div className={`min-h-screen font-sans transition-colors duration-200 ${
+    <div className={`min-h-screen font-sans transition-colors duration-200 flex flex-col lg:flex-row ${
       isPrintFriendlyMode 
         ? 'bg-white text-slate-900 border-t-8 border-amber-500' 
         : 'bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100'
     }`}>
       
-      {/* Sticky Top Field Print Snapshot Alert Banner (Hidden when printing) */}
-      {isPrintFriendlyMode && (
-        <div className="print:hidden sticky top-0 z-50 bg-amber-500 text-slate-950 px-4 py-2.5 shadow-md flex flex-wrap items-center justify-between gap-2 border-b border-amber-600">
-          <div className="flex items-center space-x-2 font-bold text-xs sm:text-sm">
-            <Printer className="w-5 h-5 animate-bounce" />
-            <span>🖨️ FIELD SNAPSHOT PRINT MODE — High-contrast white canvas optimized for physical field meetings & PDF export.</span>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => window.print()}
-              className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-slate-950 text-white font-extrabold text-xs rounded-lg hover:bg-slate-800 transition-colors shadow-xs cursor-pointer"
-            >
-              <Printer className="w-3.5 h-3.5" />
-              <span>Print Snapshot (Ctrl+P)</span>
-            </button>
-
-            <button
-              onClick={() => setIsPrintFriendlyMode(false)}
-              className="p-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-slate-950 font-bold text-xs cursor-pointer"
-              title="Exit Print Mode"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Sticky Header Navbar */}
-      <div className={isPrintFriendlyMode ? 'print:hidden' : ''}>
+      {/* Left Vertical Navigation Bar */}
+      <div className={isPrintFriendlyMode ? 'print:hidden' : 'shrink-0'}>
         <Navbar
           locale={locale}
           setLocale={setLocale}
@@ -433,12 +403,43 @@ export default function App() {
         />
       </div>
 
-      {/* Main Container with Portrait Mode & Desktop Fluid Grid Layout */}
-      <main className={`mx-auto transition-all duration-300 py-6 space-y-6 ${
-        isPortraitMode 
-          ? 'max-w-2xl px-3 sm:px-4 bg-slate-900/40 dark:bg-slate-900/60 rounded-3xl my-4 border border-indigo-500/20 shadow-2xl ring-1 ring-indigo-500/10' 
-          : 'max-w-7xl px-4 sm:px-6 lg:px-8'
-      }`}>
+      {/* Main Right Content Area */}
+      <div className="flex-1 min-w-0 flex flex-col min-h-screen">
+
+        {/* Sticky Top Field Print Snapshot Alert Banner (Hidden when printing) */}
+        {isPrintFriendlyMode && (
+          <div className="print:hidden sticky top-0 z-50 bg-amber-500 text-slate-950 px-4 py-2.5 shadow-md flex flex-wrap items-center justify-between gap-2 border-b border-amber-600">
+            <div className="flex items-center space-x-2 font-bold text-xs sm:text-sm">
+              <Printer className="w-5 h-5 animate-bounce" />
+              <span>🖨️ FIELD SNAPSHOT PRINT MODE — High-contrast white canvas optimized for physical field meetings & PDF export.</span>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => window.print()}
+                className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-slate-950 text-white font-extrabold text-xs rounded-lg hover:bg-slate-800 transition-colors shadow-xs cursor-pointer"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>Print Snapshot (Ctrl+P)</span>
+              </button>
+
+              <button
+                onClick={() => setIsPrintFriendlyMode(false)}
+                className="p-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-slate-950 font-bold text-xs cursor-pointer"
+                title="Exit Print Mode"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Main Workspace Container */}
+        <main className={`flex-1 w-full mx-auto transition-all duration-300 py-6 space-y-6 ${
+          isPortraitMode 
+            ? 'max-w-2xl px-3 sm:px-4 bg-slate-900/40 dark:bg-slate-900/60 rounded-3xl my-4 border border-indigo-500/20 shadow-2xl ring-1 ring-indigo-500/10' 
+            : 'max-w-7xl px-4 sm:px-6 lg:px-8'
+        }`}>
 
         
 
@@ -651,6 +652,7 @@ export default function App() {
       {!isPrintFriendlyMode && (
         <FooterBanner onOpenExternalResources={() => setIsExternalResourcesOpen(true)} />
       )}
+      </div>
 
       {/* Modals */}
       <NewArrivalModal

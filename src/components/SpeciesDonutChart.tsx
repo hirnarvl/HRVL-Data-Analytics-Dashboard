@@ -5,6 +5,7 @@ import { GiCow, GiGoat, GiSheep, GiChicken, GiHorseHead, GiCamel, GiPig } from '
 import { SPECIES_DISTRIBUTION } from '../data/sampleData';
 import { Locale } from '../types';
 import { translations } from '../utils/translations';
+import { useI18n } from '../contexts/I18nContext';
 
 interface SpeciesDonutChartProps {
   darkMode: boolean;
@@ -22,8 +23,9 @@ const SpeciesIcons: Record<string, React.FC<{ className?: string }>> = {
   'Swine / Others': ({ className }) => React.createElement(GiPig, { className })
 };
 
-export const SpeciesDonutChart: React.FC<SpeciesDonutChartProps> = ({ darkMode, locale = 'en' }) => {
-  const t = translations[locale];
+export const SpeciesDonutChart: React.FC<SpeciesDonutChartProps> = ({ darkMode, locale }) => {
+  const { locale: i18nLocale, t: i18nT } = useI18n();
+  const t = locale ? translations[locale] : i18nT;
   const totalCases = SPECIES_DISTRIBUTION.reduce((acc, curr) => acc + curr.cases, 0);
 
   return (

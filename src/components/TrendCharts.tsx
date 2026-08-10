@@ -13,6 +13,7 @@ import {
 import { Calendar, Play, Pause, RefreshCw, Clock, Plus, Zap } from 'lucide-react';
 import { SurveillanceRecord, Locale } from '../types';
 import { translations } from '../utils/translations';
+import { useI18n } from '../contexts/I18nContext';
 
 interface TrendChartsProps {
   locale?: Locale;
@@ -31,9 +32,10 @@ export const TrendCharts: React.FC<TrendChartsProps> = ({
   isSimulatorRunning,
   onToggleSimulator,
   onOpenYoYModal,
-  locale = 'en'
+  locale
 }) => {
-  const t = translations[locale];
+  const { locale: i18nLocale, t: i18nT } = useI18n();
+  const t = locale ? translations[locale] : i18nT;
   const [timeframe, setTimeframe] = useState<'Daily' | 'Weekly' | 'Monthly'>('Weekly');
   const [showYoYOverlay, setShowYoYOverlay] = useState<boolean>(true);
   const [customTimestampText, setCustomTimestampText] = useState('');

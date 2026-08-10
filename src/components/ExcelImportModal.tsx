@@ -15,6 +15,7 @@ import {
 import * as XLSX from 'xlsx';
 import { SurveillanceRecord } from '../types';
 import { matchWoreda, detectZone } from '../utils/fuzzyMatch';
+import { useI18n } from '../contexts/I18nContext';
 
 interface ExcelImportModalProps {
   isOpen: boolean;
@@ -55,6 +56,7 @@ export const ExcelImportModal: React.FC<ExcelImportModalProps> = ({
   onImportRecords,
   onOpenYoYAnalysis
 }) => {
+  const { t } = useI18n();
   const [batchFiles, setBatchFiles] = useState<ImportedBatchFile[]>([]);
   const [activeFileFilter, setActiveFileFilter] = useState<string>('ALL');
   const [isProcessing, setIsProcessing] = useState(false);

@@ -4,7 +4,7 @@ import { DiseaseSummary } from '../types';
 import { exportToCSV } from '../utils/export';
 import { Locale } from '../types';
 import { translations } from '../utils/translations';
-
+import { useI18n } from '../contexts/I18nContext';
 
 const shortenDisease = (disease: string) => {
   if (!disease) return '';
@@ -16,14 +16,14 @@ const shortenDisease = (disease: string) => {
   return disease;
 };
 
-
 interface DiseaseSummaryTableProps {
   locale?: Locale;
   summaries: DiseaseSummary[];
 }
 
-export const DiseaseSummaryTable: React.FC<DiseaseSummaryTableProps> = ({ summaries , locale = 'en' }) => {
-  const t = translations[locale];
+export const DiseaseSummaryTable: React.FC<DiseaseSummaryTableProps> = ({ summaries, locale }) => {
+  const { locale: i18nLocale, t: i18nT } = useI18n();
+  const t = locale ? translations[locale] : i18nT;
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<keyof DiseaseSummary>('totalCases');
   const [sortAsc, setSortAsc] = useState(false);

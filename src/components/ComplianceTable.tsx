@@ -20,6 +20,7 @@ import { WoredaCompliance } from '../types';
 import { exportToCSV } from '../utils/export';
 import { Locale } from '../types';
 import { translations } from '../utils/translations';
+import { useI18n } from '../contexts/I18nContext';
 
 import { SurveillanceRecord } from '../types';
 
@@ -29,8 +30,9 @@ interface ComplianceTableProps {
   complianceList: WoredaCompliance[];
 }
 
-export const ComplianceTable: React.FC<ComplianceTableProps> = ({ complianceList, records , locale = 'en' }) => {
-  const t = translations[locale];
+export const ComplianceTable: React.FC<ComplianceTableProps> = ({ complianceList, records, locale }) => {
+  const { locale: i18nLocale, t: i18nT } = useI18n();
+  const t = locale ? translations[locale] : i18nT;
   const [searchTerm, setSearchTerm] = useState('');
   const [zoneFilter, setZoneFilter] = useState<'All' | 'E/H' | 'W/H'>('All');
   const [complianceCategory, setComplianceCategory] = useState<'All' | 'Compliant' | 'Needs Attention' | 'Chronic Non-Reporting'>('All');

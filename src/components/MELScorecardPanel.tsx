@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { SurveillanceRecord, Outbreak, WoredaCompliance, ZoneName, Locale } from '../types';
 import { translations } from '../utils/translations';
+import { useI18n } from '../contexts/I18nContext';
 
 interface MELScorecardPanelProps {
   records: SurveillanceRecord[];
@@ -32,9 +33,10 @@ export const MELScorecardPanel: React.FC<MELScorecardPanelProps> = ({
   outbreaks,
   complianceList,
   onSelectZone,
-  locale = 'en'
+  locale
 }) => {
-  const t = translations[locale];
+  const { locale: i18nLocale, t: i18nT } = useI18n();
+  const t = locale ? translations[locale] : i18nT;
   const [selectedZoneFilter, setSelectedZoneFilter] = useState<'All' | 'E/H' | 'W/H'>('All');
   const [isRefreshingSitRep, setIsRefreshingSitRep] = useState(false);
 

@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { Search, ArrowUpDown, Download, CheckCircle2, AlertTriangle, Filter ,
-  PhoneCall
-} from 'lucide-react';
+import { Search, ArrowUpDown, Download, CheckCircle2, AlertTriangle, Filter, PhoneCall } from 'lucide-react';
 import { SurveillanceRecord } from '../types';
 import { exportToCSV } from '../utils/export';
 import { Locale } from '../types';
 import { translations } from '../utils/translations';
-
+import { useI18n } from '../contexts/I18nContext';
 
 const shortenDisease = (disease: string) => {
   if (!disease) return '';
@@ -18,14 +16,14 @@ const shortenDisease = (disease: string) => {
   return disease;
 };
 
-
 interface SurveillanceTableProps {
   locale?: Locale;
   records: SurveillanceRecord[];
 }
 
-export const SurveillanceTable: React.FC<SurveillanceTableProps> = ({ records , locale = 'en' }) => {
-  const t = translations[locale];
+export const SurveillanceTable: React.FC<SurveillanceTableProps> = ({ records, locale }) => {
+  const { locale: i18nLocale, t: i18nT } = useI18n();
+  const t = locale ? translations[locale] : i18nT;
   const [searchTerm, setSearchTerm] = useState('');
   const [zoneFilter, setZoneFilter] = useState<'All' | 'E/H' | 'W/H'>('All');
   const [sortField, setSortField] = useState<keyof SurveillanceRecord>('date');

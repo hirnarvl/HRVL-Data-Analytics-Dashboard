@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, PlusCircle, AlertCircle, Building2, MapPin, Calendar, Activity, Database } from 'lucide-react';
 import { HARARGHE_WOREDAS } from '../data/woredas';
 import { DiseaseName, LivestockSpecies, RiskLevel, SurveillanceRecord, ZoneName } from '../types';
+import { useI18n } from '../contexts/I18nContext';
 
 interface NewArrivalModalProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ export const NewArrivalModal: React.FC<NewArrivalModalProps> = ({
   onClose,
   onAddRecord
 }) => {
+  const { t } = useI18n();
   const [woredaName, setWoredaName] = useState('Haramaya');
   const [disease, setDisease] = useState<string>('Foot-and-Mouth Disease (FMD)');
   const [species, setSpecies] = useState<string>('Cattle');

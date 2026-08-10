@@ -32,6 +32,7 @@ import {
 } from 'recharts';
 import { SurveillanceRecord, ZoneName } from '../types';
 import { exportToCSV } from '../utils/export';
+import { useI18n } from '../contexts/I18nContext';
 
 interface YoYTrendAnalysisModalProps {
   isOpen: boolean;
@@ -46,6 +47,7 @@ export const YoYTrendAnalysisModal: React.FC<YoYTrendAnalysisModalProps> = ({
   records,
   darkMode
 }) => {
+  const { t } = useI18n();
   const [selectedZone, setSelectedZone] = useState<'All' | ZoneName>('All');
   const [selectedDisease, setSelectedDisease] = useState<string>('All');
   const [selectedYears, setSelectedYears] = useState<number[]>([2023, 2024, 2025, 2026]);
