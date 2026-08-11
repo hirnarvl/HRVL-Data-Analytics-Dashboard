@@ -41,6 +41,7 @@ import { soundEngine } from '../utils/sound';
 import { useAuth } from '../contexts/AuthContext';
 import { useI18n } from '../contexts/I18nContext';
 import { LANGUAGE_OPTIONS } from '../utils/translations';
+import { ZoneFilterBottomSheet } from './ZoneFilterBottomSheet';
 
 interface NavbarProps {
   locale?: Locale;
@@ -60,12 +61,8 @@ interface NavbarProps {
   onOpenExternalResources?: () => void;
   onOpenGoogleDrive?: () => void;
   onExportAllCSV: () => void;
-  onToggleSimulator: () => void;
-  isSimulatorRunning: boolean;
   onTogglePrintMode: () => void;
   isPrintFriendlyMode: boolean;
-  isPortraitMode?: boolean;
-  onTogglePortraitMode?: () => void;
   isOnline?: boolean;
   cachedRecordsCount?: number;
   onResetCache?: () => void;
@@ -85,12 +82,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenYoYModal,
   onOpenReportModal,
   onExportAllCSV,
-  onToggleSimulator,
-  isSimulatorRunning,
   onTogglePrintMode,
   isPrintFriendlyMode,
-  isPortraitMode = false,
-  onTogglePortraitMode,
   isOnline = true,
   cachedRecordsCount = 0,
   onResetCache,
@@ -105,6 +98,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [soundEnabled, setSoundEnabled] = useState<boolean>(soundEngine.enabled);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [isZoneSheetOpen, setIsZoneSheetOpen] = useState<boolean>(false);
   const { locale: ctxLocale, setLocale: ctxSetLocale, t: ctxT } = useI18n();
 
   const activeLocale = locale || ctxLocale;
@@ -140,15 +134,9 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center space-x-3">
           <div className="h-9 w-9 flex items-center justify-center shrink-0">
             <img 
-              src="/hrvl-emblem.png" 
+              src="https://lh3.googleusercontent.com/d/1GYfLqMpKQcB2hKXbwIRUcoJetaeiPgpl" 
               alt="HRVL Emblem" 
               referrerPolicy="no-referrer"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                if (!target.src.includes('1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C')) {
-                  target.src = 'https://lh3.googleusercontent.com/d/1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C';
-                }
-              }}
               className="w-full h-full object-contain filter drop-shadow-md" 
             />
           </div>
@@ -175,29 +163,56 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             {darkMode ? <Sun className="w-4 h-4 text-amber-400 fill-amber-400/30" /> : <Moon className="w-4 h-4 text-indigo-600 fill-indigo-600/20" />}
           </button>
+        </div>
+      </div>
 
-          {/* Quick Log Arrival Button */}
+      {/* Mobile Bottom Bar */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 pb-safe shadow-[0_-4px_10px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_10px_rgba(0,0,0,0.2)]">
+        <div className="flex items-center justify-around px-2 py-2">
+          <button
+            onClick={() => {
+              soundEngine.playClick();
+              if (setActiveTab) setActiveTab('Dashboard');
+            }}
+            className={`flex flex-col items-center justify-center p-2 rounded-xl transition-colors min-w-[64px] ${activeTab === 'Dashboard' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}
+          >
+            <LayoutDashboard className="w-5 h-5 mb-1" />
+            <span className="text-[10px] font-bold">{t.dashboard}</span>
+          </button>
+          
           <button
             onClick={() => {
               soundEngine.playClick();
               onOpenLogModal();
             }}
-            className="p-2 bg-emerald-600 text-white rounded-xl shadow-xs cursor-pointer"
-            title={t.logArrival}
+            className="flex flex-col items-center justify-center p-2 rounded-xl transition-colors min-w-[64px] text-emerald-600 dark:text-emerald-400"
           >
-            <PlusCircle className="w-4 h-4" />
+            <div className="bg-emerald-600 text-white p-2 rounded-full -mt-6 shadow-lg border-4 border-white dark:border-slate-900">
+              <PlusCircle className="w-6 h-6" />
+            </div>
+            <span className="text-[10px] font-bold mt-1">Log</span>
           </button>
 
-          {/* Mobile Menu Hamburger Toggle */}
+          <button
+            onClick={() => {
+              soundEngine.playClick();
+              if (setActiveTab) setActiveTab('Tables');
+            }}
+            className={`flex flex-col items-center justify-center p-2 rounded-xl transition-colors min-w-[64px] ${activeTab === 'Tables' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}
+          >
+            <Table className="w-5 h-5 mb-1" />
+            <span className="text-[10px] font-bold">{t.tables}</span>
+          </button>
+
           <button
             onClick={() => {
               soundEngine.playClick();
               setIsMobileMenuOpen(prev => !prev);
             }}
-            className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 cursor-pointer"
-            aria-label="Toggle Navigation Drawer"
+            className={`flex flex-col items-center justify-center p-2 rounded-xl transition-colors min-w-[64px] ${isMobileMenuOpen ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}
           >
-            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            <Menu className="w-5 h-5 mb-1" />
+            <span className="text-[10px] font-bold">Menu</span>
           </button>
         </div>
       </div>
@@ -226,15 +241,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* 3D Logo Emblem */}
             <div className="h-12 w-12 flex items-center justify-center shrink-0 filter drop-shadow-[0_8px_16px_rgba(16,185,129,0.35)] dark:drop-shadow-[0_10px_22px_rgba(52,211,153,0.45)]">
               <img 
-                src="/hrvl-emblem.png" 
+                src="https://lh3.googleusercontent.com/d/1GYfLqMpKQcB2hKXbwIRUcoJetaeiPgpl" 
                 alt="HRVL Emblem" 
                 referrerPolicy="no-referrer"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  if (!target.src.includes('1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C')) {
-                    target.src = 'https://lh3.googleusercontent.com/d/1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C';
-                  }
-                }}
                 className="w-full h-full object-contain filter drop-shadow-md" 
               />
             </div>
@@ -343,7 +352,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             <p className="px-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">
               Zone Filter
             </p>
-            <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-xl p-2 border border-slate-200 dark:border-slate-700">
+            {/* Desktop / Tablet Select */}
+            <div className="hidden lg:flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-xl p-2 border border-slate-200 dark:border-slate-700">
               <Filter className="w-4 h-4 text-slate-400 ml-1 mr-2 shrink-0" />
               <select
                 aria-label="Filter by Zone"
@@ -359,6 +369,21 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <option value="W/H" className="dark:bg-slate-900">{t.westHararghe}</option>
               </select>
             </div>
+            {/* Mobile Bottom Sheet Trigger */}
+            <button
+              onClick={() => {
+                soundEngine.playClick();
+                setIsZoneSheetOpen(true);
+                setIsMobileMenuOpen(false);
+              }}
+              className="lg:hidden w-full flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-xl p-2 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+            >
+              <Filter className="w-4 h-4 text-slate-400 ml-1 mr-2 shrink-0" />
+              <div className="w-full text-left flex justify-between items-center text-xs font-semibold text-slate-700 dark:text-slate-200">
+                <span>{filters.zone === 'All' ? t.allZones : filters.zone === 'E/H' ? t.eastHararghe : t.westHararghe}</span>
+                <ChevronRight className="w-4 h-4 opacity-50" />
+              </div>
+            </button>
           </div>
 
           {/* Tools & Analytics Quick Actions */}
@@ -368,23 +393,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </p>
             
             <div className="grid grid-cols-1 gap-1.5">
-              {/* Profile Simulator */}
-              <button
-                onClick={() => {
-                  soundEngine.playBlip();
-                  onToggleSimulator();
-                }}
-                className={`w-full py-2 px-3 flex items-center space-x-2.5 text-xs font-semibold rounded-xl border transition-all cursor-pointer ${
-                  isSimulatorRunning
-                    ? 'bg-amber-500 text-slate-950 border-amber-600 font-bold animate-pulse'
-                    : 'bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700/80'
-                }`}
-              >
-                <Play className={`w-4 h-4 shrink-0 ${isSimulatorRunning ? 'fill-slate-950 text-slate-950' : 'text-emerald-600 dark:text-emerald-400'}`} />
-                <span className="truncate">{isSimulatorRunning ? t.simulatorActive : t.profileSimulator}</span>
-              </button>
-
-              {/* Multi-Excel Import */}
+              {/* Import Data */}
               <button
                 onClick={() => {
                   soundEngine.playClick();
@@ -394,7 +403,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className="w-full py-2 px-3 flex items-center space-x-2.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700/80 transition-all cursor-pointer"
               >
                 <FileSpreadsheet className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span className="truncate">{t.multiExcelImport}</span>
+                <span className="truncate">Import Data</span>
               </button>
 
               {/* YoY Analysis */}
@@ -410,17 +419,41 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span className="truncate">{t.yoyAnalysis}</span>
               </button>
 
-              {/* CSV Export */}
-              <button
-                onClick={() => {
-                  soundEngine.playSuccess();
-                  onExportAllCSV();
-                }}
-                className="w-full py-2 px-3 flex items-center space-x-2.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700/80 transition-all cursor-pointer"
-              >
-                <Download className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
-                <span className="truncate">{t.csvExport}</span>
-              </button>
+              {/* Export Data (Combined) */}
+              <div className="relative group">
+                <button
+                  className="w-full py-2 px-3 flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700/80 transition-all cursor-pointer"
+                >
+                  <div className="flex items-center space-x-2.5">
+                    <Download className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                    <span className="truncate">Export & Backup</span>
+                  </div>
+                  <ChevronRight className="w-3 h-3 opacity-50 group-hover:rotate-90 transition-transform" />
+                </button>
+                <div className="hidden group-hover:block pl-8 pr-2 py-1 space-y-1">
+                  <button
+                    onClick={() => {
+                      soundEngine.playSuccess();
+                      onExportAllCSV();
+                    }}
+                    className="w-full py-1.5 px-3 text-left text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  >
+                    Download CSV
+                  </button>
+                  {onOpenGoogleDrive && (
+                    <button
+                      onClick={() => {
+                        soundEngine.playClick();
+                        onOpenGoogleDrive();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full py-1.5 px-3 text-left text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    >
+                      Google Drive Backup
+                    </button>
+                  )}
+                </div>
+              </div>
 
               {/* AI SitRep Report */}
               <button
@@ -434,22 +467,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <FileText className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0" />
                 <span className="truncate">{t.aiSitrepReport}</span>
               </button>
-
-              {/* Google Drive Cloud Integration */}
-              {onOpenGoogleDrive && (
-                <button
-                  onClick={() => {
-                    soundEngine.playClick();
-                    onOpenGoogleDrive();
-                    setIsMobileMenuOpen(false);
-                  }}
-                  title="Backup & Import Reports via Google Drive Cloud Integration"
-                  className="w-full py-2 px-3 flex items-center space-x-2.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700/80 transition-all cursor-pointer"
-                >
-                  <HardDrive className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
-                  <span className="truncate">{t.googleDrive}</span>
-                </button>
-              )}
 
               {/* Support Template */}
               {onOpenSupportModal && (
@@ -483,34 +500,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </button>
               )}
 
-              {/* Portrait Mobile/Tablet Layout Toggle */}
-              {onTogglePortraitMode && (
-                <button
-                  onClick={() => {
-                    soundEngine.playClick();
-                    onTogglePortraitMode();
-                  }}
-                  title={isPortraitMode ? 'Switch to Full Landscape Desktop View' : 'Switch to Focused Vertical Portrait Layout'}
-                  className={`w-full py-2 px-3 flex items-center space-x-2.5 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
-                    isPortraitMode
-                      ? 'bg-indigo-600 text-white border-indigo-500 shadow-xs'
-                      : 'bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700/80'
-                  }`}
-                >
-                  {isPortraitMode ? (
-                    <>
-                      <Maximize2 className="w-4 h-4 shrink-0" />
-                      <span className="truncate">{t.portraitActive}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Smartphone className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
-                      <span className="truncate">{t.portraitView}</span>
-                    </>
-                  )}
-                </button>
-              )}
-
               {/* Field Print Snapshot Toggle */}
               <button
                 onClick={() => {
@@ -526,29 +515,35 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <Printer className={`w-4 h-4 shrink-0 ${isPrintFriendlyMode ? 'text-slate-950' : 'text-amber-600 dark:text-amber-400'}`} />
                 <span className="truncate">{isPrintFriendlyMode ? t.exitPrintView : t.fieldPrintSnapshot}</span>
               </button>
-
-              {/* Reset Cache */}
-              {onResetCache && (
-                <button
-                  onClick={() => {
-                    if (window.confirm('Reset offline cached records and revert to default sample dataset?')) {
-                      soundEngine.playClick();
-                      onResetCache();
-                    }
-                  }}
-                  title="Reset offline cache and restore default sample data"
-                  className="w-full py-2 px-3 flex items-center space-x-2.5 text-xs font-medium text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700/80 transition-all cursor-pointer"
-                >
-                  <RotateCcw className="w-4 h-4 shrink-0" />
-                  <span className="truncate">{t.resetCache}</span>
-                </button>
-              )}
             </div>
           </div>
         </div>
 
-        {/* Sidebar Footer Controls: Night/Day Toggle, Language Selector, Sound, Auth */}
+        {/* Sidebar Footer Controls: System & Settings */}
         <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 space-y-3">
+          
+          <div className="space-y-1.5">
+            <p className="px-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+              System Settings
+            </p>
+            
+            {/* Reset Cache (Moved to Settings) */}
+            {onResetCache && (
+              <button
+                onClick={() => {
+                  if (window.confirm('Reset offline cached records and revert to default sample dataset?')) {
+                    soundEngine.playClick();
+                    onResetCache();
+                  }
+                }}
+                title="Reset offline cache and restore default sample data"
+                className="w-full py-2 flex items-center justify-between px-3 text-xs font-medium text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30 dark:hover:bg-rose-900/50 rounded-xl border border-rose-200 dark:border-rose-800/40 transition-all cursor-pointer"
+              >
+                <span className="truncate">{t.resetCache}</span>
+                <RotateCcw className="w-4 h-4 shrink-0" />
+              </button>
+            )}
+          </div>
           
           {/* Night / Day Mode Toggle (Prominent) */}
           <button
@@ -649,9 +644,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             )}
           </div>
-
         </div>
       </aside>
+
+      <ZoneFilterBottomSheet
+        isOpen={isZoneSheetOpen}
+        onClose={() => setIsZoneSheetOpen(false)}
+        currentZone={filters.zone}
+        onSelectZone={(z) => {
+          soundEngine.playClick();
+          setFilters(prev => ({ ...prev, zone: z as any }));
+        }}
+      />
     </>
   );
 };

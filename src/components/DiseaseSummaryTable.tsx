@@ -100,92 +100,145 @@ export const DiseaseSummaryTable: React.FC<DiseaseSummaryTableProps> = ({ summar
         </div>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto mt-3">
-        <table className="w-full text-left text-xs text-slate-700 dark:text-slate-200">
-          <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 uppercase font-semibold text-[11px] border-b border-slate-200 dark:border-slate-700">
-            <tr>
-              <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('disease')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>{t.colDiseaseName}</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('totalOutbreaks')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>{t.colOutbreaks}</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('totalCases')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>{t.colTotalCases}</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('totalDeaths')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>{t.colDeaths}</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('morbidityPercent')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>{t.colMorbidity}</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('cfrPercent')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>{t.colCFR}</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 text-center font-bold">{t.colPrimarySpecies}</th>
-              <th className="py-2.5 px-3 text-center font-bold">{t.colRiskLevel}</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-            {paginated.map((s, idx) => (
-              <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                <td className="py-2.5 px-3 font-bold text-slate-900 dark:text-white">
-                  {shortenDisease(s.disease)}
-                </td>
-                <td className="py-2.5 px-3 font-medium">
-                  {s.totalOutbreaks}
-                </td>
-                <td className="py-2.5 px-3 font-bold text-blue-600 dark:text-blue-400">
-                  {s.totalCases}
-                </td>
-                <td className="py-2.5 px-3 font-bold text-rose-600 dark:text-rose-400">
-                  {s.totalDeaths}
-                </td>
-                <td className="py-2.5 px-3 font-medium">
-                  {s.morbidityPercent}%
-                </td>
-                <td className="py-2.5 px-3 font-bold text-red-600 dark:text-red-400">
-                  {s.cfrPercent}%
-                </td>
-                <td className="py-2.5 px-3">
-                  <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium">
+      {/* Data View */}
+      <div className="mt-3">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full text-left text-xs text-slate-700 dark:text-slate-200">
+            <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 uppercase font-semibold text-[11px] border-b border-slate-200 dark:border-slate-700">
+              <tr>
+                <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('disease')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>{t.colDiseaseName}</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('totalOutbreaks')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>{t.colOutbreaks}</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('totalCases')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>{t.colTotalCases}</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('totalDeaths')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>{t.colDeaths}</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('morbidityPercent')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>{t.colMorbidity}</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('cfrPercent')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>{t.colCFR}</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 text-center font-bold">{t.colPrimarySpecies}</th>
+                <th className="py-2.5 px-3 text-center font-bold">{t.colRiskLevel}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+              {paginated.map((s, idx) => (
+                <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                  <td className="py-2.5 px-3 font-bold text-slate-900 dark:text-white">
+                    {shortenDisease(s.disease)}
+                  </td>
+                  <td className="py-2.5 px-3 font-medium">
+                    {s.totalOutbreaks}
+                  </td>
+                  <td className="py-2.5 px-3 font-bold text-blue-600 dark:text-blue-400">
+                    {s.totalCases}
+                  </td>
+                  <td className="py-2.5 px-3 font-bold text-rose-600 dark:text-rose-400">
+                    {s.totalDeaths}
+                  </td>
+                  <td className="py-2.5 px-3 font-medium">
+                    {s.morbidityPercent}%
+                  </td>
+                  <td className="py-2.5 px-3 font-bold text-red-600 dark:text-red-400">
+                    {s.cfrPercent}%
+                  </td>
+                  <td className="py-2.5 px-3">
+                    <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium">
+                      {s.primarySpecies}
+                    </span>
+                  </td>
+                  <td className="py-2.5 px-3">
+                    <span className={`px-2 py-0.5 rounded-full text-[11px] font-extrabold ${
+                      s.riskLevel === 'Critical'
+                        ? 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300'
+                        : s.riskLevel === 'High'
+                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                        : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                    }`}>
+                      {s.riskLevel}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Stacked Card View */}
+        <div className="md:hidden space-y-3">
+          {paginated.map((s, idx) => (
+            <div key={idx} className="bg-slate-50 dark:bg-slate-800/50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+              <div className="flex items-start justify-between">
+                <div className="flex flex-col space-y-1">
+                  <span className="font-bold text-slate-900 dark:text-white text-base leading-tight pr-2">
+                    {shortenDisease(s.disease)}
+                  </span>
+                  <span className="px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs self-start">
                     {s.primarySpecies}
                   </span>
-                </td>
-                <td className="py-2.5 px-3">
-                  <span className={`px-2 py-0.5 rounded-full text-[11px] font-extrabold ${
-                    s.riskLevel === 'Critical'
-                      ? 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300'
-                      : s.riskLevel === 'High'
-                      ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
-                      : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
-                  }`}>
-                    {s.riskLevel}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </div>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold whitespace-nowrap ${
+                  s.riskLevel === 'Critical'
+                    ? 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300'
+                    : s.riskLevel === 'High'
+                    ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                    : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                }`}>
+                  {s.riskLevel}
+                </span>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center shadow-xs">
+                  <span className="text-[10px] text-slate-500 font-bold uppercase mb-0.5">Outbreaks</span>
+                  <span className="text-base font-black text-slate-800 dark:text-slate-200 tabular-nums">{s.totalOutbreaks}</span>
+                </div>
+                <div className="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center shadow-xs">
+                  <span className="text-[10px] text-slate-500 font-bold uppercase mb-0.5">Cases / Deaths</span>
+                  <div className="flex items-baseline space-x-1">
+                    <span className="text-base font-black text-blue-600 dark:text-blue-400 tabular-nums">{s.totalCases}</span>
+                    <span className="text-xs text-slate-400">/</span>
+                    <span className="text-base font-black text-rose-600 dark:text-rose-400 tabular-nums">{s.totalDeaths}</span>
+                  </div>
+                </div>
+                <div className="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center shadow-xs">
+                  <span className="text-[10px] text-slate-500 font-bold uppercase mb-0.5">Morbidity</span>
+                  <span className="text-base font-black text-blue-600 dark:text-blue-400 tabular-nums">{s.morbidityPercent}%</span>
+                </div>
+                <div className="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center shadow-xs">
+                  <span className="text-[10px] text-slate-500 font-bold uppercase mb-0.5">CFR</span>
+                  <span className="text-base font-black text-red-600 dark:text-red-400 tabular-nums">{s.cfrPercent}%</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       

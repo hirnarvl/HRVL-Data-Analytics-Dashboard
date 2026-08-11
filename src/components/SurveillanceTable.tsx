@@ -123,62 +123,121 @@ export const SurveillanceTable: React.FC<SurveillanceTableProps> = ({ records, l
         </div>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto mt-3">
-        <table className="w-full text-left text-xs text-slate-700 dark:text-slate-200">
-          <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 uppercase font-semibold text-[11px] border-b border-slate-200 dark:border-slate-700">
-            <tr>
-              <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('date')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>{t.colDate}</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('woreda')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>{t.colWoreda}</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('zone')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>{t.colZone}</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('disease')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>Disease / Event</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 text-center font-bold">{t.colSpecies}</th>
-              <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('cases')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>{t.colCases}</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('deaths')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>{t.colDeaths}</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 text-center font-bold">{t.colReporter}</th>
-              <th className="py-2.5 px-3 text-center font-bold">Risk</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-            {paginated.map((rec) => (
-              <tr key={rec.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                <td className="py-2.5 px-3 font-mono text-slate-600 dark:text-slate-400">
-                  {rec.date}
-                </td>
-                <td className="py-2.5 px-3 font-bold text-slate-900 dark:text-white">
-                  {rec.woreda}
-                </td>
-                <td className="py-2.5 px-3">
+      {/* Data View */}
+      <div className="mt-3">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full text-left text-xs text-slate-700 dark:text-slate-200">
+            <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 uppercase font-semibold text-[11px] border-b border-slate-200 dark:border-slate-700">
+              <tr>
+                <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('date')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>{t.colDate}</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('woreda')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>{t.colWoreda}</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('zone')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>{t.colZone}</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('disease')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>Disease / Event</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 text-center font-bold">{t.colSpecies}</th>
+                <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('cases')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>{t.colCases}</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('deaths')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>{t.colDeaths}</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 text-center font-bold">{t.colReporter}</th>
+                <th className="py-2.5 px-3 text-center font-bold">Risk</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+              {paginated.map((rec) => (
+                <tr key={rec.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                  <td className="py-2.5 px-3 font-mono text-slate-600 dark:text-slate-400">
+                    {rec.date}
+                  </td>
+                  <td className="py-2.5 px-3 font-bold text-slate-900 dark:text-white">
+                    {rec.woreda}
+                  </td>
+                  <td className="py-2.5 px-3">
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                      rec.zone === 'E/H'
+                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300'
+                        : 'bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-300'
+                    }`}>
+                      {rec.zone}
+                    </span>
+                  </td>
+                  <td className="py-2.5 px-3">
+                    {rec.isZeroReport ? (
+                      <span className="inline-flex items-center space-x-1 text-emerald-600 dark:text-emerald-400 font-medium">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>Zero Report</span>
+                      </span>
+                    ) : (
+                      <span className="font-bold text-slate-800 dark:text-slate-200">{shortenDisease(rec.disease)}</span>
+                    )}
+                  </td>
+                  <td className="py-2.5 px-3 font-medium text-slate-600 dark:text-slate-300">
+                    {rec.species}
+                  </td>
+                  <td className="py-2.5 px-3 font-bold text-blue-600 dark:text-blue-400">
+                    {rec.cases}
+                  </td>
+                  <td className="py-2.5 px-3 font-bold text-rose-600 dark:text-rose-400">
+                    {rec.deaths}
+                  </td>
+                  <td className="py-2.5 px-3 text-slate-500 dark:text-slate-400 text-[11px]">
+                    <div className="font-semibold">{rec.reporter || 'Field Agent'}</div>
+                    <div className="flex items-center gap-1 mt-0.5 text-[10px] text-slate-400">
+                      <PhoneCall className="w-2.5 h-2.5" />
+                      <span>{rec.phone || '*'}</span>
+                    </div>
+                  </td>
+                  <td className="py-2.5 px-3">
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold ${
+                      rec.risk === 'Critical'
+                        ? 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300'
+                        : rec.risk === 'High'
+                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                        : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                    }`}>
+                      {rec.risk}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Stacked Card View */}
+        <div className="md:hidden space-y-3">
+          {paginated.map((rec) => (
+            <div key={rec.id} className="bg-slate-50 dark:bg-slate-800/50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
                   <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
                     rec.zone === 'E/H'
                       ? 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300'
@@ -186,48 +245,64 @@ export const SurveillanceTable: React.FC<SurveillanceTableProps> = ({ records, l
                   }`}>
                     {rec.zone}
                   </span>
-                </td>
-                <td className="py-2.5 px-3">
+                  <span className="font-bold text-slate-900 dark:text-white text-sm">{rec.woreda}</span>
+                </div>
+                <span className="font-mono text-[10px] text-slate-500">{rec.date}</span>
+              </div>
+              
+              <div className="flex items-center justify-between bg-white dark:bg-slate-900 p-2 rounded-lg border border-slate-100 dark:border-slate-800">
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-slate-400 uppercase tracking-wider font-bold mb-0.5">Disease / Event</span>
                   {rec.isZeroReport ? (
-                    <span className="inline-flex items-center space-x-1 text-emerald-600 dark:text-emerald-400 font-medium">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span className="inline-flex items-center space-x-1 text-emerald-600 dark:text-emerald-400 font-bold text-sm">
+                      <CheckCircle2 className="w-4 h-4" />
                       <span>Zero Report</span>
                     </span>
                   ) : (
-                    <span className="font-bold text-slate-800 dark:text-slate-200">{shortenDisease(rec.disease)}</span>
+                    <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">{shortenDisease(rec.disease)}</span>
                   )}
-                </td>
-                <td className="py-2.5 px-3 font-medium text-slate-600 dark:text-slate-300">
-                  {rec.species}
-                </td>
-                <td className="py-2.5 px-3 font-bold text-blue-600 dark:text-blue-400">
-                  {rec.cases}
-                </td>
-                <td className="py-2.5 px-3 font-bold text-rose-600 dark:text-rose-400">
-                  {rec.deaths}
-                </td>
-                <td className="py-2.5 px-3 text-slate-500 dark:text-slate-400 text-[11px]">
-                  <div className="font-semibold">{rec.reporter || 'Field Agent'}</div>
-                  <div className="flex items-center gap-1 mt-0.5 text-[10px] text-slate-400">
-                    <PhoneCall className="w-2.5 h-2.5" />
-                    <span>{rec.phone || '*'}</span>
+                </div>
+                <div className="text-right flex flex-col">
+                  <span className="text-[10px] text-slate-400 uppercase tracking-wider font-bold mb-0.5">{t.colSpecies}</span>
+                  <span className="font-bold text-slate-600 dark:text-slate-300 text-sm">{rec.species}</span>
+                </div>
+              </div>
+
+              {!rec.isZeroReport && (
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg flex flex-col items-center justify-center">
+                    <span className="text-[10px] text-blue-600/70 dark:text-blue-400/70 font-bold uppercase">Cases</span>
+                    <span className="text-lg font-black text-blue-600 dark:text-blue-400 tabular-nums">{rec.cases}</span>
                   </div>
-                </td>
-                <td className="py-2.5 px-3">
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold ${
-                    rec.risk === 'Critical'
-                      ? 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300'
-                      : rec.risk === 'High'
-                      ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
-                      : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
-                  }`}>
-                    {rec.risk}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  <div className="bg-rose-50 dark:bg-rose-900/20 p-2 rounded-lg flex flex-col items-center justify-center">
+                    <span className="text-[10px] text-rose-600/70 dark:text-rose-400/70 font-bold uppercase">Deaths</span>
+                    <span className="text-lg font-black text-rose-600 dark:text-rose-400 tabular-nums">{rec.deaths}</span>
+                  </div>
+                  <div className="bg-slate-100 dark:bg-slate-800 p-2 rounded-lg flex flex-col items-center justify-center">
+                    <span className="text-[10px] text-slate-500 font-bold uppercase mb-1">Risk</span>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
+                      rec.risk === 'Critical'
+                        ? 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300'
+                        : rec.risk === 'High'
+                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                        : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                    }`}>
+                      {rec.risk}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between pt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                <div className="flex items-center space-x-1 font-medium">
+                  <PhoneCall className="w-3 h-3" />
+                  <span>{rec.reporter || 'Field Agent'}</span>
+                </div>
+                <span>{rec.phone || '*'}</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       

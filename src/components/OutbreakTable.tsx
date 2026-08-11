@@ -104,76 +104,118 @@ export const OutbreakTable: React.FC<OutbreakTableProps> = ({ outbreaks, locale 
         </div>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto mt-3">
-        <table className="w-full text-left text-xs text-slate-700 dark:text-slate-200">
-          <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 uppercase font-semibold text-[11px] border-b border-slate-200 dark:border-slate-700">
-            <tr>
-              <th className="py-2.5 px-3 text-center font-bold">Code</th>
-              <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('disease')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>Disease</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('woreda')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>Woreda / Zone</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('status')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>{t.colStatus}</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('cases')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>{t.colCases}</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('deaths')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>{t.colDeaths}</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 cursor-pointer text-blue-600 dark:text-blue-400 text-center font-bold" onClick={() => handleSort('morbidityRate')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>{t.colMorbidity}</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 cursor-pointer text-rose-600 dark:text-rose-400 text-center font-bold" onClick={() => handleSort('mortalityRate')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>Mortality %</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-              <th className="py-2.5 px-3 cursor-pointer text-red-600 dark:text-red-400 text-center font-bold" onClick={() => handleSort('cfr')}>
-                <div className="flex items-center justify-center space-x-1">
-                  <span>{t.colCFR}</span>
-                  <ArrowUpDown className="w-3 h-3 opacity-60" />
-                </div>
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-            {paginated.map((ob) => (
-              <tr key={ob.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                <td className="py-2.5 px-3 font-mono font-bold text-slate-800 dark:text-slate-200">
-                  {ob.outbreakCode}
-                </td>
-                <td className="py-2.5 px-3 font-bold text-slate-900 dark:text-white">
-                  {shortenDisease(ob.disease)}
-                </td>
-                <td className="py-2.5 px-3 font-medium">
-                  {ob.woreda} <span className="text-slate-400">({ob.zone})</span>
-                </td>
-                <td className="py-2.5 px-3">
-                  <span className={`px-2 py-0.5 rounded-full text-[11px] font-extrabold ${
+      {/* Data View */}
+      <div className="mt-3">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full text-left text-xs text-slate-700 dark:text-slate-200">
+            <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 uppercase font-semibold text-[11px] border-b border-slate-200 dark:border-slate-700">
+              <tr>
+                <th className="py-2.5 px-3 text-center font-bold">Code</th>
+                <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('disease')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>Disease</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('woreda')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>Woreda / Zone</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('status')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>{t.colStatus}</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('cases')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>{t.colCases}</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 cursor-pointer text-center font-bold" onClick={() => handleSort('deaths')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>{t.colDeaths}</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 cursor-pointer text-blue-600 dark:text-blue-400 text-center font-bold" onClick={() => handleSort('morbidityRate')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>{t.colMorbidity}</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 cursor-pointer text-rose-600 dark:text-rose-400 text-center font-bold" onClick={() => handleSort('mortalityRate')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>Mortality %</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th className="py-2.5 px-3 cursor-pointer text-red-600 dark:text-red-400 text-center font-bold" onClick={() => handleSort('cfr')}>
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>{t.colCFR}</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+              {paginated.map((ob) => (
+                <tr key={ob.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                  <td className="py-2.5 px-3 font-mono font-bold text-slate-800 dark:text-slate-200">
+                    {ob.outbreakCode}
+                  </td>
+                  <td className="py-2.5 px-3 font-bold text-slate-900 dark:text-white">
+                    {shortenDisease(ob.disease)}
+                  </td>
+                  <td className="py-2.5 px-3 font-medium">
+                    {ob.woreda} <span className="text-slate-400">({ob.zone})</span>
+                  </td>
+                  <td className="py-2.5 px-3">
+                    <span className={`px-2 py-0.5 rounded-full text-[11px] font-extrabold ${
+                      ob.status === 'Active'
+                        ? 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300 border border-red-300'
+                        : ob.status === 'Under Investigation'
+                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300'
+                        : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                    }`}>
+                      {ob.status}
+                    </span>
+                  </td>
+                  <td className="py-2.5 px-3 font-bold text-slate-900 dark:text-white">
+                    {ob.cases}
+                  </td>
+                  <td className="py-2.5 px-3 font-bold text-rose-600 dark:text-rose-400">
+                    {ob.deaths}
+                  </td>
+                  <td className="py-2.5 px-3 font-bold text-blue-600 dark:text-blue-400">
+                    {ob.morbidityRate}%
+                  </td>
+                  <td className="py-2.5 px-3 font-bold text-slate-600 dark:text-slate-400">
+                    {ob.mortalityRate}%
+                  </td>
+                  <td className="py-2.5 px-3 font-black text-red-600 dark:text-red-400">
+                    {ob.cfr}%
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Stacked Card View */}
+        <div className="md:hidden space-y-3">
+          {paginated.map((ob) => (
+            <div key={ob.id} className="bg-slate-50 dark:bg-slate-800/50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <span className="font-mono text-xs font-bold text-slate-800 dark:text-slate-200 bg-slate-200 dark:bg-slate-700 px-2 py-0.5 rounded">
+                    {ob.outbreakCode}
+                  </span>
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
                     ob.status === 'Active'
                       ? 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300 border border-red-300'
                       : ob.status === 'Under Investigation'
@@ -182,26 +224,37 @@ export const OutbreakTable: React.FC<OutbreakTableProps> = ({ outbreaks, locale 
                   }`}>
                     {ob.status}
                   </span>
-                </td>
-                <td className="py-2.5 px-3 font-bold text-slate-900 dark:text-white">
-                  {ob.cases}
-                </td>
-                <td className="py-2.5 px-3 font-bold text-rose-600 dark:text-rose-400">
-                  {ob.deaths}
-                </td>
-                <td className="py-2.5 px-3 font-bold text-blue-600 dark:text-blue-400">
-                  {ob.morbidityRate}%
-                </td>
-                <td className="py-2.5 px-3 font-bold text-slate-600 dark:text-slate-400">
-                  {ob.mortalityRate}%
-                </td>
-                <td className="py-2.5 px-3 font-black text-red-600 dark:text-red-400">
-                  {ob.cfr}%
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </div>
+              </div>
+              
+              <div className="flex flex-col space-y-1">
+                <span className="font-bold text-slate-900 dark:text-white text-base">{shortenDisease(ob.disease)}</span>
+                <span className="text-sm text-slate-600 dark:text-slate-400 font-medium">
+                  {ob.woreda} <span className="text-slate-400 dark:text-slate-500">({ob.zone})</span>
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                <div className="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center shadow-xs">
+                  <span className="text-[10px] text-slate-500 font-bold uppercase mb-0.5">Cases / Deaths</span>
+                  <div className="flex items-baseline space-x-1">
+                    <span className="text-base font-black text-slate-800 dark:text-slate-200 tabular-nums">{ob.cases}</span>
+                    <span className="text-xs text-slate-400">/</span>
+                    <span className="text-base font-black text-rose-600 dark:text-rose-400 tabular-nums">{ob.deaths}</span>
+                  </div>
+                </div>
+                <div className="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center shadow-xs">
+                  <span className="text-[10px] text-slate-500 font-bold uppercase mb-0.5">CFR / Morbidity</span>
+                  <div className="flex items-baseline space-x-1">
+                    <span className="text-base font-black text-red-600 dark:text-red-400 tabular-nums">{ob.cfr}%</span>
+                    <span className="text-xs text-slate-400">/</span>
+                    <span className="text-base font-black text-blue-600 dark:text-blue-400 tabular-nums">{ob.morbidityRate}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Pagination */}

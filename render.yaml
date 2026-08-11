@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: hrwl-adnis-dashboard
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: 20

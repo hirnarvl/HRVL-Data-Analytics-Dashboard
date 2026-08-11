@@ -20,8 +20,6 @@ interface TrendChartsProps {
   records: SurveillanceRecord[];
   darkMode: boolean;
   onAddLogArrival: (rec: Partial<SurveillanceRecord>) => void;
-  isSimulatorRunning: boolean;
-  onToggleSimulator: () => void;
   onOpenYoYModal?: () => void;
 }
 
@@ -29,8 +27,6 @@ export const TrendCharts: React.FC<TrendChartsProps> = ({
   records,
   darkMode,
   onAddLogArrival,
-  isSimulatorRunning,
-  onToggleSimulator,
   onOpenYoYModal,
   locale
 }) => {
@@ -38,10 +34,7 @@ export const TrendCharts: React.FC<TrendChartsProps> = ({
   const t = locale ? translations[locale] : i18nT;
   const [timeframe, setTimeframe] = useState<'Daily' | 'Weekly' | 'Monthly'>('Weekly');
   const [showYoYOverlay, setShowYoYOverlay] = useState<boolean>(true);
-  const [customTimestampText, setCustomTimestampText] = useState('');
-  const [simCases, setSimCases] = useState(15);
-  const [simWoreda, setSimWoreda] = useState('Haramaya');
-
+  
   // Transform records into chart timeframe buckets with YoY historical overlays
   const chartData = useMemo(() => {
     const map = new Map<string, { 
@@ -99,26 +92,7 @@ export const TrendCharts: React.FC<TrendChartsProps> = ({
   }, [records, timeframe]);
 
   // Handle Quick Manual Timestamp Log onto the Chart
-  const handleQuickTimestampLog = (e: React.FormEvent) => {
-    e.preventDefault();
-    const dateStr = customTimestampText.trim() || new Date().toISOString().split('T')[0];
-    
-    onAddLogArrival({
-      date: dateStr,
-      timestamp: new Date(dateStr).getTime(),
-      woreda: simWoreda,
-      zone: ['Haramaya', 'Babile', 'Dadar', 'Badeno'].includes(simWoreda) ? 'E/H' : 'W/H',
-      disease: 'Foot-and-Mouth Disease (FMD)',
-      species: 'Cattle',
-      cases: Number(simCases) || 10,
-      deaths: Math.floor((Number(simCases) || 10) * 0.1),
-      risk: 'High',
-      comment: `Simulated real-time arrival log on ${dateStr}`
-    });
-
-    setCustomTimestampText('');
-  };
-
+  
   return (
     <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-4 transition-colors">
       
@@ -179,75 +153,9 @@ export const TrendCharts: React.FC<TrendChartsProps> = ({
               </button>
             ))}
           </div>
-
-          {/* Simulator Toggle Button */}
-          <button
-            onClick={onToggleSimulator}
-            className={`inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all cursor-pointer ${
-              isSimulatorRunning
-                ? 'bg-amber-500 text-white border-amber-600 dark:bg-amber-600 dark:border-amber-500 shadow-xs animate-pulse'
-                : 'bg-emerald-50 text-emerald-800 border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800 hover:bg-emerald-100'
-            }`}
-          >
-            {isSimulatorRunning ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-            <span>{isSimulatorRunning ? 'Pause Live Stream' : 'Run Live Stream'}</span>
-          </button>
-
         </div>
+
       </div>
-
-      {/* Simulator Log Bar Input */}
-      <form onSubmit={handleQuickTimestampLog} className="my-3 p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-lg border border-slate-200 dark:border-slate-700/60 flex flex-wrap items-center justify-between gap-2 text-xs">
-        <div className="flex items-center space-x-1.5 font-bold text-slate-700 dark:text-slate-200">
-          <Zap className="w-4 h-4 text-amber-500" />
-          <span>Timestamp Simulator:</span>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2 flex-1 max-w-2xl">
-          <input
-            type="date"
-            aria-label="Timestamp Date"
-            value={customTimestampText}
-            onChange={e => setCustomTimestampText(e.target.value)}
-            className="px-2 py-1 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:outline-none"
-          />
-
-          <select
-            aria-label="Select Woreda for simulator"
-            value={simWoreda}
-            onChange={e => setSimWoreda(e.target.value)}
-            className="px-2 py-1 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
-          >
-            <option value="Haramaya">Haramaya (East)</option>
-            <option value="Chiro">Chiro (West)</option>
-            <option value="Dadar">Dadar (East)</option>
-            <option value="Babile">Babile (East)</option>
-            <option value="Daro Lebu">Daro Lebu (West)</option>
-          </select>
-
-          <input
-            type="number"
-            aria-label="Simulated Cases"
-            placeholder="Cases (e.g. 15)"
-            value={simCases}
-            onChange={e => setSimCases(Number(e.target.value))}
-            className="w-24 px-2 py-1 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:outline-none"
-          />
-
-          <button
-            type="submit"
-            className="inline-flex items-center space-x-1 px-3 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold cursor-pointer"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>Log Timestamp</span>
-          </button>
-        </div>
-
-        <span className="text-[11px] text-slate-500 dark:text-slate-400 hidden xl:inline">
-          Logs immediately trigger real-time chart refresh
-        </span>
-      </form>
-
       {/* Composed Chart */}
       <div className="h-72 w-full mt-2">
         <ResponsiveContainer width="100%" height="100%">

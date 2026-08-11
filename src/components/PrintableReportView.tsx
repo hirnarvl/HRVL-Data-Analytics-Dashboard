@@ -177,12 +177,12 @@ export const PrintableReportView: React.FC<PrintableReportViewProps> = ({
         
         
         {/* Report Official Banner */}
-        <div className="w-full h-32 md:h-40 overflow-hidden mb-6 rounded-lg border border-slate-300 print:rounded-none print:border-none shadow-md print:shadow-none">
+        <div className="w-full h-32 md:h-40 overflow-hidden mb-6 rounded-lg border border-slate-300 print:rounded-none print:border-none shadow-md print:shadow-none bg-slate-900 flex items-center justify-center">
           <img 
-            src="https://lh3.googleusercontent.com/d/1ljHsMIChZqPrhQu48JaLIuncTXP8FCGj" 
+            src="https://lh3.googleusercontent.com/d/1GYfLqMpKQcB2hKXbwIRUcoJetaeiPgpl" 
             alt="HRVL Banner" 
             referrerPolicy="no-referrer"
-            className="w-full h-full object-cover"
+            className="h-24 md:h-32 object-contain filter drop-shadow-md"
           />
         </div>
 
@@ -191,15 +191,9 @@ export const PrintableReportView: React.FC<PrintableReportViewProps> = ({
           <div className="flex items-center space-x-4">
             <div className="w-16 h-16 rounded-xl bg-slate-900 text-white flex items-center justify-center p-0.5 shadow-[0_4px_15px_rgba(16,185,129,0.4)] hover:shadow-[0_8px_25px_rgba(16,185,129,0.6)] transform hover:-translate-y-1 transition-all duration-300 border-2 border-emerald-500/50 shrink-0">
               <img 
-                src="/hrvl-emblem.png" 
+                src="https://lh3.googleusercontent.com/d/1GYfLqMpKQcB2hKXbwIRUcoJetaeiPgpl" 
                 alt="HRVL Emblem" 
                 referrerPolicy="no-referrer"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  if (!target.src.includes('1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C')) {
-                    target.src = 'https://lh3.googleusercontent.com/d/1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C';
-                  }
-                }}
                 className="w-full h-full object-contain" 
               />
             </div>

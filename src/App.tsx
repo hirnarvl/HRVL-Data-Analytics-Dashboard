@@ -279,15 +279,9 @@ export default function App() {
          <div className="text-center space-y-6 max-w-md bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800">
             <div className="mx-auto h-16 w-16 rounded-xl bg-slate-900 border-2 border-emerald-500/50 p-1 flex items-center justify-center shadow-[0_4px_15px_rgba(16,185,129,0.4)] hover:shadow-[0_8px_25px_rgba(16,185,129,0.6)] transform hover:-translate-y-1 transition-all duration-300">
               <img 
-                 src="/hrvl-emblem.png" 
+                 src="https://lh3.googleusercontent.com/d/1GYfLqMpKQcB2hKXbwIRUcoJetaeiPgpl" 
                  alt="HRVL Emblem" 
                  referrerPolicy="no-referrer"
-                 onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  if (!target.src.includes('1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C')) {
-                    target.src = 'https://lh3.googleusercontent.com/d/1B-I4DeFvksl-bfA9KXPemqmEx7efTI8C';
-                  }
-                }}
                 className="w-full h-full object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.5)]" 
                />
             </div>
@@ -431,7 +425,7 @@ export default function App() {
         )}
 
         {/* Main Workspace Container */}
-        <main className={`flex-1 w-full mx-auto transition-all duration-300 py-6 space-y-6 ${
+        <main className={`flex-1 w-full mx-auto transition-all duration-300 py-6 pb-24 lg:pb-6 space-y-6 ${
           isPortraitMode 
             ? 'max-w-2xl px-3 sm:px-4 bg-slate-900/40 dark:bg-slate-900/60 rounded-3xl my-4 border border-indigo-500/20 shadow-2xl ring-1 ring-indigo-500/10' 
             : 'max-w-7xl px-4 sm:px-6 lg:px-8'

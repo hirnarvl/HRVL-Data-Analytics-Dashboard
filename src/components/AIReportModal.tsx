@@ -12,7 +12,7 @@ import {
   Cell,
   LabelList,
 } from 'recharts';
-import { X, Sparkles, FileText, Loader2, CheckCircle2, Printer, AlertCircle, BarChart3, Layers } from 'lucide-react';
+import { X, Sparkles, FileText, Loader2, CheckCircle2, Printer, AlertCircle, AlertTriangle, BarChart3, Layers } from 'lucide-react';
 import { NarrativeReport, Outbreak, SurveillanceRecord, WoredaCompliance, Locale } from '../types';
 import { WoredaReportMap } from './WoredaReportMap';
 import { translations } from '../utils/translations';
@@ -169,44 +169,74 @@ export const AIReportModal: React.FC<AIReportModalProps> = ({
 
           {reportData && !loading && (
             <div className="space-y-4">
-              <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200 dark:border-emerald-900">
-                <div className="flex items-center justify-between pb-2 border-b border-emerald-200 dark:border-emerald-800">
-                  <span className="font-extrabold text-emerald-900 dark:text-emerald-200 text-sm">
-                    {reportData.title}
-                  </span>
-                  <span className="text-[11px] font-mono text-emerald-700 dark:text-emerald-400">
+              <div className="p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-xl flex items-start gap-2 mb-2">
+                <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                <p className="text-[11px] text-amber-800 dark:text-amber-200 leading-relaxed font-medium">
+                  <strong>Human Review Required:</strong> Please review and edit the AI-generated narrative below for accuracy before proceeding to official export. Do not submit unreviewed content.
+                </p>
+              </div>
+              <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200 dark:border-emerald-900 focus-within:border-emerald-400 transition-colors">
+                <div className="flex items-center justify-between pb-2 border-b border-emerald-200 dark:border-emerald-800 mb-2">
+                  <input
+                    type="text"
+                    value={reportData.title}
+                    onChange={(e) => setReportData({ ...reportData, title: e.target.value })}
+                    className="font-extrabold text-emerald-900 dark:text-emerald-200 text-sm bg-transparent border-none w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded px-1"
+                  />
+                  <span className="text-[11px] font-mono text-emerald-700 dark:text-emerald-400 shrink-0 ml-2">
                     {reportData.dateGenerated}
                   </span>
                 </div>
-                <p className="text-xs text-slate-800 dark:text-slate-200 mt-2 leading-relaxed whitespace-pre-line">
-                  {reportData.executiveSummary}
-                </p>
+                <textarea
+                  value={reportData.executiveSummary}
+                  onChange={(e) => setReportData({ ...reportData, executiveSummary: e.target.value })}
+                  className="w-full text-xs text-slate-800 dark:text-slate-200 leading-relaxed bg-transparent border border-transparent hover:border-emerald-300 dark:hover:border-emerald-700 focus:border-emerald-500 rounded p-1 resize-none focus:outline-none focus:bg-white dark:focus:bg-slate-900 transition-colors min-h-[80px]"
+                />
               </div>
 
-              <div>
-                <h5 className="font-bold text-slate-900 dark:text-white text-xs mb-1">
-                  {t.outbreakEvaluation}
+              <div className="group">
+                <h5 className="font-bold text-slate-900 dark:text-white text-xs mb-1 flex items-center justify-between">
+                  <span>{t.outbreakEvaluation}</span>
                 </h5>
-                <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
-                  {reportData.outbreakStatusAnalysis}
-                </p>
+                <textarea
+                  value={reportData.outbreakStatusAnalysis}
+                  onChange={(e) => setReportData({ ...reportData, outbreakStatusAnalysis: e.target.value })}
+                  className="w-full text-slate-700 dark:text-slate-300 leading-relaxed text-xs bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-2 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 min-h-[80px]"
+                />
               </div>
 
-              {/* Inline visual preview — mini charts alongside the narrative */}
-              <ReportInlinePreview records={records} outbreaks={outbreaks} />
+              <div className="group">
+                <h5 className="font-bold text-slate-900 dark:text-white text-xs mb-1 flex items-center justify-between">
+                  <span>Species Vulnerability</span>
+                </h5>
+                <textarea
+                  value={reportData.speciesVulnerability}
+                  onChange={(e) => setReportData({ ...reportData, speciesVulnerability: e.target.value })}
+                  className="w-full text-slate-700 dark:text-slate-300 leading-relaxed text-xs bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-2 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 min-h-[60px]"
+                />
+              </div>
 
-              {/* Woreda-Level Disease Surveillance Map */}
-              <WoredaReportMap records={records} outbreaks={outbreaks} />
+              <div className="group">
+                <h5 className="font-bold text-slate-900 dark:text-white text-xs mb-1 flex items-center justify-between">
+                  <span>Zonal Compliance</span>
+                </h5>
+                <textarea
+                  value={reportData.zonalComplianceSummary}
+                  onChange={(e) => setReportData({ ...reportData, zonalComplianceSummary: e.target.value })}
+                  className="w-full text-slate-700 dark:text-slate-300 leading-relaxed text-xs bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-2 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 min-h-[60px]"
+                />
+              </div>
 
-              <div>
+              <div className="group">
                 <h5 className="font-bold text-slate-900 dark:text-white text-xs mb-1">
                   {t.recommendations}
                 </h5>
-                <ul className="list-disc pl-4 space-y-1 text-slate-700 dark:text-slate-300">
-                  {reportData.epidemiologicalRecommendations.map((r, i) => (
-                    <li key={i}>{r}</li>
-                  ))}
-                </ul>
+                <textarea
+                  value={reportData.epidemiologicalRecommendations.join('\n')}
+                  onChange={(e) => setReportData({ ...reportData, epidemiologicalRecommendations: e.target.value.split('\n') })}
+                  className="w-full text-slate-700 dark:text-slate-300 leading-relaxed text-xs bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-2 resize-y focus:outline-none focus:ring-2 focus:ring-emerald-500 min-h-[100px]"
+                  placeholder="Enter recommendations, one per line"
+                />
               </div>
             </div>
           )}
