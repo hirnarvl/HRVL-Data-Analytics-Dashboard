@@ -37,6 +37,7 @@ import {
   FilterState, 
   Locale
 } from '../types';
+import { HRVL_LOGO_URL } from './Logo';
 import { soundEngine } from '../utils/sound';
 import { useAuth } from '../contexts/AuthContext';
 import { useI18n } from '../contexts/I18nContext';
@@ -134,10 +135,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center space-x-3">
           <div className="h-9 w-9 flex items-center justify-center shrink-0">
             <img 
-              src="https://lh3.googleusercontent.com/d/1GYfLqMpKQcB2hKXbwIRUcoJetaeiPgpl" 
+              src={HRVL_LOGO_URL} 
               alt="HRVL Emblem" 
               referrerPolicy="no-referrer"
-              className="w-full h-full object-contain filter drop-shadow-md" 
+              className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-screen contrast-125" 
             />
           </div>
           <div>
@@ -239,12 +240,12 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 space-y-4">
           <div className="flex items-center space-x-3">
             {/* 3D Logo Emblem */}
-            <div className="h-12 w-12 flex items-center justify-center shrink-0 filter drop-shadow-[0_8px_16px_rgba(16,185,129,0.35)] dark:drop-shadow-[0_10px_22px_rgba(52,211,153,0.45)]">
+            <div className="h-12 w-12 flex items-center justify-center shrink-0">
               <img 
-                src="https://lh3.googleusercontent.com/d/1GYfLqMpKQcB2hKXbwIRUcoJetaeiPgpl" 
+                src={HRVL_LOGO_URL} 
                 alt="HRVL Emblem" 
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-contain filter drop-shadow-md" 
+                className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-screen contrast-125" 
               />
             </div>
             <div className="min-w-0 flex-1">

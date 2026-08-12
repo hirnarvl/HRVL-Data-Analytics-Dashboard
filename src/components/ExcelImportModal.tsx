@@ -10,7 +10,8 @@ import {
   Layers, 
   TrendingUp, 
   Calendar,
-  Plus
+  Plus,
+  ExternalLink
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { SurveillanceRecord } from '../types';
@@ -296,6 +297,32 @@ export const ExcelImportModal: React.FC<ExcelImportModalProps> = ({
               Upload multiple Excel/CSV files simultaneously (e.g. 2023, 2024, 2025 reports) to consolidate & auto-trigger Year-over-Year (YoY) analysis
             </p>
           </div>
+        </div>
+
+        {/* ANDIS 2025 & 2026 Drive Folder Link Banner */}
+        <div className="p-3.5 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/30 rounded-xl border border-emerald-200 dark:border-emerald-800/60 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0 shadow-xs">
+          <div className="flex items-center space-x-2.5">
+            <div className="p-2 bg-emerald-600 text-white rounded-lg shrink-0">
+              <FileSpreadsheet className="w-4 h-4" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-slate-900 dark:text-emerald-300">
+                2025 & 2026 ANDIS Reports Repository
+              </p>
+              <p className="text-[11px] text-slate-600 dark:text-slate-300">
+                Access official Oromia Regional State Excel files for West & East Hararghe Zonal Woredas
+              </p>
+            </div>
+          </div>
+          <a
+            href="https://drive.google.com/drive/folders/1QxnB2XqQJeN-uUWKvo6dlFWKhNQqxrwl"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 inline-flex items-center space-x-1 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg transition-all"
+          >
+            <span>Open Drive Folder</span>
+            <ExternalLink className="w-3 h-3" />
+          </a>
         </div>
 
         {/* Drag & Drop Multi-file Upload Zone */}

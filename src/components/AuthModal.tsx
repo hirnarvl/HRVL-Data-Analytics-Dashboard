@@ -10,6 +10,7 @@ declare global {
 }
 import { useAuth } from '../contexts/AuthContext';
 import { soundEngine } from '../utils/sound';
+import { HRVL_LOGO_URL } from './Logo';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -119,10 +120,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <div className="w-8 h-8 rounded bg-slate-900 flex items-center justify-center p-0.5 border border-emerald-500/50 shadow-sm shrink-0">
               <img 
-                src="https://lh3.googleusercontent.com/d/1GYfLqMpKQcB2hKXbwIRUcoJetaeiPgpl" 
+                src={HRVL_LOGO_URL} 
                 alt="HRVL Emblem" 
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-contain" 
+                className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-screen contrast-125" 
               />
             </div>
             {isLogin ? 'Sign In to Dashboard' : 'Create an Account'}

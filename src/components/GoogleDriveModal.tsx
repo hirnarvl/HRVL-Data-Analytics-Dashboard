@@ -18,7 +18,8 @@ import {
   Filter,
   CheckCircle2,
   FileCode,
-  FileCheck
+  FileCheck,
+  ExternalLink
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import * as XLSX from 'xlsx';
@@ -505,6 +506,36 @@ export const GoogleDriveModal: React.FC<GoogleDriveModalProps> = ({
 
           {/* Body */}
           <div className="p-6 overflow-y-auto space-y-5 custom-scrollbar">
+            {/* ANDIS 2025 & 2026 Google Drive Folder Dedicated Link Banner */}
+            <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/30 rounded-xl border border-emerald-200 dark:border-emerald-800/60 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+              <div className="flex items-start space-x-3">
+                <div className="p-2 bg-emerald-600 text-white rounded-lg shrink-0 mt-0.5 shadow-xs">
+                  <FileSpreadsheet className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <h4 className="text-xs font-bold text-emerald-950 dark:text-emerald-300 uppercase tracking-wide">
+                      ANDIS 2025 & 2026 Reports Repository
+                    </h4>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/80 text-emerald-800 dark:text-emerald-200">
+                      West & East Hararghe
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                    Official Oromia Regional ANDIS Excel Datasets (Outbreaks, Zero Reporting Performance Indicators, Vaccination Logs).
+                  </p>
+                </div>
+              </div>
+              <a
+                href="https://drive.google.com/drive/folders/1QxnB2XqQJeN-uUWKvo6dlFWKhNQqxrwl"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 inline-flex items-center space-x-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all hover:shadow-md"
+              >
+                <span>Open Google Drive Folder</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
             {/* Connection Banner */}
             {!accessToken ? (
               <div className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800/80 dark:to-indigo-950/40 rounded-xl border border-blue-200 dark:border-indigo-900/50 flex flex-col md:flex-row items-center justify-between gap-4">
