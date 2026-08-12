@@ -377,12 +377,8 @@ export default function App() {
           onOpenExternalResources={() => setIsExternalResourcesOpen(true)}
           onOpenGoogleDrive={() => setIsGoogleDriveOpen(true)}
           onExportAllCSV={handleExportAllCSV}
-          onToggleSimulator={() => setIsSimulatorRunning(prev => !prev)}
-          isSimulatorRunning={isSimulatorRunning}
           onTogglePrintMode={() => setIsPrintFriendlyMode(prev => !prev)}
           isPrintFriendlyMode={isPrintFriendlyMode}
-          isPortraitMode={isPortraitMode}
-          onTogglePortraitMode={() => setIsPortraitMode(prev => !prev)}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           isOnline={isOnline}
@@ -529,8 +525,6 @@ export default function App() {
             records={filteredRecords}
             darkMode={isPrintFriendlyMode ? false : darkMode}
             onAddLogArrival={handleAddLogArrival}
-            isSimulatorRunning={isSimulatorRunning}
-            onToggleSimulator={() => setIsSimulatorRunning(prev => !prev)}
             onOpenYoYModal={() => setIsYoYModalOpen(true)}
           />
         </motion.div>
