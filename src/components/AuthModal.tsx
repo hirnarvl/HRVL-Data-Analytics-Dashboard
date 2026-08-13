@@ -118,12 +118,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-md border border-slate-200 dark:border-slate-800 overflow-hidden animate-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-slate-900 flex items-center justify-center p-0.5 border border-emerald-500/50 shadow-sm shrink-0">
+            <div className="w-9 h-9 flex items-center justify-center shrink-0">
               <img 
                 src={HRVL_LOGO_URL} 
                 alt="HRVL Emblem" 
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-screen contrast-125" 
+                className="w-full h-full object-contain" 
               />
             </div>
             {isLogin ? 'Sign In to Dashboard' : 'Create an Account'}

@@ -278,12 +278,12 @@ export default function App() {
     return (
       <div className={`min-h-screen font-sans transition-colors duration-200 bg-slate-100 dark:bg-slate-950 flex flex-col items-center justify-center p-4`}>
          <div className="text-center space-y-6 max-w-md bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800">
-            <div className="mx-auto h-16 w-16 rounded-xl bg-slate-900 border-2 border-emerald-500/50 p-1 flex items-center justify-center shadow-[0_4px_15px_rgba(16,185,129,0.4)] hover:shadow-[0_8px_25px_rgba(16,185,129,0.6)] transform hover:-translate-y-1 transition-all duration-300">
+            <div className="mx-auto h-20 w-20 flex items-center justify-center">
               <img 
                  src={HRVL_LOGO_URL} 
                  alt="HRVL Emblem" 
                  referrerPolicy="no-referrer"
-                className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-screen contrast-125" 
+                className="w-full h-full object-contain" 
                />
             </div>
             <div>

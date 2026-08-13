@@ -133,12 +133,12 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Sticky Top Header Bar (visible on small/medium screens) */}
       <div className="lg:hidden sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between shadow-sm">
         <div className="flex items-center space-x-3">
-          <div className="h-9 w-9 flex items-center justify-center shrink-0">
+          <div className="h-10 w-10 flex items-center justify-center shrink-0">
             <img 
               src={HRVL_LOGO_URL} 
               alt="HRVL Emblem" 
               referrerPolicy="no-referrer"
-              className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-screen contrast-125" 
+              className="w-full h-full object-contain" 
             />
           </div>
           <div>
@@ -245,7 +245,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 src={HRVL_LOGO_URL} 
                 alt="HRVL Emblem" 
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-screen contrast-125" 
+                className="w-full h-full object-contain" 
               />
             </div>
             <div className="min-w-0 flex-1">

@@ -178,24 +178,24 @@ export const PrintableReportView: React.FC<PrintableReportViewProps> = ({
         
         
         {/* Report Official Banner */}
-        <div className="w-full h-32 md:h-40 overflow-hidden mb-6 rounded-lg border border-slate-300 print:rounded-none print:border-none shadow-md print:shadow-none bg-slate-900 flex items-center justify-center p-2">
+        <div className="w-full h-32 md:h-40 overflow-hidden mb-6 flex items-center justify-center p-2">
           <img 
             src={HRVL_LOGO_URL} 
             alt="HRVL Banner" 
             referrerPolicy="no-referrer"
-            className="h-28 md:h-36 object-contain mix-blend-screen contrast-125"
+            className="h-28 md:h-36 object-contain"
           />
         </div>
 
         {/* Document Header Seal */}
         <div className="flex items-center justify-between border-b-2 border-emerald-800 pb-6 mb-8">
           <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 rounded-xl bg-slate-900 text-white flex items-center justify-center p-0.5 shadow-[0_4px_15px_rgba(16,185,129,0.4)] hover:shadow-[0_8px_25px_rgba(16,185,129,0.6)] transform hover:-translate-y-1 transition-all duration-300 border-2 border-emerald-500/50 shrink-0">
+            <div className="w-20 h-20 flex items-center justify-center shrink-0">
               <img 
                 src={HRVL_LOGO_URL} 
                 alt="HRVL Emblem" 
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-contain mix-blend-screen contrast-125" 
+                className="w-full h-full object-contain" 
               />
             </div>
             <div>

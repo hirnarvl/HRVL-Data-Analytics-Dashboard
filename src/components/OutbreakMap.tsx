@@ -729,8 +729,8 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
       labMarker.bindPopup(`
         <div style="font-family: sans-serif; padding: 6px 4px; min-width: 250px; color: #0f172a;">
           <div style="display: flex; align-items: center; gap: 8.5px; margin-bottom: 8px;">
-            <div style="width: 42px; height: 42px; background: #0f172a; padding: 3px; border-radius: 10px; border: 1.5px solid #059669; display: flex; align-items: center; justify-content: center; shrink: 0; box-shadow: 0 2px 6px rgba(5,150,105,0.25);">
-              <img src="${HRVL_LOGO_URL}" alt="HRVL Emblem" style="width: 100%; height: 100%; object-fit: contain; mix-blend-mode: screen;" />
+            <div style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; shrink: 0;">
+              <img src="${HRVL_LOGO_URL}" alt="HRVL Emblem" style="width: 100%; height: 100%; object-fit: contain;" />
             </div>
             <div>
               <h4 style="margin: 0; font-size: 13.5px; font-weight: 800; color: #0f172a; line-height: 1.25;">Hirna Regional Veterinary Laboratory</h4>
@@ -1665,12 +1665,12 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
             <div className="h-full flex flex-col justify-between p-1 space-y-4">
               <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
                 <div className="flex items-center space-x-3 text-emerald-600 dark:text-emerald-400 border-b border-slate-100 dark:border-slate-800 pb-2.5">
-                  <div className="w-10 h-10 bg-slate-900 rounded-xl p-0.5 border border-emerald-500/50 flex items-center justify-center shrink-0 shadow-[0_4px_15px_rgba(16,185,129,0.4)] hover:shadow-[0_8px_25px_rgba(16,185,129,0.6)] transform hover:-translate-y-1 transition-all duration-300">
+                  <div className="w-12 h-12 flex items-center justify-center shrink-0">
                     <img 
                       src={HRVL_LOGO_URL} 
                       alt="HRVL Emblem" 
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-screen contrast-125"
+                      className="w-full h-full object-contain"
                     />
                   </div>
                   <div>
