@@ -17,6 +17,7 @@ import { DiseaseSummaryTable } from './components/DiseaseSummaryTable';
 import { OutbreakTable } from './components/OutbreakTable';
 import { SurveillanceTable } from './components/SurveillanceTable';
 import { ComplianceTable } from './components/ComplianceTable';
+import { VaccinationCalendar } from './components/VaccinationCalendar';
 import { FooterBanner } from './components/FooterBanner';
 import { NewArrivalModal } from './components/NewArrivalModal';
 import { ExcelImportModal } from './components/ExcelImportModal';
@@ -123,7 +124,7 @@ export default function App() {
   const [isSimulatorRunning, setIsSimulatorRunning] = useState(false);
   const [isPrintFriendlyMode, setIsPrintFriendlyMode] = useState(false);
   const [isPortraitMode, setIsPortraitMode] = useState(false);
-  const [activeTab, setActiveTab] = useState<'Dashboard' | 'Map' | 'Tables'>('Dashboard');
+  const [activeTab, setActiveTab] = useState<'Dashboard' | 'Map' | 'Tables' | 'Calendar'>('Dashboard');
 
   // Modals
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
@@ -614,6 +615,16 @@ export default function App() {
 
         
           </div>
+        )}
+
+        {activeTab === 'Calendar' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: 'easeOut' }}
+          >
+            <VaccinationCalendar locale={locale} />
+          </motion.div>
         )}
   {/* Field Officer Sign-Off & Verification Stamp Block (Print Mode Only) */}
         {isPrintFriendlyMode && (

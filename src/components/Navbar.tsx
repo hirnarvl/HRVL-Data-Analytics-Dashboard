@@ -47,8 +47,8 @@ import { ZoneFilterBottomSheet } from './ZoneFilterBottomSheet';
 interface NavbarProps {
   locale?: Locale;
   setLocale?: (loc: Locale) => void;
-  activeTab?: 'Dashboard' | 'Map' | 'Tables';
-  setActiveTab?: (tab: 'Dashboard' | 'Map' | 'Tables') => void;
+  activeTab?: 'Dashboard' | 'Map' | 'Tables' | 'Calendar';
+  setActiveTab?: (tab: 'Dashboard' | 'Map' | 'Tables' | 'Calendar') => void;
   darkMode: boolean;
   setDarkMode: (val: boolean | ((prev: boolean) => boolean)) => void;
   filters: FilterState;
@@ -126,6 +126,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'Dashboard', label: t.dashboard, icon: LayoutDashboard },
     { id: 'Map', label: t.map, icon: MapPin },
     { id: 'Tables', label: t.tables, icon: Table },
+    { id: 'Calendar', label: 'Calendar', icon: Calendar },
   ] as const;
 
   return (
@@ -203,6 +204,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <Table className="w-5 h-5 mb-1" />
             <span className="text-[10px] font-bold">{t.tables}</span>
+          </button>
+
+          <button
+            onClick={() => {
+              soundEngine.playClick();
+              if (setActiveTab) setActiveTab('Calendar');
+            }}
+            className={`flex flex-col items-center justify-center p-2 rounded-xl transition-colors min-w-[64px] ${activeTab === 'Calendar' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}
+          >
+            <Calendar className="w-5 h-5 mb-1" />
+            <span className="text-[10px] font-bold">Calendar</span>
           </button>
 
           <button
