@@ -1,14 +1,57 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /outbreaks/{document} {
-      allow read, write: if request.auth != null;
-    }
-    match /surveillance/{document} {
-      allow read, write: if request.auth != null;
-    }
+
+    // Default deny all
     match /{document=**} {
       allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidOutbreak(data) {
+      return data.disease is string && data.disease.size() <= 100 &&
+             data.species is string && data.species.size() <= 100 &&
+             data.cases is number && data.cases >= 0 &&
+             data.date is string && data.date.size() <= 50;
+    }
+
+    function isValidSurveillance(data) {
+      return data.region is string && data.region.size() <= 100 &&
+             data.status is string && data.status.size() <= 50 &&
+             data.date is string && data.date.size() <= 50;
+    }
+
+    match /test/{testId} {
+      allow get: if true;
+    }
+
+    match /outbreaks/{outbreakId} {
+      allow get, list: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(outbreakId) && isValidOutbreak(incoming());
+      allow update: if isSignedIn() && isValidId(outbreakId) && isValidOutbreak(incoming());
+      allow delete: if isSignedIn() && isValidId(outbreakId);
+    }
+
+    match /surveillance/{surveillanceId} {
+      allow get, list: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(surveillanceId) && isValidSurveillance(incoming());
+      allow update: if isSignedIn() && isValidId(surveillanceId) && isValidSurveillance(incoming());
+      allow delete: if isSignedIn() && isValidId(surveillanceId);
     }
   }
 }
