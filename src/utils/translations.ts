@@ -46,6 +46,15 @@ export interface Translations {
   exitPrintView: string;
   signIn: string;
   signOut: string;
+  installApp: string;
+  appInstalled: string;
+  installHRVLDashboard: string;
+  installPwaDescription: string;
+  installOnIos: string;
+  iosShareStep: string;
+  iosAddHomeStep: string;
+  notNow: string;
+  installNow: string;
 
   // Theme
   dayMode: string;
@@ -222,6 +231,15 @@ export const translations: Record<Locale, Translations> = {
     exitPrintView: '🖨️ Exit Print',
     signIn: 'Sign In',
     signOut: 'Sign Out',
+    installApp: 'Install App',
+    appInstalled: 'App Installed',
+    installHRVLDashboard: 'Install HRVL Dashboard',
+    installPwaDescription: 'Install HRVL ADNIS for instant offline-first field surveillance, GIS mapping, and rapid outbreak analytics.',
+    installOnIos: 'Install on iPhone / iPad',
+    iosShareStep: 'Tap the Share button in Safari toolbar',
+    iosAddHomeStep: 'Scroll down and tap "Add to Home Screen"',
+    notNow: 'Not Now',
+    installNow: 'Install Now',
     dayMode: 'Day',
     nightMode: 'Night',
 
@@ -385,6 +403,15 @@ export const translations: Record<Locale, Translations> = {
     exitPrintView: '🖨️ Maxxansa irraa Ba\'i',
     signIn: 'Seenuu',
     signOut: 'Ba\'uu',
+    installApp: 'App Fe\'adhu',
+    appInstalled: 'App Fe\'ameera',
+    installHRVLDashboard: 'Dashboard HRVL Fe\'adhu',
+    installPwaDescription: 'Hordoffii dirree toora interneetii malee, kaartaa GIS fi xiinxala dhibee dafee argachuuf HRVL ADNIS fe\'adhaa.',
+    installOnIos: 'iPhone / iPad irratti Fe\'i',
+    iosShareStep: 'Safari keessatti mallattoo Share tuqi',
+    iosAddHomeStep: 'Gadi bu\'ii "Add to Home Screen" filadhu',
+    notNow: 'Amma Miti',
+    installNow: 'Amma Fe\'i',
     dayMode: 'Guyyaa',
     nightMode: 'Halkan',
 
@@ -548,6 +575,15 @@ export const translations: Record<Locale, Translations> = {
     exitPrintView: '🖨️ ከህትመት ውጣ',
     signIn: 'ግቡ',
     signOut: 'ውጡ',
+    installApp: 'መተግበሪያ ጫን',
+    appInstalled: 'ተጭኗል',
+    installHRVLDashboard: 'የHRVL ዳሽቦርድን ጫን',
+    installPwaDescription: 'ያለ ኢንተርኔት ፈጣን የመስክ ክትትል፣ የጂአይኤስ ካርታ እና የወረርሽኝ ትንተና ለማግኘት HRVL ADNISን ይጫኑ።',
+    installOnIos: 'በiPhone / iPad ላይ ጫን',
+    iosShareStep: 'በSafari መሣሪያ አሞሌ ውስጥ የShare ቁልፍን ይጫኑ',
+    iosAddHomeStep: 'ወደ ታች ዝቅ ብለው "Add to Home Screen" ይምረጡ',
+    notNow: 'አሁን አይደለም',
+    installNow: 'አሁን ጫን',
     dayMode: 'ቀን',
     nightMode: 'ሌሊት',
 

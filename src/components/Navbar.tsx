@@ -38,7 +38,8 @@ import {
   TestTube2,
   HeartHandshake,
   GraduationCap,
-  Stethoscope
+  Stethoscope,
+  CheckCircle2
 } from 'lucide-react';
 import { 
   FilterState, 
@@ -84,6 +85,10 @@ interface NavbarProps {
   isSimulatorRunning?: boolean;
   isPortraitMode?: boolean;
   onTogglePortraitMode?: () => void;
+  isPWAInstallable?: boolean;
+  isPWAInstalled?: boolean;
+  isIOS?: boolean;
+  onOpenPWAInstall?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -114,7 +119,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeTab = 'Dashboard',
   setActiveTab,
   fastSubTab = 'diseases',
-  onSelectFastSection
+  onSelectFastSection,
+  isPWAInstallable = false,
+  isPWAInstalled = false,
+  isIOS = false,
+  onOpenPWAInstall
 }) => {
   const [soundEnabled, setSoundEnabled] = useState<boolean>(soundEngine.enabled);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -615,6 +624,29 @@ export const Navbar: React.FC<NavbarProps> = ({
               System Settings
             </p>
             
+            {/* Install App / PWA Status */}
+            {onOpenPWAInstall && (
+              <button
+                onClick={() => {
+                  soundEngine.playClick();
+                  onOpenPWAInstall();
+                  setIsMobileMenuOpen(false);
+                }}
+                title={isPWAInstalled ? 'HRVL Dashboard is Installed' : 'Install HRVL Dashboard App'}
+                className={`w-full py-2.5 px-3 flex items-center justify-between text-xs font-bold rounded-xl border transition-all cursor-pointer ${
+                  isPWAInstalled
+                    ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60'
+                    : 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/60'
+                }`}
+              >
+                <div className="flex items-center space-x-2.5">
+                  <Download className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
+                  <span className="truncate">{isPWAInstalled ? t.appInstalled : t.installApp}</span>
+                </div>
+                {isPWAInstalled && <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />}
+              </button>
+            )}
+
             {/* Reset Cache (Moved to Settings) */}
             {onResetCache && (
               <button

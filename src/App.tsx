@@ -31,6 +31,9 @@ import { AuthModal } from './components/AuthModal';
 import { SupportModal } from './components/SupportModal';
 import { ExternalResourcesModal } from './components/ExternalResourcesModal';
 import { GoogleDriveModal } from './components/GoogleDriveModal';
+import { PWAInstallModal } from './components/PWAInstallModal';
+import { PWAInstallBanner } from './components/PWAInstallBanner';
+import { usePWAInstall } from './utils/usePWAInstall';
 
 import { 
   FilterState, 
@@ -171,7 +174,18 @@ export default function App() {
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
   const [isGoogleDriveOpen, setIsGoogleDriveOpen] = useState(false);
   const [isExternalResourcesOpen, setIsExternalResourcesOpen] = useState(false);
+  const [isPWAInstallModalOpen, setIsPWAInstallModalOpen] = useState(false);
   const [printableReport, setPrintableReport] = useState<NarrativeReport | null>(null);
+
+  // PWA Installation Hook
+  const {
+    isInstallable,
+    isInstalled,
+    isIOS,
+    isDismissed,
+    install: installPWA,
+    dismissPrompt: dismissPWAPrompt
+  } = usePWAInstall();
 
   // Toggle Dark Class on <html> element with persistent theme storage
   useEffect(() => {
@@ -435,6 +449,10 @@ export default function App() {
           isSyncingData={isSyncingData}
           dataMinDate={dataMinDate}
           dataMaxDate={dataMaxDate}
+          isPWAInstallable={isInstallable}
+          isPWAInstalled={isInstalled}
+          isIOS={isIOS}
+          onOpenPWAInstall={() => setIsPWAInstallModalOpen(true)}
         />
       </div>
 
@@ -792,6 +810,26 @@ export default function App() {
       <ExternalResourcesModal
         isOpen={isExternalResourcesOpen}
         onClose={() => setIsExternalResourcesOpen(false)}
+      />
+
+      {/* PWA In-App Banner & Installation Guide Modal */}
+      <PWAInstallBanner
+        isInstallable={isInstallable}
+        isInstalled={isInstalled}
+        isIOS={isIOS}
+        isDismissed={isDismissed}
+        onInstall={installPWA}
+        onOpenModal={() => setIsPWAInstallModalOpen(true)}
+        onDismiss={dismissPWAPrompt}
+      />
+
+      <PWAInstallModal
+        isOpen={isPWAInstallModalOpen}
+        onClose={() => setIsPWAInstallModalOpen(false)}
+        isInstallable={isInstallable}
+        isInstalled={isInstalled}
+        isIOS={isIOS}
+        onInstall={installPWA}
       />
     </div>
   );
