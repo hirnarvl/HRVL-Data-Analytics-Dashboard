@@ -119,3 +119,5 @@ export interface NarrativeReport {
   epidemiologicalRecommendations: string[];
   highRiskWoredas: string[];
 }
+
+export type ActiveTab = 'Dashboard' | 'Map' | 'Tables' | 'VaccineCalendar' | 'FieldToolkit' | 'FAST';

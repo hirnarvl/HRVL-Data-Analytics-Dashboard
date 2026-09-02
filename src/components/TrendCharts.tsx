@@ -21,6 +21,8 @@ interface TrendChartsProps {
   darkMode: boolean;
   onAddLogArrival: (rec: Partial<SurveillanceRecord>) => void;
   onOpenYoYModal?: () => void;
+  isSimulatorRunning?: boolean;
+  onToggleSimulator?: () => void;
 }
 
 export const TrendCharts: React.FC<TrendChartsProps> = ({

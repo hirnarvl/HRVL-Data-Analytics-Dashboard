@@ -83,7 +83,8 @@ export const KPICards: React.FC<KPICardsProps> = ({
       color: 'text-sky-500 dark:text-sky-400',
       bg: 'bg-sky-500/10 border-sky-500/30',
       badge: 'WOAH Standard',
-      subtext: `${zeroReports} ${t.kpiZeroDisease}`
+      subtext: `${zeroReports} ${t.kpiZeroDisease}`,
+      tooltip: 'Total number of surveillance field reports submitted, tracking overall monitoring activity and zero-reporting compliance.'
     },
     {
       title: t.kpiLabConfirmed,
@@ -94,7 +95,8 @@ export const KPICards: React.FC<KPICardsProps> = ({
       color: 'text-indigo-500 dark:text-indigo-400',
       bg: 'bg-indigo-500/10 border-indigo-500/30',
       badge: t.kpiHrvlDiagnostic,
-      subtext: t.kpiLabVerifiedCases
+      subtext: t.kpiLabVerifiedCases,
+      tooltip: 'Ratio of suspected clinical cases that have been officially verified through laboratory diagnostics at HRVL.'
     },
     {
       title: t.kpiActiveOutbreaks,
@@ -105,7 +107,8 @@ export const KPICards: React.FC<KPICardsProps> = ({
       color: 'text-red-500 dark:text-red-400',
       bg: 'bg-red-500/10 border-red-500/30',
       badge: t.kpiEmergencyAlert,
-      subtext: t.kpiFmdPprLsd
+      subtext: t.kpiFmdPprLsd,
+      tooltip: 'Current number of severe disease outbreaks requiring immediate emergency response and active quarantine measures.'
     },
     {
       title: t.kpiOverallCfr,
@@ -116,7 +119,8 @@ export const KPICards: React.FC<KPICardsProps> = ({
       color: 'text-rose-500 dark:text-rose-400',
       bg: 'bg-rose-500/10 border-rose-500/30',
       badge: `${totalDeaths.toLocaleString()} ${t.kpiDeaths}`,
-      subtext: `${t.kpiTotalAnimalCases} ${totalCases.toLocaleString()}`
+      subtext: `${t.kpiTotalAnimalCases} ${totalCases.toLocaleString()}`,
+      tooltip: 'Case Fatality Rate (CFR) measures the percentage of reported animal cases that resulted in death.'
     },
     {
       title: t.kpiMelReporting,
@@ -127,7 +131,8 @@ export const KPICards: React.FC<KPICardsProps> = ({
       color: 'text-emerald-500 dark:text-emerald-400',
       bg: 'bg-emerald-500/10 border-emerald-500/30',
       badge: t.kpiWoredas36,
-      subtext: t.kpiWeeklySubmission
+      subtext: t.kpiWeeklySubmission,
+      tooltip: 'Monitoring, Evaluation, and Learning (MEL) compliance rate, tracking the percentage of woredas submitting timely weekly reports.'
     },
     {
       title: t.kpiAffectedWoredas,
@@ -138,7 +143,8 @@ export const KPICards: React.FC<KPICardsProps> = ({
       color: 'text-amber-500 dark:text-amber-400',
       bg: 'bg-amber-500/10 border-amber-500/30',
       badge: t.kpiSpatialIndex,
-      subtext: t.kpiEastWestHararghe
+      subtext: t.kpiEastWestHararghe,
+      tooltip: 'Spatial distribution index indicating the proportion of woredas currently experiencing active disease cases.'
     }
   ];
 
@@ -154,9 +160,9 @@ export const KPICards: React.FC<KPICardsProps> = ({
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35, delay: idx * 0.05, ease: 'easeOut' }}
-              className={`p-4 rounded-xl border transition-all duration-200 bg-slate-900 ${item.bg} hover:shadow-lg hover:border-slate-700`}
+              className={`group relative p-4 rounded-xl border transition-all duration-300 bg-slate-900 ${item.bg} hover:shadow-xl hover:border-slate-700 hover:bg-slate-900`}
             >
-              <div className="flex items-start justify-between">
+              <div className="flex items-start justify-between relative z-10">
                 <div>
                   <div className="flex items-center space-x-1.5 mb-1">
                     <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
@@ -175,7 +181,7 @@ export const KPICards: React.FC<KPICardsProps> = ({
                 </div>
               </div>
 
-              <div className="mt-3 flex items-center justify-between text-xs pt-2 border-t border-slate-800/60">
+              <div className="mt-3 flex items-center justify-between text-xs pt-2 border-t border-slate-800/60 relative z-10">
                 <span className="text-slate-400 font-medium text-[11px]">
                   {item.subtext}
                 </span>
@@ -193,6 +199,15 @@ export const KPICards: React.FC<KPICardsProps> = ({
                   )}
                   <span>{item.change}</span>
                 </span>
+              </div>
+
+              {/* Expand on hover tooltip */}
+              <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-300 ease-in-out">
+                <div className="overflow-hidden min-h-0">
+                  <p className="text-[11px] text-slate-300 mt-3 pt-3 border-t border-slate-700/60 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
+                    {item.tooltip}
+                  </p>
+                </div>
               </div>
             </motion.div>
           );

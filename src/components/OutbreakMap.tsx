@@ -30,16 +30,19 @@ import {
   Sparkles,
   Camera,
   Loader2,
-  Download
+  Download,
+  Stethoscope,
+  TestTube2
 } from 'lucide-react';
 import { Outbreak, SurveillanceRecord, WoredaInfo } from '../types';
-import { HRVL_LOGO_URL } from './Logo';
 import { HARARGHE_WOREDAS, HIRNA_LAB_COORDS } from '../data/woredas';
 import { 
   ETHIOPIA_NATIONAL_GEOJSON, 
   OROMIA_REGION_GEOJSON, 
   HARARGHE_WOREDAS_GEOJSON 
 } from '../data/geoData';
+import { loadFieldInvestigations } from '../utils/fieldToolkitStorage';
+import { FieldInvestigation } from '../types/fieldToolkit';
 
 interface OutbreakMapProps {
   outbreaks: Outbreak[];
@@ -103,7 +106,18 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
   const [showEastHarargheWoredas, setShowEastHarargheWoredas] = useState(true);
   const [showWestHarargheWoredas, setShowWestHarargheWoredas] = useState(true);
   const [showOutbreakMarkers, setShowOutbreakMarkers] = useState(true);
+  const [showFieldInvestigations, setShowFieldInvestigations] = useState(true);
   const [showLabHub, setShowLabHub] = useState(true);
+  const [fieldInvestigations, setFieldInvestigations] = useState<FieldInvestigation[]>([]);
+
+  useEffect(() => {
+    try {
+      const invs = loadFieldInvestigations();
+      setFieldInvestigations(invs);
+    } catch {
+      // safe fallback
+    }
+  }, []);
 
   // Selected Inspect items
   const [selectedOutbreak, setSelectedOutbreak] = useState<Outbreak | null>(outbreaks[0] || null);
@@ -729,8 +743,8 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
       labMarker.bindPopup(`
         <div style="font-family: sans-serif; padding: 6px 4px; min-width: 250px; color: #0f172a;">
           <div style="display: flex; align-items: center; gap: 8.5px; margin-bottom: 8px;">
-            <div style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; shrink: 0;">
-              <img src="${HRVL_LOGO_URL}" alt="HRVL Emblem" style="width: 100%; height: 100%; object-fit: contain;" />
+            <div style="width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; shrink: 0;">
+              <img src="https://lh3.googleusercontent.com/d/1LzxKTsj6b4TO1aIyI-tAddDsR5QMYYom" alt="HRVL Emblem" style="width: 100%; height: 100%; object-fit: contain; " />
             </div>
             <div>
               <h4 style="margin: 0; font-size: 13.5px; font-weight: 800; color: #0f172a; line-height: 1.25;">Hirna Regional Veterinary Laboratory</h4>
@@ -906,6 +920,98 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
       });
     }
 
+    // -------------------------------------------------------------
+    // 7. ACTIVE FIELD INVESTIGATION & ONE HEALTH MISSIONS MARKERS
+    // -------------------------------------------------------------
+    if (showFieldInvestigations && fieldInvestigations.length > 0) {
+      fieldInvestigations.forEach((inv) => {
+        // Zone filtering
+        if (selectedZone !== 'All' && inv.zone !== selectedZone) return;
+
+        let lat = inv.lat;
+        let lng = inv.lng;
+
+        if (!lat || !lng) {
+          const matchedWoreda = HARARGHE_WOREDAS.find(w => w.name.toLowerCase() === inv.woreda.toLowerCase());
+          if (matchedWoreda) {
+            lat = matchedWoreda.lat + 0.015; // slight offset so it doesn't collide directly
+            lng = matchedWoreda.lng + 0.015;
+          } else {
+            return;
+          }
+        }
+
+        const isLabConfirmed = inv.certainty === 'Laboratory Confirmed';
+        const colorHex = isLabConfirmed ? '#10b981' : '#0d9488'; // emerald vs teal
+
+        const icon = L.divIcon({
+          className: 'custom-leaflet-investigation-icon',
+          html: `
+            <div style="
+              position: relative;
+              width: 32px;
+              height: 32px;
+              background-color: ${colorHex};
+              border: 2.5px solid #ffffff;
+              border-radius: 8px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: white;
+              box-shadow: 0 4px 12px rgba(13,148,136,0.5);
+              cursor: pointer;
+            ">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/>
+                <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/>
+                <circle cx="20" cy="10" r="2"/>
+              </svg>
+            </div>
+          `,
+          iconSize: [32, 32],
+          iconAnchor: [16, 16]
+        });
+
+        const invMarker = L.marker([lat, lng], { icon });
+
+        invMarker.bindTooltip(`
+          <div style="font-family: sans-serif; padding: 4px 6px;">
+            <div style="font-weight: 800; font-size: 12px; color: ${colorHex};">
+              🩺 Field Investigation: ${inv.investigationCode}
+            </div>
+            <div style="font-size: 11px; font-weight: 700; color: #f8fafc; margin-top: 2px;">
+              ${inv.disease} — ${inv.woreda} (${inv.zone})
+            </div>
+            <div style="font-size: 10px; color: #cbd5e1; margin-top: 3px;">
+              Status: <b>${inv.certainty}</b> (${inv.status})<br/>
+              Sick: <b>${inv.numberSick}</b> | Dead: <b>${inv.numberDead}</b> | Samples: <b>${inv.samples?.length || 0}</b>
+            </div>
+          </div>
+        `, { sticky: true });
+
+        invMarker.bindPopup(`
+          <div style="font-family: sans-serif; padding: 6px; min-width: 240px; color: #0f172a;">
+            <div style="font-mono; font-size: 10px; font-weight: 800; color: #0d9488; background: #ccfbf1; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 4px;">
+              ${inv.investigationCode}
+            </div>
+            <h4 style="margin: 0; font-size: 13px; font-weight: 800; color: #0f172a;">${inv.disease}</h4>
+            <p style="margin: 2px 0 6px 0; font-size: 11px; color: #64748b;">${inv.title}</p>
+            <div style="font-size: 11px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px; margin-bottom: 8px;">
+              <p style="margin: 0 0 3px 0;">📍 <b>Location:</b> ${inv.woreda}, ${inv.kebele}</p>
+              <p style="margin: 0 0 3px 0;">👥 <b>Team Lead:</b> ${inv.teamLead}</p>
+              <p style="margin: 0 0 3px 0;">📊 <b>Counts:</b> ${inv.numberSick} Sick, ${inv.numberDead} Dead (${inv.caseFatalityRate}% CFR)</p>
+              <p style="margin: 0;">🧪 <b>Samples:</b> ${inv.samples?.length || 0} collected</p>
+            </div>
+            <span style="font-size: 10px; font-weight: 700; color: ${colorHex};">
+              Status: ${inv.status}
+            </span>
+          </div>
+        `, { maxWidth: 260 });
+
+        geoGroup.addLayer(invMarker);
+      });
+    }
+
   }, [
     basemap,
     polygonMode,
@@ -917,6 +1023,8 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
     showEastHarargheWoredas,
     showWestHarargheWoredas,
     showOutbreakMarkers,
+    showFieldInvestigations,
+    fieldInvestigations,
     showLabHub,
     filteredOutbreaks,
     selectedZone,
@@ -1235,6 +1343,20 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
           <span className="w-2 h-2 rounded-full bg-rose-500"></span>
           <span>🔥 Outbreak Radar Bubbles</span>
           {showOutbreakMarkers && <Check className="w-3 h-3 ml-0.5" />}
+        </button>
+
+        <button
+          onClick={() => setShowFieldInvestigations(!showFieldInvestigations)}
+          className={`px-2.5 py-1 rounded-md border font-medium flex items-center space-x-1.5 cursor-pointer ${
+            showFieldInvestigations
+              ? 'bg-teal-100 dark:bg-teal-950/80 text-teal-900 dark:text-teal-300 border-teal-300 dark:border-teal-700 shadow-xs'
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700 opacity-60'
+          }`}
+          title="Toggle Active Field Investigation & One Health Mission Sites"
+        >
+          <Stethoscope className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+          <span>🩺 Field Investigations ({fieldInvestigations.length})</span>
+          {showFieldInvestigations && <Check className="w-3 h-3 ml-0.5" />}
         </button>
 
         <button
@@ -1667,10 +1789,10 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
                 <div className="flex items-center space-x-3 text-emerald-600 dark:text-emerald-400 border-b border-slate-100 dark:border-slate-800 pb-2.5">
                   <div className="w-12 h-12 flex items-center justify-center shrink-0">
                     <img 
-                      src={HRVL_LOGO_URL} 
+                      src="https://lh3.googleusercontent.com/d/1LzxKTsj6b4TO1aIyI-tAddDsR5QMYYom" 
                       alt="HRVL Emblem" 
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-contain  filter drop-shadow-sm"
                     />
                   </div>
                   <div>

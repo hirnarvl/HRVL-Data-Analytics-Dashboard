@@ -13,6 +13,15 @@ export interface Translations {
   dashboard: string;
   map: string;
   tables: string;
+  vaccineCalendar: string;
+  fastToolbox: string;
+  fastDiseases: string;
+  resourceLibrary: string;
+  fieldInvestigation: string;
+  fieldToolkit: string;
+  labDiagnostics: string;
+  oneHealth: string;
+  trainingHub: string;
 
   // Quick Filters
   allZones: string;
@@ -182,6 +191,15 @@ export const translations: Record<Locale, Translations> = {
     dashboard: 'Dashboard',
     map: 'Map',
     tables: 'Tables',
+    vaccineCalendar: 'Vaccine Calendar',
+    fastToolbox: 'FAST & One Health',
+    fastDiseases: 'FAST Diseases',
+    resourceLibrary: 'Resource Library',
+    fieldInvestigation: 'Field Investigation',
+    fieldToolkit: 'Field Toolkit',
+    labDiagnostics: 'Lab Diagnostics',
+    oneHealth: 'One Health',
+    trainingHub: 'Training Hub',
 
     allZones: 'All Zones (36 Woredas)',
     eastHararghe: 'E/H (21)',
@@ -336,6 +354,15 @@ export const translations: Record<Locale, Translations> = {
     dashboard: 'Daashboordii',
     map: 'Kartaadhaa',
     tables: 'Gabateewwan',
+    vaccineCalendar: 'Kaalaandarii Talaallii',
+    fastToolbox: 'Meeshaalee FAST & Fayyaa Tokko',
+    fastDiseases: 'Dhibeewwan FAST',
+    resourceLibrary: 'Kuusaa Qabeenyaa',
+    fieldInvestigation: 'Qorannoo Dirree',
+    fieldToolkit: 'Meeshaa Dirree',
+    labDiagnostics: 'Qorannoo Laaboraatoorii',
+    oneHealth: 'Fayyaa Tokko',
+    trainingHub: 'Giddugala Leenjii',
 
     allZones: 'Aanaalee Hunda (Aanaa 36)',
     eastHararghe: 'Harargee Bahaa (21)',
@@ -490,6 +517,15 @@ export const translations: Record<Locale, Translations> = {
     dashboard: 'ዳሽቦርድ',
     map: 'ካርታ',
     tables: 'ሰንጠረዦች',
+    vaccineCalendar: 'የክትባት ካላንደር',
+    fastToolbox: 'የFAST እና አንድ ጤና መሣሪያዎች',
+    fastDiseases: 'የFAST በሽታዎች',
+    resourceLibrary: 'የመረጃ እና መመሪያዎች ቤተ-መጽሐፍት',
+    fieldInvestigation: 'የመስክ ምርመራ',
+    fieldToolkit: 'የመስክ መሣሪያዎች',
+    labDiagnostics: 'የላብራቶሪ ምርመራ',
+    oneHealth: 'አንድ ጤና',
+    trainingHub: 'የስልጠና ማዕከል',
 
     allZones: 'ሁሉንም ወረዳዎች (36 ወረዳዎች)',
     eastHararghe: 'ምስራቅ ሐረርጌ (21)',

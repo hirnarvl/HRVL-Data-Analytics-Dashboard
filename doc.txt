@@ -1,0 +1,3503 @@
+﻿1.  Disease Knowledge Based Vaccination Schedules & Diseases Mapping 
+  For those Woredas Under
+Hirna Regional Veterinary Laboratory operational area
+
+
+List “B” Disease Vaccines
+
+
+	Blackleg
+	Pastuerellosis
+	Anthrax
+	Season Mostly
+  it 
+Appears
+	Recommended Vaccination Month
+
+
+	Season Mostly
+  it 
+Appears
+	Recommended Vaccination Month
+	2ed
+Vaccination in the Year
+	Season Mostly
+  it 
+Appears
+	Recommended Vaccination Month
+	East  Hararghe
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	1
+	Chinaksun
+	Apri  - Oct
+	 Feb - Mar
+	Feb – Jun
+	Dec and Jan
+	Jun &Jul
+	Apri –Oct
+	 Feb - Mar
+	2
+	Gursum
+	Apri  - Oct
+	 Feb - Mar
+	Feb – Jun
+	Dec and Jan
+	Jun &Jul
+	Apri –Oct
+	 Feb - Mar
+	3
+	Babile
+	Sep   -Nov
+	Jul – Aug 
+	Jan – Jun
+	Nov – Dec
+	May & Jun
+	-
+	-
+	4
+	Midega Tola
+	Mar - Jun
+	 Jan - Feb
+	Feb – Apri
+	Nov & Dec
+	-
+	-
+	-
+	5
+	Fadis
+	Mar - Jun
+	 Jan - Feb
+	Feb – Apri
+	Nov & Dec
+	May  & Jun
+	-
+	-
+	6
+	Jarso
+	Jul &  Sep.
+	May  - Jun
+	Apri  -Oct
+	Jan  & Feb
+	-
+	-
+	-
+	7
+	Kombolicha
+	Mar – Oct
+	 Jan - Feb
+	Oct – May
+	Oct &Nov
+	Apri  -& May
+	-
+	-
+	8
+	Haramaya
+	Apri  - & May
+	 Feb - Mar
+	Jan – Jun
+	Oct &Nov
+	Apri  -  & May
+	-
+	-
+	9
+	Kurfachale
+	Mar – Oct
+	Jan - Feb
+	Nov - Mar
+	Aug  &  Sep
+	Feb & Mar
+	Jan & Feb
+	-
+	10
+	Girawa
+	Apri  -  Sep.
+	 Feb - Mar
+	Jan – Apri
+	Oct & Nov
+	Apri - & May
+	-
+	-
+	11
+	Meyu Muluke
+	Mar – Jun
+	 Jan - Feb
+	Jan – Apri
+	Oct  & Nov
+	Apri  -  May
+	-
+	-
+	12
+	Bedeno
+	Jun – Oct
+	 Apr  - May
+	Jan – Apri
+	Oct & Nov
+	Apri -  & May
+	-
+	-
+	13
+	Gola Oda
+	Sep – Dec.
+	 Jul  - Aug 
+	Jan – Jun
+	Oct & Nov
+	Apri & May
+	Aug  & Sep
+	Jun – Jul
+	14
+	Kumbi
+	Sep – Dec.
+	 Jul  - Aug 
+	Jan – Jun
+	Oct & Nov
+	Apri & May
+	Aug & Sep
+	Jun – Jul
+	15
+	Kersa
+	Apri  - – Oct
+	 Feb - Mar
+	Feb  – Apri
+	Nov & Dec
+	May & Jun
+	-
+	-
+	16
+	Meta
+	May - Oct
+	Mar - Apr
+	Jan – Jun
+	Oct & Nov
+	Apri & May
+	May  – Sep
+	 Mar - Api 
+	17
+	Deder
+	Apri  -   Oct
+	 Feb - Mar
+	Feb – May
+	Nov & Dec
+	May & Jun
+	Apri – Aug
+	 Feb - Mar
+	18
+	Melkabelo
+	Jun – Oct
+	Apri & Jun
+	Jan – Apri
+	Nov & Dec
+	May & Jun
+	Feb – Mar
+	 Dec – Jan 
+	19
+	Gorogutuu
+	Apri   -  Oct
+	 Feb - Mar
+	Dec – Jun
+	Sep & Oct
+	Mar & Apri
+	-
+	-
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+
+
+
+
+Disease Knowledge Based Vaccination Schedules &  Diseases Mapping 
+  For those Woredas Under
+Hirna Regional  Veterinary Laboratory operational area
+
+
+List “A” Disease Vaccines
+
+
+	LSD
+	PPR
+	FMD
+	S & G Pox
+	NCD
+	Rabies
+	Season Mostly
+  it 
+Appears
+	Recommended Vaccination Month
+
+
+	Season Mostly
+  it 
+Appears
+	Recommended Vaccination Month
+
+
+	Season Mostly
+  it 
+Appears
+	Recommended Vaccination Month
+
+
+	Season Mostly
+  it 
+Appears
+	Recommended Vaccination Month
+
+
+	Season Mostly
+  it 
+Appears
+	Recommended Vaccination Month
+
+
+	Season Mostly
+  it 
+Appears
+	Recommended Vaccination Month
+
+
+	East    Hararghe
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	1
+	ChinakJun
+	-
+	-
+	-
+	-
+	Oct- Apr
+	Aug – Sep 
+	-
+	-
+	-
+	-
+	-
+	-
+	2
+	Gursum
+	-
+	-
+	May- Jul
+	Mar - Apr 
+	Oct- Apr
+	Aug – Sep 
+	-
+	-
+	Sep-Oct
+	Jul - Aug
+	-
+	-
+	3
+	Babile
+	Sep - Mar
+	Jul - Aug
+	May- Jul
+	Mar - Apr 
+	-
+	-
+	-
+	-
+	-
+	-
+	-
+	-
+	4
+	Midega Tola
+	Sep & Oct
+	Jul - Aug
+	May- Jul
+	Mar - Apr 
+	-
+	-
+	-
+	-
+	-
+	-
+	-
+	-
+	5
+	Fadis
+	Jul & Sep
+	May – Jun 
+	-
+	-
+	-
+	-
+	-
+	-
+	-
+	-
+	-
+	-
+	6
+	Jarso
+	Feb –May
+	Dec  – Jan
+	Nov  - Mar
+	Sep - Oct 
+	-
+	-
+	-
+	-
+	Sep-Oct
+	Jul - Aug
+	-
+	-
+	7
+	Kombolicha
+	Nov - Feb
+	Sep - Oct 
+	
+
+	
+
+	-
+	-
+	-
+	-
+	Sep-Oct
+	Jul - Aug
+	-
+	-
+	8
+	Haramaya
+	-
+	-
+	
+
+	
+
+	-
+	-
+	-
+	-
+	Sep-Oct
+	Jul - Aug
+	-
+	-
+	9
+	Kurfachale
+	Octi – Dec 
+	Aug – Sep l 
+	
+
+	
+
+	-
+	-
+	-
+	-
+	Sep-Oct
+	Jul - Aug
+	-
+	-
+	10
+	Girawa
+	Oct - Feb
+	Aug – Sep l 
+	
+
+	
+
+	-
+	-
+	-
+	-
+	Sep-Oct
+	Jul - Aug
+	-
+	-
+	11
+	Meyu Muluke
+	Nov – Jan
+	Sep - Oct 
+	May- Jul
+	Mar - Apr 
+	Jan - May
+	 Nov -  Dec 
+	-
+	-
+	-
+	-
+	-
+	-
+	12
+	Bedeno
+	Dec
+	Oct – Nov
+	
+
+	
+
+	-
+	-
+	-
+	-
+	Dec
+	Oct  - Nov
+	-
+	-
+	13
+	Gola Oda
+	Oct - Jan
+	Aug – Sep l 
+	May- Jul
+	Mar - Apr 
+	Jun – Aug
+	Apr -  May
+	Oct
+	?
+	-
+	-
+	-
+	-
+	14
+	Kubi
+	Oct - Jan
+	Aug – Sep l 
+	May- Jul
+	Mar - Apr 
+	Jun – Aug
+	Apr -  May
+	Oct
+	?
+	-
+	-
+	-
+	-
+	15
+	Kersa
+	-
+	-
+	
+
+	
+
+	-
+	-
+	-
+	-
+	Sep-Oct
+	Jul - Aug
+	-
+	-
+	16
+	Meta
+	-
+	-
+	
+
+	
+
+	-
+	-
+	-
+	-
+	Sep-Oct
+	Jul - Aug
+	-
+	-
+	17
+	Deder
+	-
+	-
+	
+
+	
+
+	-
+	-
+	-
+	-
+	Sep-Oct
+	Jul - Aug
+	-
+	-
+	18
+	Melkabelo
+	Aug – Jan
+	Jun   – Jul
+	
+
+	
+
+	Sep
+	Jul - Aug 
+	-
+	-
+	-
+	Jul - Aug
+	-
+	-
+	19
+	Gorogutuu
+	-
+	-
+	
+
+	
+
+	-
+	-
+	-
+	-
+	Sep-Oct
+	Jul - Aug
+	-
+	-
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+
+
+
+
+
+
+Knowledge Based Vaccination Schedules &  Diseases Mapping 
+  For those Woredas Under
+Hirna Regional  Veterinary Laboratory operational area
+
+
+
+
+	Coccidiosis
+	
+
+	
+
+	
+
+	
+
+	Season Mostly
+  it 
+Appears
+	Recommended controlling   Months
+(With Coccidial Drugs
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	East   Hararghe
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	1
+	ChinakJun
+	-
+	-
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	2
+	Gursum
+	Sep– Nov  &  Apri
+	Aug - Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	3
+	Babile
+	-
+	-
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	4
+	Midega Tola
+	-
+	-
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	5
+	Fadis
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	6
+	Jarso
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	7
+	Kombolicha
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	8
+	Haramaya
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	9
+	Kurfachale
+	-
+	-
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	10
+	Girawa
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	11
+	Meyu Muluke
+	-
+	-
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	12
+	Bedeno
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	13
+	Gola Oda
+	-
+	-
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	14
+	Kubi
+	-
+	-
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	15
+	Kersa
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	16
+	Meta
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	17
+	Deder
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	18
+	Melkabelo
+	-
+	-
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	19
+	Gorogutuu
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+
+
+
+
+
+
+Knowledge Based Vaccination Schedules &  Diseases Mapping 
+  For those Woredas Under
+Hirna Regional  Veterinary Laboratory operational area
+
+
+List “B” Disease Vaccines
+
+
+	Blackleg
+	Pastuerellosis
+	Anthrax
+	Season it Appears
+	Recommended Vaccination Month
+	Season it Appears
+	Recommended Vaccination Month
+	2ed Vaccination Month
+(6Month)
+	Season it Appears
+	Recommended Vaccination Month
+Remark
+	West  Hararghe
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	1
+	Doba
+	Apri  - Oct
+	 Feb -  Mar  
+	Jan – Jun
+	 Nov – Dec 
+	Apri & May
+	Jan – Apri
+	 Nov – Dec 
+	2
+	Tulo
+	May . Nov
+	Mar – Apr 
+	Dec – Mar
+	 Oct – Nov 
+	Mar - Apri
+	-
+	-
+	3
+	Mesela
+	Jun – Oct
+	Apri & Jun
+	Jan – Apri
+	 Nov – Dec 
+	May & Jun
+	Feb  – Mar
+	 Dec – Jan 
+	4
+	Chiro
+	Mar – Oct
+	 Jan – Feb 
+	Apri – Jun
+	 Feb  - Mar 
+	Jul & Augse
+	Feb – Miya
+	 Dec – Jan 
+	5
+	Gemechisi
+	Jan – Augse
+	 Nov – Dec 
+	Jan – Jul
+	 Nov – Dec 
+	Apri & May
+	Jan – Mar
+	 Nov – Dec 
+	6
+	Oda Bultum
+	Apri – Jun
+	 Feb – Mar 
+	Mar – May
+	 Jan – Feb 
+	Jun & Jul
+	-
+	-
+	7
+	Boke
+	Sep & Oct
+	 Jul - Aug  
+	Jan – Mar
+	 Nov – Dec 
+	Apri & May
+	Jan – Mar
+	 Nov – Dec 
+	8
+	Burkadintu
+	Sep – Oct
+	 Jul - Aug  
+	Jan – Mar
+	 Nov – Dec 
+	Apri & May
+	Jan – Mar
+	 Nov – Dec 
+	9
+	Habro
+	Apri – Jun
+	 Feb -  Mar  
+	Mar – May
+	 Jan – Feb 
+	Jun & Jul
+	-
+	-
+	10
+	Darolebu
+	Apri – Oct
+	 Feb -  Mar  
+	Jan – Jun
+	 Nov – Dec 
+	Apri & May
+	-
+	-
+	11
+	Hawigudina
+	Apri – Sep
+	 Feb -  Mar  
+	Feb – Jun
+	 Dec – Jan 
+	May & Jun
+	Apri – Jul
+	 Feb - Mar
+	12
+	Anchar
+	Mar – Jun
+	 Jan – Feb 
+	Jan – Mar
+	 Nov – Dec 
+	Apri & May
+	Feb – Mar
+	 Dec – Jan 
+	13
+	Gubakoricha
+	Mar – Jun
+	 Jan – Feb 
+	Jan – Mar
+	 Nov – Dec 
+	Apri & May
+	Feb – Mar
+	 Dec – Jan 
+	14
+	Miesso
+	Mar – Jun
+	 Jan – Feb 
+	Jan – Mar
+	 Nov – Dec 
+	Apri & May
+	Feb – Mar
+	 Dec – Jan 
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+
+
+
+
+
+
+
+
+Knowledge Based Vaccination Schedules &  Diseases Mapping 
+  For those Woredas Under
+Hirna Regional  Veterinary Laboratory operational area
+
+
+List “A” Disease Vaccines
+
+
+	LSD”2”
+	PPR ”3”
+	FMD
+	S&G Pox
+	NCD”every-4Mo”
+	Rabies
+	
+
+Season it Appears
+	
+
+Recommended Vaccination Month
+	
+
+Season it Appears
+	
+
+Recommended Vaccination Month
+	
+
+Season it Appears
+	
+
+
+
+Recommended Vaccination Month
+	
+
+Season 
+it Appears
+	
+
+Recommended Vaccination Month
+	
+
+Season it Appears
+	Recommended Vaccination Month
+	
+
+Season it Appears
+	
+
+Recommended Vaccination Month
+	West   Hararghe
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	1
+	Doba
+	Jan – Mar
+	Nov -  Dec
+	May- Jul
+	 Mar -Apr
+	-
+	-
+	-
+	-
+	Oct & May
+	Aug – Sep 
+	-
+	-
+	2
+	Tulo
+	Nov – Jun
+	Sep – Oct 
+	-
+	-
+	-
+	-
+	-
+	-
+	Dec
+	Oct – Nov 
+	Nov
+	Sep - Oct
+	3
+	Mesela
+	Aug – Jan
+	Jun  – Jul
+	-
+	-
+	Sep
+	Jul  - Aug
+	-
+	-
+	Sep
+	Jul – Aug
+	-
+	-
+	4
+	Chiro
+	Aug -  Nov
+	 Jun – Jul 
+	Oct – Nov 
+	 Aug  Sep 
+	-
+	-
+	-
+	-
+	Dec
+	Oct – Nov 
+	Sep 
+	Jul - Aug
+	5
+	Gemechisi
+	Aug – Oct
+	 Jun – Jul 
+	
+
+	
+
+	Jun - Aug
+	Apr – May 
+	-
+	-
+	Aug & Sep
+	Jun - Jul
+	-
+	-
+	6
+	Oda Bultum
+	Nov
+	Sep – Oct 
+	Oct – Nov 
+	 Aug –Sep 
+	-
+	-
+	-
+	-
+	Sep
+	Jul – Aug
+	Sep 
+	Jul - Aug
+	7
+	Boke
+	Oct –Feb
+	 Aug – Sep 
+	Jul - Aug
+	May – Jun 
+	Jun
+	Apr – May 
+	-
+	-
+	Dec
+	Oct – Nov 
+	-
+	-
+	8
+	Burkadintu
+	Octi– Feb
+	 Aug – Sep 
+	May- Aug 
+	Mar- Apr
+	Jun & Jul
+	Apr – May 
+	-
+	-
+	-
+	-
+	-
+	-
+	9
+	Habro
+	Nov – Jan
+	Sep – Oct 
+	Oct – Nov 
+	 Aug  Sep 
+	-
+	-
+	-
+	-
+	Dec
+	Oct – Nov 
+	Sep 
+	Jul - Aug
+	10
+	Darolebu
+	Sep – Nov
+	Jul  – Aug
+	May- Aug 
+	Mar- Apr
+	Feb  – Meg
+	Dec – Jan  
+	-
+	-
+	Sep
+	Jul – Aug
+	-
+	-
+	11
+	Hawigudina
+	-
+	-
+	May- Aug 
+	Mar- Apr
+	-
+	-
+	-
+	-
+	-
+	-
+	-
+	-
+	12
+	Anchar
+	Aug – Oct 
+	Jun  – Jul
+	-
+	-
+	-
+	-
+	-
+	-
+	Sep
+	Jul – Aug
+	-
+	-
+	13
+	Gubakoricha
+	Aug – Oct 
+	Jun  – Jul
+	-
+	-
+	-
+	-
+	-
+	-
+	Sep
+	Jul – Aug
+	-
+	-
+	14
+	Mieso
+	Aug – Oct 
+	Jun  – Jul
+	May- Aug 
+	Mar- Apr
+	-
+	-
+	-
+	-
+	Sep
+	Jul – Aug
+	-
+	-
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	Sep 
+	Jul - Aug
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+
+
+Knowledge Based Vaccination Schedules &  Diseases Mapping 
+  For those Woredas Under
+Hirna Regional  Veterinary Laboratory operational area
+
+
+
+
+	Coccidiosis
+	
+
+	
+
+	
+
+	
+
+	Season Mostly
+  it 
+Appears
+	Recommended controlling   Months
+(With Coccidial Drugs)
+
+
+	
+
+Season it Appears
+	
+
+
+
+Recommended Vaccination Month
+	
+
+Season 
+it Appears
+	
+
+Recommended Vaccination Month
+	
+
+Season it Appears
+	Recommended Vaccination Month
+	
+
+Season it Appears
+	
+
+Recommended Vaccination Month
+	West   Hararghe
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	1
+	Doba
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	2
+	Tulo
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	3
+	Mesela
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	4
+	Chiro
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	5
+	Gemechisi
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	6
+	Oda Bultum
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	7
+	Boke
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	8
+	Burkadintu
+	-
+	-
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	9
+	Habro
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	10
+	Darolebu
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	11
+	Hawigudina
+	-
+	-
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	12
+	Anchar
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	13
+	Gubakoricha
+	Sep– Nov  &  Apri
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	14
+	Mieso
+	Sep – Nov
+	Aug- Nov & Apri
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+
+
+
+
+
+
+
+
+Summary 
+ Animal  Diseases to be controlled by Vaccines at  Hirna Regional Veterinary Laboratory Operational Area Woredas
+
+
+1. LSD
+2. PPR
+3. NCD
+4. Sheep Pox  at Somalii & Afar Adjacent Woredas Only
+5. FMD
+6. Rabies
+7. Blackleg
+8. Bovine Pastuerillosis
+9. Ovine Pastuerillosis
+10. Anthrax
+        
+Summary
+On
+Disease Knowledge Based Vaccination Schedules  
+  For those Woredas Under
+Hirna Regional Veterinary Laboratory operational area
+
+
+
+
+	Black Leg
+	Pastuerillosis
+	
+
+	Season Mostly
+  it 
+Appears 
+	In Number 
+of 
+Woreda
+	Recommended
+Vaccination 
+Month
+	Season Mostly
+  it 
+Appears 
+	In Number 
+of 
+Woreda
+	Recommended
+Vaccination 
+Month
+	2 ed
+Vaccination 
+Month
+	I
+	East Hararghe
+	
+
+	
+
+	East Hararghe
+	
+
+	
+
+	
+
+	
+
+	Apri-Oct
+	10
+	Feb  – Mar =  1
+	Feb – Jun
+	11
+	Aug – Sep =   1
+	Mar – Apri
+	
+
+	Sep - Jan
+	3
+	Apr – May = 1
+	Jan – Apri
+	4
+	Oct – Nov = 10
+	Apri – May
+	
+
+	Mar - Jun
+	3
+	Mar – Apr  = 2
+	Apri – Oct
+	1
+	Dec – Jan =   1
+	Aug – Sep
+	
+
+	Jun- Oct
+	3
+	Jan – Feb   =  7
+	Dec – May
+	2
+	Sep – Oct  =  2
+	Apr - May
+	
+
+	
+
+	
+
+	Jun– Jul      = 3
+	Nov –Mar
+	1
+	
+
+	
+
+	
+
+	
+
+	
+
+	Dec– Jan   = 5
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	II
+	West Hararghe
+	
+
+	
+
+	West Hararghe
+	
+
+	
+
+	
+
+	
+
+	Apri – Oct
+	2
+	Jan– Feb = 6
+	Jan – Jun
+	2
+	Oct – Nov = 9
+	 May - Jun
+	
+
+	Apri – Nov
+	1
+	Mar – Apri = 1
+	Dec-  Mar
+	1
+	Sep- Oct = 1
+	 Apri - May
+	
+
+	Jun– Oct
+	1
+	Dec – Jan = 4
+	Jan - Apri
+	1
+	Jan – Feb = 1
+	Aug – Sep
+	
+
+	Mar  – Oct
+	1
+	Oct – Nov = 1
+	Jan- Mar
+	5
+	Dec – Jan = 2
+	Jul – Aug
+	
+
+	Jan – Aug
+	1
+	Jun – Jul = 2
+	Mar – May
+	2
+	Nov – Dec = 1
+	Jun - Jul
+	
+
+	Apri – Jun
+	2
+	
+
+	May – Jun
+	1
+	
+
+	
+
+	
+
+	Sep – Oct
+	2
+	
+
+	Jan - Jul
+	1
+	
+
+	
+
+	
+
+	Apri – Sep
+	1
+	
+
+	Apri - Jun
+	1
+	
+
+	
+
+	
+
+	Mar – Jun 
+	3
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+Summary 
+On 
+Disease Knowledge Based Vaccination Schedules  
+  For those Woredas Under
+Hirna Regional Veterinary Laboratory operational area
+
+
+
+
+	Anthrax
+	
+
+	
+
+	Season Mostly
+  it 
+Appears 
+	In Number 
+of 
+Woreda
+	Recommended
+Vaccination 
+Month
+	Season Mostly
+  it 
+Appears 
+	In Number 
+of 
+Woreda
+	Recommended
+Vaccination 
+Month
+	2 ed
+Vaccination 
+Mont
+	
+
+	East Hararghe
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	Jan – Feb
+	1
+	  Nov – Dec =1
+	
+
+	14- Woredas They have to carry out Active Anthrax Disease Surveillance By themselves 
+	
+
+	Aug – Sep
+	1
+	May – Jun = 2
+	
+
+	
+
+	By simple Giemsa Staining
+	
+
+	May – Sep
+	1
+	Feb – Mar = 1
+	
+
+	
+
+	
+
+	Apri – Aug
+	1
+	 Jan – Feb =1
+	
+
+	
+
+	
+
+	
+
+	
+
+	Feb- - May
+	1
+	Nov – Dec = 1
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	West Haraghe
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	Dec – May 
+	1
+	Sep – Oct   = 5
+	
+
+	4 - Woredas They have to carry out Active Anthrax Disease Surveillance By themselves
+	
+
+	Dec 
+	4
+	Jun  –  Jul   = 6
+	
+
+	By simple Giemsa Staining
+	
+
+	Sep
+	6
+	May – Jun  = 1
+	
+
+	
+
+	
+
+	Aug – Sep 
+	1
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+
+
+
+
+Summary 
+On 
+Disease Knowledge Based Vaccination Schedules  
+  For those Woredas Under
+Hirna Regional Veterinary Laboratory operational area
+
+
+
+
+	LSD ”2”
+	PPR  ”3”
+	
+
+	Season Mostly
+  it 
+Appears 
+	In Number
+of
+Woreda
+	Recommended
+Vaccination
+Month
+	Season Mostly
+  it 
+Appears 
+	In Number 
+of 
+Woreda
+	Recommended
+Vaccination 
+Month
+	2 ed
+Vaccination 
+Mont
+	I
+	East Hararghe
+	
+
+	
+
+	East Hararghe
+	
+
+	
+
+	
+
+	
+
+	Dec
+	1
+	Jun – Jul = 2
+	Apri – Jul 
+	6
+	 Feb – Mar  = 6
+	
+
+	
+
+	Oct – Jan
+	2
+	Jul – Aug  = 4
+	Nov – Mar  
+	1
+	  Sep - Oct =1
+	
+
+	
+
+	Oct – Feb 
+	1
+	Nov – Dec = 1
+	
+
+	
+
+	
+
+	
+
+	
+
+	Oct – Dec 
+	1
+	Aug – Sep = 2
+	
+
+	
+
+	
+
+	
+
+	
+
+	Nov – Jan
+	1
+	Apri- May  = 1
+	
+
+	
+
+	
+
+	
+
+	
+
+	Feb – May
+	1
+	Sep – Oct = 1
+	
+
+	
+
+	
+
+	
+
+	
+
+	Nov – Feb
+	2
+	Sep – mar = 1
+	
+
+	
+
+	
+
+	
+
+	
+
+	 Sep – May
+	1
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	Sep – Oct
+	1
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	Aug - Sep
+	1
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	West   Hararghe
+	
+
+	
+
+	Wes t Hararghe
+	
+
+	
+
+	
+
+	
+
+	Oct – Mar
+	1
+	Apri – May= 1
+	Apri  -  May 
+	5
+	Feb – Mar = 5
+	
+
+	
+
+	Nov – Jun
+	2
+	Oct – Nov = 1
+	Oct - Nov
+	3
+	 Aug -  Sep  = 3
+	
+
+	
+
+	Aug - Jan
+	1
+	Aug – Sep = 3
+	 Jul – Aug 
+	1
+	 May  - Jun = 1
+	
+
+	
+
+	Jul – Nov
+	1
+	May – Jun = 5
+	
+
+	
+
+	
+
+	
+
+	
+
+	Aug – Dec 
+	1
+	Jul – Aug = 2
+	
+
+	
+
+	
+
+	
+
+	
+
+	Oct - Feb
+	2
+	Jun – Jul = 1
+	
+
+	
+
+	
+
+	
+
+	
+
+	Nov - Jan
+	1
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	Sep - Nov
+	1
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	Aug – Oct 
+	3
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+
+
+
+
+Summary 
+On 
+Disease Knowledge Based Vaccination Schedules  
+  For those Woredas Under
+Hirna Regional Veterinary Laboratory operational area
+
+
+
+
+	FMD
+	Sheep & Goat Pox 
+	
+
+	Season Mostly
+  it 
+Appears 
+	In Number 
+of 
+Woreda
+	Recommended
+Vaccination 
+Month
+	Season Mostly
+  it 
+Appears 
+	In Number 
+of 
+Woreda
+	Recommended
+Vaccination 
+Month
+	2 ed
+Vaccination 
+Mont
+	I
+	East Hararghe
+	
+
+	
+
+	East Hararghe
+	_
+	_
+	_
+	
+
+	Dec- Apri 
+	2
+	Sep- Oct = 2
+	
+
+	_
+	_
+	_
+	
+
+	Jan- May
+	1
+	Oct – Nov = 1
+	 No CCPP case Report.
+Active Disease & Sero- Surveillance By HRVL  in future in all Woredas
+	_
+	_
+	_
+	
+
+	Jun - Aug
+	2
+	Mar – Apri = 2
+	_
+	_
+	_
+	
+
+	 Sep
+	1
+	Jun – Jul = 1
+	_
+	_
+	_
+	
+
+	
+
+	
+
+	
+
+	
+
+	_
+	_
+	_
+	
+
+	
+
+	
+
+	
+
+	
+
+	_
+	_
+	_
+	
+
+	
+
+	
+
+	
+
+	
+
+	_
+	_
+	_
+	
+
+	West   Hararghe
+	
+
+	
+
+	West   Hararghe
+	
+
+	
+
+	
+
+	
+
+	Sep
+	1
+	Jun- Jul = 1
+	
+
+	_
+	_
+	_
+	
+
+	Jun- Jul
+	1
+	Apri – May =4
+	No CCPP case Report. 
+Active Disease & Sero- Surveillance By HRVL  in future in all Woredas
+	_
+	_
+	_
+	
+
+	Jun
+	1
+	 Nov – Dec = 1
+	_
+	_
+	_
+	
+
+	Feb- Mar
+	1
+	
+
+	_
+	_
+	_
+	
+
+	Jun - Aug
+	1
+	
+
+	_
+	_
+	_
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Summary 
+On 
+Disease Knowledge Based Vaccination Schedules  
+  For those Woredas Under
+Hirna Regional Veterinary Laboratory operational area
+
+
+
+
+	NCD      ( 1d, 4w, 4m  then “every 4 month”)
+	Coccidiosis ( parasitic Disease )
+	
+
+	Season Mostly
+  it 
+Appears 
+	In Number 
+of 
+Woreda
+	Recommended
+Vaccination 
+Month
+	Season Mostly
+  it 
+Appears 
+	In Number 
+of 
+Woreda
+	Recommended
+Treatment  
+Month
+	2 ed
+Treatment Mont
+	I
+	E/st Hararghe
+	
+
+	
+
+	East Hararghe
+	
+
+	
+
+	
+
+	
+
+	Sep- Dec 
+	10
+	Jul – Aug  =10
+	Sep – NoV &  Apri
+	11
+	Coccidial Drugs Should be Available, at woreda sites , before disease controlling Month. i.e 
+	
+
+	Dec
+	1
+	Oct - Dec  = 1
+	
+
+	
+
+	 Jul – Aug   &  March
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	8 -Woreda Active surveillance
+	
+
+	
+
+	
+
+	8 - Woreda Active Disease & Sero Surveillance  
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	West   Hararghe
+	
+
+	
+
+	W/ st   Hararghe
+	
+
+	
+
+	
+
+	
+
+	Dec- May
+	1
+	Oct  - Nov = 5
+	Sep – NoV &  Apri
+	11
+	Coccidial Drugs Should be Available, at woreda sites , before disease controlling Month. i.e 
+	
+
+	Dec
+	4
+	 Jun – Jul  = 7
+	Sep - Nov 
+	1
+	 Jul – Aug   &  March
+	
+
+	Sep
+	6
+	
+
+	
+
+	
+
+	2  -Woreda Active surveillance
+	
+
+	Aug - Sep
+	1
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	2 - Woreda Active Disease & Sero  Surveillance  
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	Vaccination will be  Mesaured by  Coverage of the  the Population in % 
+This is What is Disease Mapping & Knowledge Based Vaccination schedules for the Coming Time.

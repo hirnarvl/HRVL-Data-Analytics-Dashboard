@@ -2,7 +2,6 @@ import { collection, doc, setDoc, onSnapshot, query, limit } from 'firebase/fire
 import { db } from '../firebase';
 import { SurveillanceRecord } from '../types';
 import { saveCachedRecords } from './storage';
-import { INITIAL_SURVEILLANCE_RECORDS } from '../data/sampleData';
 
 const COLLECTION_NAME = 'surveillanceRecords';
 
@@ -29,9 +28,6 @@ export function subscribeToFirestoreRecords(
           // Cache to localStorage for offline access
           saveCachedRecords(recordsFromDb);
           onUpdate(recordsFromDb);
-        } else {
-          // Auto-seed initial 2025 and 2026 ANDIS records into Firestore Cloud Storage
-          seedRecordsToFirestore(INITIAL_SURVEILLANCE_RECORDS);
         }
       },
       (error) => {

@@ -18,7 +18,6 @@ import {
 import { Activity, Printer, Download, ShieldCheck, MapPin, ArrowLeft, TrendingUp, Layers, AlertTriangle, BarChart3 } from 'lucide-react';
 import { NarrativeReport, Outbreak, SurveillanceRecord, WoredaCompliance } from '../types';
 import { WoredaReportMap } from './WoredaReportMap';
-import { HRVL_LOGO_URL } from './Logo';
 import { useI18n } from '../contexts/I18nContext';
 
 
@@ -178,24 +177,24 @@ export const PrintableReportView: React.FC<PrintableReportViewProps> = ({
         
         
         {/* Report Official Banner */}
-        <div className="w-full h-32 md:h-40 overflow-hidden mb-6 flex items-center justify-center p-2">
+        <div className="w-full h-32 md:h-40 overflow-hidden mb-6 print:rounded-none print:border-none print:shadow-none flex items-center justify-center">
           <img 
-            src={HRVL_LOGO_URL} 
+            src="https://lh3.googleusercontent.com/d/1LzxKTsj6b4TO1aIyI-tAddDsR5QMYYom" 
             alt="HRVL Banner" 
             referrerPolicy="no-referrer"
-            className="h-28 md:h-36 object-contain"
+            className="h-24 md:h-32 object-contain  filter drop-shadow-md"
           />
         </div>
 
         {/* Document Header Seal */}
         <div className="flex items-center justify-between border-b-2 border-emerald-800 pb-6 mb-8">
           <div className="flex items-center space-x-4">
-            <div className="w-20 h-20 flex items-center justify-center shrink-0">
+            <div className="w-16 h-16 flex items-center justify-center shrink-0">
               <img 
-                src={HRVL_LOGO_URL} 
+                src="https://lh3.googleusercontent.com/d/1LzxKTsj6b4TO1aIyI-tAddDsR5QMYYom" 
                 alt="HRVL Emblem" 
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-contain" 
+                className="w-full h-full object-contain " 
               />
             </div>
             <div>

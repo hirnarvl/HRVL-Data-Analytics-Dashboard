@@ -7,37 +7,44 @@ import {
   Moon, 
   Sun, 
   Play, 
-  Filter,
-  Building2,
-  Printer,
-  Volume2,
-  VolumeX,
-  TrendingUp,
-  Wifi,
-  WifiOff,
-  Database,
-  RotateCcw,
-  Smartphone,
-  Maximize2,
-  Calendar,
-  HelpCircle,
-  Globe,
-  HardDrive,
+  Filter, 
+  Building2, 
+  Printer, 
+  Volume2, 
+  VolumeX, 
+  TrendingUp, 
+  Wifi, 
+  WifiOff, 
+  Database, 
+  RotateCcw, 
+  Smartphone, 
+  Maximize2, 
+  Calendar, 
+  HelpCircle, 
+  Globe, 
+  HardDrive, 
   UserCircle, 
-  LogOut,
-  LayoutDashboard,
-  MapPin,
-  Table,
-  Menu,
-  X,
-  Sparkles,
-  ChevronRight
+  LogOut, 
+  LayoutDashboard, 
+  MapPin, 
+  Table, 
+  Menu, 
+  X, 
+  Sparkles, 
+  ChevronRight,
+  FlaskConical,
+  BookOpen,
+  ClipboardCheck,
+  TestTube2,
+  HeartHandshake,
+  GraduationCap,
+  Stethoscope
 } from 'lucide-react';
 import { 
   FilterState, 
-  Locale
+  Locale,
+  ActiveTab
 } from '../types';
-import { HRVL_LOGO_URL } from './Logo';
 import { soundEngine } from '../utils/sound';
 import { useAuth } from '../contexts/AuthContext';
 import { useI18n } from '../contexts/I18nContext';
@@ -47,8 +54,10 @@ import { ZoneFilterBottomSheet } from './ZoneFilterBottomSheet';
 interface NavbarProps {
   locale?: Locale;
   setLocale?: (loc: Locale) => void;
-  activeTab?: 'Dashboard' | 'Map' | 'Tables' | 'Calendar';
-  setActiveTab?: (tab: 'Dashboard' | 'Map' | 'Tables' | 'Calendar') => void;
+  activeTab?: ActiveTab;
+  setActiveTab?: (tab: ActiveTab) => void;
+  fastSubTab?: string;
+  onSelectFastSection?: (section: 'diseases' | 'resources' | 'field-tools' | 'laboratory' | 'one-health' | 'training') => void;
   darkMode: boolean;
   setDarkMode: (val: boolean | ((prev: boolean) => boolean)) => void;
   filters: FilterState;
@@ -61,6 +70,8 @@ interface NavbarProps {
   onOpenSupportModal?: () => void;
   onOpenExternalResources?: () => void;
   onOpenGoogleDrive?: () => void;
+  onSyncAnnualData?: () => void;
+  isSyncingData?: boolean;
   onExportAllCSV: () => void;
   onTogglePrintMode: () => void;
   isPrintFriendlyMode: boolean;
@@ -69,6 +80,10 @@ interface NavbarProps {
   onResetCache?: () => void;
   dataMinDate?: string;
   dataMaxDate?: string;
+  onToggleSimulator?: () => void;
+  isSimulatorRunning?: boolean;
+  isPortraitMode?: boolean;
+  onTogglePortraitMode?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -94,8 +109,12 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenSupportModal,
   onOpenExternalResources,
   onOpenGoogleDrive,
+  onSyncAnnualData,
+  isSyncingData,
   activeTab = 'Dashboard',
-  setActiveTab
+  setActiveTab,
+  fastSubTab = 'diseases',
+  onSelectFastSection
 }) => {
   const [soundEnabled, setSoundEnabled] = useState<boolean>(soundEngine.enabled);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -126,7 +145,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'Dashboard', label: t.dashboard, icon: LayoutDashboard },
     { id: 'Map', label: t.map, icon: MapPin },
     { id: 'Tables', label: t.tables, icon: Table },
-    { id: 'Calendar', label: 'Calendar', icon: Calendar },
+    { id: 'VaccineCalendar', label: t.vaccineCalendar, icon: Calendar },
+    { id: 'FieldToolkit', label: t.fieldToolkit || 'Field Toolkit', icon: Stethoscope },
+    { id: 'FAST', label: t.fastToolbox || 'FAST & One Health', icon: FlaskConical },
   ] as const;
 
   return (
@@ -134,12 +155,12 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Sticky Top Header Bar (visible on small/medium screens) */}
       <div className="lg:hidden sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between shadow-sm">
         <div className="flex items-center space-x-3">
-          <div className="h-10 w-10 flex items-center justify-center shrink-0">
+          <div className="h-9 w-9 flex items-center justify-center shrink-0">
             <img 
-              src={HRVL_LOGO_URL} 
+              src="https://lh3.googleusercontent.com/d/1LzxKTsj6b4TO1aIyI-tAddDsR5QMYYom" 
               alt="HRVL Emblem" 
               referrerPolicy="no-referrer"
-              className="w-full h-full object-contain" 
+              className="w-full h-full object-contain  filter drop-shadow-sm" 
             />
           </div>
           <div>
@@ -209,17 +230,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={() => {
               soundEngine.playClick();
-              if (setActiveTab) setActiveTab('Calendar');
-            }}
-            className={`flex flex-col items-center justify-center p-2 rounded-xl transition-colors min-w-[64px] ${activeTab === 'Calendar' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}
-          >
-            <Calendar className="w-5 h-5 mb-1" />
-            <span className="text-[10px] font-bold">Calendar</span>
-          </button>
-
-          <button
-            onClick={() => {
-              soundEngine.playClick();
               setIsMobileMenuOpen(prev => !prev);
             }}
             className={`flex flex-col items-center justify-center p-2 rounded-xl transition-colors min-w-[64px] ${isMobileMenuOpen ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}
@@ -254,10 +264,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* 3D Logo Emblem */}
             <div className="h-12 w-12 flex items-center justify-center shrink-0">
               <img 
-                src={HRVL_LOGO_URL} 
+                src="https://lh3.googleusercontent.com/d/1LzxKTsj6b4TO1aIyI-tAddDsR5QMYYom" 
                 alt="HRVL Emblem" 
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-contain" 
+                className="w-full h-full object-contain  filter drop-shadow-sm" 
               />
             </div>
             <div className="min-w-0 flex-1">
@@ -358,6 +368,54 @@ export const Navbar: React.FC<NavbarProps> = ({
               <PlusCircle className="w-4 h-4" />
               <span>{t.logArrival}</span>
             </button>
+          </div>
+
+          {/* Knowledge & Response (FAST Modules) */}
+          <div className="space-y-1 pt-2 border-t border-slate-200 dark:border-slate-800">
+            <div className="px-3 flex items-center justify-between mb-1.5">
+              <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                Knowledge & Response
+              </p>
+              <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-300 border border-teal-300 dark:border-teal-800">
+                FAST
+              </span>
+            </div>
+
+            {[
+              { id: 'diseases', label: t.fastDiseases || 'FAST Diseases', icon: FlaskConical },
+              { id: 'resources', label: t.resourceLibrary || 'Resource Library', icon: BookOpen },
+              { id: 'field-tools', label: t.fieldInvestigation || 'Field Investigation', icon: ClipboardCheck },
+              { id: 'laboratory', label: t.labDiagnostics || 'Laboratory Diagnostics', icon: TestTube2 },
+              { id: 'one-health', label: t.oneHealth || 'One Health', icon: HeartHandshake },
+              { id: 'training', label: t.trainingHub || 'Training Hub', icon: GraduationCap },
+            ].map(sub => {
+              const Icon = sub.icon;
+              const isSelected = activeTab === 'FAST' && fastSubTab === sub.id;
+              return (
+                <button
+                  key={sub.id}
+                  onClick={() => {
+                    soundEngine.playClick();
+                    if (setActiveTab) setActiveTab('FAST');
+                    if (onSelectFastSection) onSelectFastSection(sub.id as any);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`
+                    w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-xs transition-all duration-150 cursor-pointer
+                    ${isSelected 
+                      ? 'bg-teal-600 text-white font-bold shadow-xs' 
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-teal-50 dark:hover:bg-teal-950/40 hover:text-teal-700 dark:hover:text-teal-300 font-medium'
+                    }
+                  `}
+                >
+                  <div className="flex items-center space-x-2.5">
+                    <Icon className={`w-3.5 h-3.5 ${isSelected ? 'text-white' : 'text-teal-600 dark:text-teal-400'}`} />
+                    <span className="truncate">{sub.label}</span>
+                  </div>
+                  <ChevronRight className={`w-3 h-3 ${isSelected ? 'text-white' : 'opacity-40'}`} />
+                </button>
+              );
+            })}
           </div>
 
           {/* Quick Zone Filter */}
@@ -480,6 +538,23 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <FileText className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0" />
                 <span className="truncate">{t.aiSitrepReport}</span>
               </button>
+
+              
+              {/* Sync Annual Data (2025/2026) */}
+              {onSyncAnnualData && (
+                <button
+                  onClick={() => {
+                    soundEngine.playClick();
+                    onSyncAnnualData();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  disabled={isSyncingData}
+                  className="w-full py-2 px-3 flex items-center space-x-2.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700/80 transition-all cursor-pointer"
+                >
+                  <RotateCcw className={`w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 ${isSyncingData ? 'animate-spin' : ''}`} />
+                  <span className="truncate">{isSyncingData ? 'Syncing...' : 'Sync Annual Data (25/26)'}</span>
+                </button>
+              )}
 
               {/* Support Template */}
               {onOpenSupportModal && (

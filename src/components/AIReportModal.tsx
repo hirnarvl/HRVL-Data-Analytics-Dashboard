@@ -14,6 +14,7 @@ import {
 } from 'recharts';
 import { X, Sparkles, FileText, Loader2, CheckCircle2, Printer, AlertCircle, AlertTriangle, BarChart3, Layers } from 'lucide-react';
 import { NarrativeReport, Outbreak, SurveillanceRecord, WoredaCompliance, Locale } from '../types';
+import { loadFieldInvestigations } from '../utils/fieldToolkitStorage';
 import { WoredaReportMap } from './WoredaReportMap';
 import { translations } from '../utils/translations';
 import { useI18n } from '../contexts/I18nContext';
@@ -54,6 +55,14 @@ export const AIReportModal: React.FC<AIReportModalProps> = ({
     ? Math.round(complianceList.reduce((acc, c) => acc + c.complianceRate, 0) / complianceList.length)
     : 80;
 
+  const investigations = useMemo(() => loadFieldInvestigations(), [isOpen]);
+  const confirmedInvs = investigations.filter(i => i.certainty === 'Laboratory Confirmed' || i.status === 'Lab Confirmed');
+  const suspectedInvs = investigations.filter(i => i.certainty === 'Suspected' || i.certainty === 'Probable');
+  const totalSamples = investigations.reduce((acc, i) => acc + (i.samples?.length || 0), 0);
+  const positiveLabResults = investigations.reduce((acc, i) => acc + (i.labResults?.filter(l => l.result === 'Positive').length || 0), 0);
+  const totalLabResults = investigations.reduce((acc, i) => acc + (i.labResults?.length || 0), 0);
+  const oneHealthAlerts = investigations.filter(i => i.oneHealth?.hasHumanCasesOrExposure || i.oneHealth?.jointInterventionInitiated);
+
   const handleGenerateReport = async () => {
     setLoading(true);
     setErrorMsg(null);
@@ -67,6 +76,15 @@ export const AIReportModal: React.FC<AIReportModalProps> = ({
           totalDeaths,
           activeOutbreaks,
           complianceRate,
+          fieldInvestigations: {
+            total: investigations.length,
+            confirmed: confirmedInvs.length,
+            suspected: suspectedInvs.length,
+            totalSamples,
+            positiveLabResults,
+            totalLabResults,
+            oneHealthAlertsCount: oneHealthAlerts.length
+          },
           zoneStats: {
             eastHarargheWoredas: 21,
             westHarargheWoredas: 15,
@@ -89,16 +107,17 @@ export const AIReportModal: React.FC<AIReportModalProps> = ({
       setReportData({
         title: 'HRVL Regional Veterinary Surveillance & Situation Report',
         dateGenerated: new Date().toLocaleDateString('en-US', { dateStyle: 'full' }),
-        executiveSummary: `During the current reporting quarter, the Hirna Regional Veterinary Laboratory (HRVL) logged a total of ${records.length} field surveillance submissions representing ${totalCases} animal cases and ${totalDeaths} deaths across E/H and W/H zones. Active disease transmission was detected in major livestock corridors including Haramaya, Dadar, Chiro, and Daro Lebu. Woreda zero-reporting compliance stands at ${complianceRate}%, meeting target thresholds in key highland districts while requiring urgent intervention in low pastoral border sectors.`,
-        outbreakStatusAnalysis: `Key outbreak vectors include Foot-and-Mouth Disease (FMD) in cattle herds surrounding Harar market transit routes, Peste des Petits Ruminants (PPR) affecting small ruminants in Dadar and Mieso, and localized Anthrax cases requiring strict carcase burial protocols in Habro. Transboundary movement along the Djibouti highway axis remains a heightened risk factor.`,
-        speciesVulnerability: `Bovine species account for the highest total morbidity volume (${totalCases > 500 ? '60%' : '45%'}), while small ruminants (Goats & Sheep) demonstrate elevated mortality rates associated with PPR outbreaks. Poultry flocks exhibit acute Newcastle Disease events in backyard farming systems.`,
-        zonalComplianceSummary: `E/H Zone (21 Woredas) achieved an average reporting compliance rate of 88%, led by Haramaya and Babile. W/H Zone (15 Woredas) maintained 83% compliance, with Chiro and Habro exhibiting consistent weekly reporting.`,
+        executiveSummary: `During the current reporting period, the Hirna Regional Veterinary Laboratory (HRVL) coordinated surveillance across 36 woredas in East and West Hararghe. A total of ${records.length} field reports were logged (${totalCases} cases, ${totalDeaths} deaths). [CONFIRMED DATA]: HRVL diagnostic assays confirmed ${confirmedInvs.length} active outbreak foci with ${positiveLabResults} positive diagnostic tests. [SUSPECTED DATA]: ${suspectedInvs.length} events remain under clinical investigation with ${totalSamples} biological samples in transit/testing. Overall woreda zero-reporting compliance stands at ${complianceRate}%.`,
+        outbreakStatusAnalysis: `Priority transmission clusters involve Foot-and-Mouth Disease (FMD) along transit corridors (Haramaya, Babile, Chiro), Peste des Petits Ruminants (PPR) in pastoral small ruminants, and localized Anthrax outbreaks in Habro requiring strict carcass biosafety protocols. Cross-border trade routes with Somali Region and Djibouti maintain elevated transboundary disease pressure.`,
+        speciesVulnerability: `Cattle represent ${Math.round((totalCases * 0.58) / (totalCases || 1)) * 100 || 60}% of clinical morbidity volume, while small ruminants suffer elevated mortality during acute PPR episodes. Poultry systems demonstrate seasonal Newcastle Disease mortality in rural backyard holdings.`,
+        zonalComplianceSummary: `East Hararghe (21 Woredas) maintained 88% average reporting compliance. West Hararghe (15 Woredas) recorded 83% compliance, with high fidelity from Chiro, Habro, and Daro Lebu.`,
         highRiskWoredas: ['Haramaya', 'Dadar', 'Chiro', 'Daro Lebu', 'Habro', 'Babile'],
         epidemiologicalRecommendations: [
-          'Immediate ring vaccination for high risk bovine herds in Haramaya and Dadar border kebeles',
-          'Enforce strict movement restriction checkpoints along the Chiro-Mieso transport corridor',
-          'Deploy mobile rapid response diagnostic teams from HRVL for active Anthrax & CBPP field confirmation',
-          'Intensify zero-reporting compliance monitoring in pastoral woredas (Kumbi, Meyu Muluke)'
+          'Immediate ring vaccination (10km radius) around laboratory-confirmed FMD and PPR foci in Haramaya and Dadar',
+          'Enforce strict movement checkpoints and quarantine protocols along the Chiro-Mieso highway',
+          'Deploy HRVL rapid response teams with cold-chain sample collection kits to under-reported pastoral woredas',
+          'Activate Joint One Health rapid response for all suspected zoonotic Anthrax, Rabies, and RVF detections',
+          'Maintain zero-reporting compliance monitoring across all 36 Hararghe woredas'
         ]
       });
     } finally {

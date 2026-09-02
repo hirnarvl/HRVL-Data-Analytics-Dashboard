@@ -30,13 +30,13 @@ const getGenAIClient = () => {
   if (!apiKey) {
     throw new Error('GEMINI_API_KEY is not defined in environment secrets.');
   }
-  return new GoogleGenAI({
+  return new GoogleGenAI({ 
     apiKey,
     httpOptions: {
       headers: {
-        'User-Agent': 'aistudio-build',
-      },
-    },
+        'User-Agent': 'aistudio-build'
+      }
+    }
   });
 };
 
@@ -47,7 +47,16 @@ app.get('/api/health', (req, res) => {
 
 // Epidemiological Report Generation API
 app.post('/api/generate-narrative', async (req, res) => {
-  const { totalCases = 0, totalDeaths = 0, activeOutbreaks = 0, complianceRate = 80, zoneStats, topDiseases, locale = 'en' } = req.body || {};
+  const { 
+    totalCases = 0, 
+    totalDeaths = 0, 
+    activeOutbreaks = 0, 
+    complianceRate = 80, 
+    fieldInvestigations,
+    zoneStats, 
+    topDiseases, 
+    locale = 'en' 
+  } = req.body || {};
   
   const languageMap: Record<string, string> = {
     'en': 'English',
@@ -121,8 +130,14 @@ Current Data Highlights:
 - Total Deaths: ${totalDeaths}
 - Active Outbreaks: ${activeOutbreaks}
 - Overall Woreda Compliance Rate: ${complianceRate}%
+- Field Toolkit Investigations & Samples: ${JSON.stringify(fieldInvestigations || {})}
 - Zone Stats: ${JSON.stringify(zoneStats || {})}
 - Top Diseases & CFR: ${JSON.stringify(topDiseases || [])}
+
+EPIDEMIOLOGICAL ACCURACY MANDATE:
+1. Clearly differentiate between [LABORATORY CONFIRMED] findings (HRVL verified diagnostics) and [SUSPECTED / UNCONFIRMED] field surveillance signals.
+2. Highlight FAST transboundary animal diseases (FMD, PPR, LSD, CBPP) and One Health zoonoses (Anthrax, Rabies, Brucellosis, RVF) with appropriate biosafety recommendations.
+3. Ground all observations strictly in the provided data.
 
 Provide a structured, authoritative report in valid JSON format matching this schema (translate the VALUES to ${targetLanguage}, but keep the exact JSON keys in English):
 {
@@ -143,7 +158,7 @@ Provide a structured, authoritative report in valid JSON format matching this sc
 
 Return ONLY raw valid JSON.`;
 
-    const candidateModels = ['gemini-3.6-flash', 'gemini-flash-latest'];
+    const candidateModels = ['gemini-3.7-flash', 'gemini-3.1-pro-preview', 'gemini-flash-latest', 'gemini-3.1-flash-lite'];
     let narrativeText = '';
 
     for (const modelName of candidateModels) {
@@ -157,8 +172,10 @@ Return ONLY raw valid JSON.`;
               responseMimeType: 'application/json',
             },
           });
-          if (response && response.text) {
-            narrativeText = response.text;
+          const text = response.text;
+          
+          if (text) {
+            narrativeText = text;
             break;
           }
         } catch (err: any) {

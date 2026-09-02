@@ -1,3 +1,7 @@
+import { sync2025And2026Data } from './utils/syncDriveFolders';
+import { VaccineCalendar } from './components/VaccineCalendar';
+import { FastModuleContainer, FastSubTab } from './components/fast/FastModuleContainer';
+import { FieldToolkitContainer } from './components/fieldToolkit/FieldToolkitContainer';
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -17,7 +21,6 @@ import { DiseaseSummaryTable } from './components/DiseaseSummaryTable';
 import { OutbreakTable } from './components/OutbreakTable';
 import { SurveillanceTable } from './components/SurveillanceTable';
 import { ComplianceTable } from './components/ComplianceTable';
-import { VaccinationCalendar } from './components/VaccinationCalendar';
 import { FooterBanner } from './components/FooterBanner';
 import { NewArrivalModal } from './components/NewArrivalModal';
 import { ExcelImportModal } from './components/ExcelImportModal';
@@ -28,7 +31,6 @@ import { AuthModal } from './components/AuthModal';
 import { SupportModal } from './components/SupportModal';
 import { ExternalResourcesModal } from './components/ExternalResourcesModal';
 import { GoogleDriveModal } from './components/GoogleDriveModal';
-import { HRVL_LOGO_URL } from './components/Logo';
 
 import { 
   FilterState, 
@@ -37,7 +39,8 @@ import {
   WoredaCompliance, 
   DiseaseSummary,
   NarrativeReport,
-  Locale
+  Locale,
+  ActiveTab
 } from './types';
 
 import { 
@@ -55,7 +58,7 @@ import { useI18n } from './contexts/I18nContext';
 import { soundEngine } from './utils/sound';
 
 export default function App() {
-  const { user, loading, signInAsGuest } = useAuth();
+  const { user, loading, signInAsGuest, accessToken } = useAuth();
   const { locale, setLocale, t } = useI18n();
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     const saved = localStorage.getItem('hrvl_theme');
@@ -104,6 +107,38 @@ export default function App() {
   }, []);
 
   // Reset local storage cache to initial default data
+  
+  const [isSyncingData, setIsSyncingData] = useState(false);
+  const handleSyncAnnualData = async () => {
+    if (!accessToken) {
+      alert("Please connect to Google Drive first (via Export & Backup -> Google Drive Backup) to authorize sync.");
+      setIsGoogleDriveOpen(true);
+      return;
+    }
+    if (!user) {
+      alert("Please login first to upload data to the cloud database.");
+      return;
+    }
+    
+    setIsSyncingData(true);
+    try {
+      const syncedRecords = await sync2025And2026Data(accessToken);
+      if (syncedRecords.length > 0) {
+        // Upload to Firestore instead of just local cache
+        for (const record of syncedRecords) {
+          await saveRecordToFirestore(record);
+        }
+        alert(`Successfully synced and saved ${syncedRecords.length} records for 2025/2026 to the Cloud!`);
+      } else {
+        alert("No records found to sync.");
+      }
+    } catch (err) {
+      alert("Failed to sync data: " + String(err));
+    } finally {
+      setIsSyncingData(false);
+    }
+  };
+
   const handleResetCache = () => {
     clearCachedRecords();
     setRecords(INITIAL_SURVEILLANCE_RECORDS);
@@ -124,7 +159,8 @@ export default function App() {
   const [isSimulatorRunning, setIsSimulatorRunning] = useState(false);
   const [isPrintFriendlyMode, setIsPrintFriendlyMode] = useState(false);
   const [isPortraitMode, setIsPortraitMode] = useState(false);
-  const [activeTab, setActiveTab] = useState<'Dashboard' | 'Map' | 'Tables' | 'Calendar'>('Dashboard');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('Dashboard');
+  const [fastSubTab, setFastSubTab] = useState<FastSubTab>('diseases');
 
   // Modals
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
@@ -279,12 +315,12 @@ export default function App() {
     return (
       <div className={`min-h-screen font-sans transition-colors duration-200 bg-slate-100 dark:bg-slate-950 flex flex-col items-center justify-center p-4`}>
          <div className="text-center space-y-6 max-w-md bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800">
-            <div className="mx-auto h-20 w-20 flex items-center justify-center">
+            <div className="mx-auto h-20 w-20 flex items-center justify-center transform hover:-translate-y-1 transition-all duration-300">
               <img 
-                 src={HRVL_LOGO_URL} 
+                 src="https://lh3.googleusercontent.com/d/1LzxKTsj6b4TO1aIyI-tAddDsR5QMYYom" 
                  alt="HRVL Emblem" 
                  referrerPolicy="no-referrer"
-                className="w-full h-full object-contain" 
+                className="w-full h-full object-contain  filter drop-shadow-md" 
                />
             </div>
             <div>
@@ -379,13 +415,24 @@ export default function App() {
           onOpenExternalResources={() => setIsExternalResourcesOpen(true)}
           onOpenGoogleDrive={() => setIsGoogleDriveOpen(true)}
           onExportAllCSV={handleExportAllCSV}
+          onToggleSimulator={() => setIsSimulatorRunning(prev => !prev)}
+          isSimulatorRunning={isSimulatorRunning}
           onTogglePrintMode={() => setIsPrintFriendlyMode(prev => !prev)}
           isPrintFriendlyMode={isPrintFriendlyMode}
+          isPortraitMode={isPortraitMode}
+          onTogglePortraitMode={() => setIsPortraitMode(prev => !prev)}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
+          fastSubTab={fastSubTab}
+          onSelectFastSection={(sec) => {
+            setFastSubTab(sec);
+            setActiveTab('FAST');
+          }}
           isOnline={isOnline}
           cachedRecordsCount={records.length}
           onResetCache={handleResetCache}
+          onSyncAnnualData={handleSyncAnnualData}
+          isSyncingData={isSyncingData}
           dataMinDate={dataMinDate}
           dataMaxDate={dataMaxDate}
         />
@@ -527,6 +574,8 @@ export default function App() {
             records={filteredRecords}
             darkMode={isPrintFriendlyMode ? false : darkMode}
             onAddLogArrival={handleAddLogArrival}
+            isSimulatorRunning={isSimulatorRunning}
+            onToggleSimulator={() => setIsSimulatorRunning(prev => !prev)}
             onOpenYoYModal={() => setIsYoYModalOpen(true)}
           />
         </motion.div>
@@ -616,16 +665,6 @@ export default function App() {
         
           </div>
         )}
-
-        {activeTab === 'Calendar' && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: 'easeOut' }}
-          >
-            <VaccinationCalendar locale={locale} />
-          </motion.div>
-        )}
   {/* Field Officer Sign-Off & Verification Stamp Block (Print Mode Only) */}
         {isPrintFriendlyMode && (
           <div className="mt-8 pt-6 border-t-2 border-slate-900 grid grid-cols-2 gap-8 text-xs">
@@ -640,6 +679,58 @@ export default function App() {
               <p className="text-[11px] text-slate-500">Official Seal & Verification</p>
             </div>
           </div>
+        )}
+
+      
+        {activeTab === 'VaccineCalendar' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: 'easeOut' }}
+          >
+            <VaccineCalendar />
+          </motion.div>
+        )}
+
+        {activeTab === 'FieldToolkit' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: 'easeOut' }}
+          >
+            <FieldToolkitContainer
+              onOpenFastResource={(diseaseKey) => {
+                setActiveTab('FAST');
+                setFastSubTab('diseases');
+              }}
+              onViewOnMap={(inv) => {
+                if (inv.disease) {
+                  setFilters(prev => ({ ...prev, disease: inv.disease as any }));
+                }
+                setActiveTab('Map');
+              }}
+            />
+          </motion.div>
+        )}
+
+        {activeTab === 'FAST' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: 'easeOut' }}
+          >
+            <FastModuleContainer
+              records={filteredRecords}
+              initialSubTab={fastSubTab}
+              onNavigateToMap={(diseaseName) => {
+                if (diseaseName) {
+                  setFilters(prev => ({ ...prev, disease: diseaseName as any }));
+                }
+                setActiveTab('Map');
+              }}
+              onNavigateToDashboard={() => setActiveTab('Dashboard')}
+            />
+          </motion.div>
         )}
 
       </main>
