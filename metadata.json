@@ -1,6 +1,6 @@
 {
-  "name": "HRVL EPI-Analytic",
-  "description": "Epizootiological Surveillance, FAST Diseases & One Health Digital Toolbox Portal for Hirna Regional Veterinary Laboratory (HRVL).",
+  "name": "Remix HRVL-Data-Analytics-Dashboard",
+  "description": "Imported from GitHub: hirnarvl/HRVL-Data-Analytics-Dashboard",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

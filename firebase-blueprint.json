@@ -1,46 +1,44 @@
 {
-  "entities": {
-    "outbreak": {
-      "title": "Outbreak",
-      "description": "Veterinary epizootiological outbreak incident report",
-      "type": "object",
-      "properties": {
-        "region": { "type": "string", "maxLength": 100 },
-        "zone": { "type": "string", "maxLength": 100 },
-        "woreda": { "type": "string", "maxLength": 100 },
-        "disease": { "type": "string", "maxLength": 100 },
-        "species": { "type": "string", "maxLength": 100 },
-        "cases": { "type": "number" },
-        "deaths": { "type": "number" },
-        "date": { "type": "string", "maxLength": 50 }
+  "auth": {
+    "providers": {
+      "email": {
+        "enabled": true
       },
-      "required": ["disease", "species", "cases", "date"]
-    },
-    "surveillance": {
-      "title": "Surveillance",
-      "description": "Active and passive field disease surveillance record",
-      "type": "object",
-      "properties": {
-        "region": { "type": "string", "maxLength": 100 },
-        "zone": { "type": "string", "maxLength": 100 },
-        "woreda": { "type": "string", "maxLength": 100 },
-        "status": { "type": "string", "maxLength": 50 },
-        "date": { "type": "string", "maxLength": 50 }
+      "google": {
+        "enabled": true
       },
-      "required": ["region", "status", "date"]
+      "phone": {
+        "enabled": true
+      }
     }
   },
   "firestore": {
-    "/outbreaks/{outbreakId}": {
-      "schema": { "$ref": "#/entities/outbreak" },
-      "description": "Outbreak events registered by veterinary epidemiologists"
-    },
-    "/surveillance/{surveillanceId}": {
-      "schema": { "$ref": "#/entities/surveillance" },
-      "description": "Field disease surveillance records"
-    },
-    "/test/{testId}": {
-      "description": "Health check and connection verification"
-    }
+    "collections": [
+      {
+        "name": "outbreaks",
+        "description": "Store outbreak records",
+        "fields": [
+          { "name": "region", "type": "string" },
+          { "name": "zone", "type": "string" },
+          { "name": "woreda", "type": "string" },
+          { "name": "disease", "type": "string" },
+          { "name": "species", "type": "string" },
+          { "name": "cases", "type": "number" },
+          { "name": "deaths", "type": "number" },
+          { "name": "date", "type": "string" }
+        ]
+      },
+      {
+        "name": "surveillance",
+        "description": "Store surveillance records",
+        "fields": [
+          { "name": "region", "type": "string" },
+          { "name": "zone", "type": "string" },
+          { "name": "woreda", "type": "string" },
+          { "name": "status", "type": "string" },
+          { "name": "date", "type": "string" }
+        ]
+      }
+    ]
   }
 }

@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "still-loader-mq4x8"
+  },
+  "targets": {
+    "still-loader-mq4x8": {
+      "hosting": {
+        "site": [
+          "hrvl-c0061-de1af"
+        ]
+      }
+    }
+  }
+}
