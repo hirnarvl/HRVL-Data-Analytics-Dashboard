@@ -1,21 +1,23 @@
 import { collection, doc, setDoc, onSnapshot, query, limit } from 'firebase/firestore';
-import { db } from '../firebase';
+import { db, handleFirestoreError, OperationType } from '../firebase';
 import { SurveillanceRecord } from '../types';
-import { saveCachedRecords } from './storage';
+import { saveCachedRecords, loadCachedRecords } from './storage';
 
 const COLLECTION_NAME = 'surveillanceRecords';
 
 /**
  * Listens for real-time surveillance record updates from Firebase Firestore.
+ * Automatically falls back to locally cached records when offline or during transient network delays.
  */
 export function subscribeToFirestoreRecords(
   onUpdate: (records: SurveillanceRecord[]) => void,
-  onError?: (err: any) => void
+  onError?: (err: unknown) => void
 ): () => void {
   try {
     const q = query(collection(db, COLLECTION_NAME), limit(1000));
     const unsubscribe = onSnapshot(
       q,
+      { includeMetadataChanges: true },
       (snapshot) => {
         if (!snapshot.empty) {
           const recordsFromDb: SurveillanceRecord[] = [];
@@ -25,19 +27,28 @@ export function subscribeToFirestoreRecords(
               id: docSnap.id
             });
           });
-          // Cache to localStorage for offline access
+          // Cache to localStorage for offline resilience
           saveCachedRecords(recordsFromDb);
           onUpdate(recordsFromDb);
         }
       },
       (error) => {
-        console.warn('[Firebase] Firestore listener notice:', error);
+        handleFirestoreError(error, OperationType.LIST, COLLECTION_NAME);
+        // Fall back gracefully to cached records on unavailable / offline
+        const cached = loadCachedRecords();
+        if (cached && cached.length > 0) {
+          onUpdate(cached);
+        }
         if (onError) onError(error);
       }
     );
     return unsubscribe;
   } catch (err) {
-    console.warn('[Firebase] Could not subscribe to Firestore:', err);
+    handleFirestoreError(err, OperationType.LIST, COLLECTION_NAME);
+    const cached = loadCachedRecords();
+    if (cached && cached.length > 0) {
+      onUpdate(cached);
+    }
     return () => {};
   }
 }
@@ -51,7 +62,7 @@ export async function saveRecordToFirestore(record: SurveillanceRecord): Promise
     await setDoc(docRef, record, { merge: true });
     return true;
   } catch (err) {
-    console.warn('[Firebase] Failed to save record to Firestore (will remain cached locally):', err);
+    handleFirestoreError(err, OperationType.WRITE, `${COLLECTION_NAME}/${record.id}`);
     return false;
   }
 }
@@ -67,6 +78,6 @@ export async function seedRecordsToFirestore(records: SurveillanceRecord[]): Pro
     }
     console.log('[Firebase] Successfully seeded records to Firestore');
   } catch (err) {
-    console.warn('[Firebase] Could not seed records to Firestore:', err);
+    handleFirestoreError(err, OperationType.WRITE, COLLECTION_NAME);
   }
 }

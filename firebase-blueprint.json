@@ -1,44 +1,55 @@
 {
-  "auth": {
-    "providers": {
-      "email": {
-        "enabled": true
+  "entities": {
+    "surveillanceRecord": {
+      "title": "SurveillanceRecord",
+      "description": "Veterinary epizootiological surveillance and outbreak record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "disease": { "type": "string" },
+        "species": { "type": "string" },
+        "region": { "type": "string" },
+        "zone": { "type": "string" },
+        "woreda": { "type": "string" },
+        "kebele": { "type": "string" },
+        "cases": { "type": "number" },
+        "deaths": { "type": "number" },
+        "date": { "type": "string" },
+        "status": { "type": "string" }
       },
-      "google": {
-        "enabled": true
+      "required": ["disease", "species"]
+    },
+    "outbreak": {
+      "title": "Outbreak",
+      "description": "Veterinary epizootiological outbreak incident report",
+      "type": "object",
+      "properties": {
+        "region": { "type": "string" },
+        "zone": { "type": "string" },
+        "woreda": { "type": "string" },
+        "disease": { "type": "string" },
+        "species": { "type": "string" },
+        "cases": { "type": "number" },
+        "deaths": { "type": "number" },
+        "date": { "type": "string" }
       },
-      "phone": {
-        "enabled": true
-      }
+      "required": ["disease", "species", "cases", "date"]
     }
   },
   "firestore": {
-    "collections": [
-      {
-        "name": "outbreaks",
-        "description": "Store outbreak records",
-        "fields": [
-          { "name": "region", "type": "string" },
-          { "name": "zone", "type": "string" },
-          { "name": "woreda", "type": "string" },
-          { "name": "disease", "type": "string" },
-          { "name": "species", "type": "string" },
-          { "name": "cases", "type": "number" },
-          { "name": "deaths", "type": "number" },
-          { "name": "date", "type": "string" }
-        ]
-      },
-      {
-        "name": "surveillance",
-        "description": "Store surveillance records",
-        "fields": [
-          { "name": "region", "type": "string" },
-          { "name": "zone", "type": "string" },
-          { "name": "woreda", "type": "string" },
-          { "name": "status", "type": "string" },
-          { "name": "date", "type": "string" }
-        ]
-      }
-    ]
+    "/surveillanceRecords/{recordId}": {
+      "schema": { "$ref": "#/entities/surveillanceRecord" },
+      "description": "Veterinary surveillance records synchronized across web and mobile"
+    },
+    "/outbreaks/{outbreakId}": {
+      "schema": { "$ref": "#/entities/outbreak" },
+      "description": "Outbreak events registered by veterinary epidemiologists"
+    },
+    "/surveillance/{surveillanceId}": {
+      "description": "Field disease surveillance records"
+    },
+    "/test/{testId}": {
+      "description": "Health check and connection verification"
+    }
   }
 }

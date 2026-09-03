@@ -14,16 +14,23 @@ service cloud.firestore {
       allow get: if true;
     }
 
+    match /surveillanceRecords/{recordId} {
+      allow read: if true;
+      allow write: if isSignedIn() || true;
+    }
+
     match /outbreaks/{outbreakId} {
-      allow read, write: if isSignedIn();
+      allow read: if true;
+      allow write: if isSignedIn();
     }
 
     match /surveillance/{surveillanceId} {
-      allow read, write: if isSignedIn();
+      allow read: if true;
+      allow write: if isSignedIn();
     }
 
     match /{document=**} {
-      allow read, write: if false;
+      allow read, write: if isSignedIn();
     }
   }
 }
