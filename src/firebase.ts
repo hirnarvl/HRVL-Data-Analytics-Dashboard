@@ -27,6 +27,26 @@ const dbId = (firebaseConfigJson && (firebaseConfigJson as { firestoreDatabaseId
 export const db = (dbId && dbId !== '(default)') ? getFirestore(app, dbId) : getFirestore(app);
 export const auth = getAuth(app);
 
+// Gracefully handle connection state testing according to standard guidelines
+export async function testFirestoreConnection() {
+  try {
+    const { doc, getDocFromServer } = await import('firebase/firestore');
+    await getDocFromServer(doc(db, 'test', 'connection'));
+  } catch (error) {
+    if (error instanceof Error && (error.message.includes('offline') || error.message.includes('auth/network-request-failed') || error.message.includes('unavailable'))) {
+      // Benign expected offline state in local or low-connectivity preview environments
+      console.info('[Firestore] Operating with offline persistence cache.');
+    }
+  }
+}
+
+// Perform background non-blocking connection check
+if (typeof window !== 'undefined') {
+  setTimeout(() => {
+    testFirestoreConnection().catch(() => {});
+  }, 1500);
+}
+
 export enum OperationType {
   CREATE = 'create',
   UPDATE = 'update',

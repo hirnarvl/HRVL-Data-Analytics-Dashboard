@@ -1,4 +1,4 @@
-import { WoredaInfo } from '../types';
+import { WoredaInfo, DiagnosticHubInfo } from '../types';
 
 export const HARARGHE_WOREDAS: WoredaInfo[] = [
   // E/H (21 Woredas)
@@ -42,4 +42,24 @@ export const HARARGHE_WOREDAS: WoredaInfo[] = [
   { id: 'wh-15', name: 'Hawwi Gudina', zone: 'W/H', lat: 8.4512, lng: 40.4012, populationEstimate: 81000 },
 ];
 
-export const HIRNA_LAB_COORDS = { lat: 9.2178, lng: 41.1012, name: 'Hirna Regional Veterinary Laboratory (HRVL)' };
+/**
+ * Verified Physical Location of Hirna Regional Veterinary Laboratory (HRVL)
+ * Authoritative Plus Code: 64C3+GP, Hirna, Ethiopia
+ * Full Open Location Code: 6HX364C3+GP
+ * Geographically Decoded Coordinates: 9.221312° N, 41.104313° E (via Google OLC Standard)
+ */
+export const HIRNA_LAB_COORDS: DiagnosticHubInfo = {
+  id: 'hrvl-diagnostic-hub',
+  type: 'diagnostic_hub',
+  name: 'Hirna Regional Veterinary Laboratory',
+  shortName: 'HRVL Diagnostic Hub',
+  locationName: 'Hirna, West Hararghe, Oromia, Ethiopia',
+  plusCode: '64C3+GP',
+  fullPlusCode: '6HX364C3+GP',
+  lat: 9.221312,
+  lng: 41.104313,
+  zone: 'W/H',
+  googleMapsQuery: '64C3+GP, Hirna, Ethiopia',
+  googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=64C3%2BGP%2C%20Hirna%2C%20Ethiopia',
+  description: 'Regional Epizootiological Surveillance, Diagnostic Reference Laboratory & Molecular Pathogen Testing Center'
+};

@@ -121,3 +121,19 @@ export interface NarrativeReport {
 }
 
 export type ActiveTab = 'Dashboard' | 'Map' | 'Tables' | 'VaccineCalendar' | 'FieldToolkit' | 'FAST';
+
+export interface DiagnosticHubInfo {
+  id: string;
+  type: 'diagnostic_hub';
+  name: string;
+  shortName: string;
+  locationName: string;
+  plusCode: string;
+  fullPlusCode: string;
+  lat: number;
+  lng: number;
+  zone: ZoneName;
+  googleMapsQuery: string;
+  googleMapsUrl: string;
+  description: string;
+}

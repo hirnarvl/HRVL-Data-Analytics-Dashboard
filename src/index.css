@@ -55,3 +55,214 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ==========================================================================
+   LIVE OUTBREAK SIGNAL & GIS SURVEILLANCE PULSE SYSTEM
+   ========================================================================== */
+
+/* Hardware-accelerated entrance for newly mapped signals */
+@keyframes signalAppear {
+  0% {
+    transform: scale(0.65);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 1. CONFIRMED OUTBREAK: Red Pulse & Expanding Ripple (Strongest: 1.6s Cycle) */
+@keyframes confirmedPulseRing {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.85;
+  }
+  60% {
+    transform: scale(1.55);
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(2.05);
+    opacity: 0;
+  }
+}
+
+@keyframes confirmedCoreGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7), 0 3px 8px rgba(0, 0, 0, 0.4);
+    filter: brightness(1);
+  }
+  50% {
+    box-shadow: 0 0 14px 4px rgba(239, 68, 68, 0.85), 0 4px 14px rgba(239, 68, 68, 0.5);
+    filter: brightness(1.18);
+  }
+}
+
+/* 2. SUSPECTED / FIELD SIGNAL: Amber Pulse (Moderate: 2.2s Cycle) */
+@keyframes suspectedPulseRing {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.75;
+  }
+  65% {
+    transform: scale(1.45);
+    opacity: 0.25;
+  }
+  100% {
+    transform: scale(1.85);
+    opacity: 0;
+  }
+}
+
+@keyframes suspectedCoreGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.6), 0 3px 8px rgba(0, 0, 0, 0.35);
+    filter: brightness(1);
+  }
+  50% {
+    box-shadow: 0 0 10px 3px rgba(245, 158, 11, 0.75), 0 4px 12px rgba(245, 158, 11, 0.4);
+    filter: brightness(1.14);
+  }
+}
+
+/* 3. FIELD INVESTIGATION MISSION: Emerald Pulse (Moderate/Soft: 2.5s Cycle) */
+@keyframes fieldMissionPulseRing {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(1.4);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(1.75);
+    opacity: 0;
+  }
+}
+
+@keyframes fieldMissionCoreGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5), 0 2px 6px rgba(0, 0, 0, 0.3);
+    filter: brightness(1);
+  }
+  50% {
+    box-shadow: 0 0 8px 2px rgba(16, 185, 129, 0.65), 0 3px 8px rgba(16, 185, 129, 0.35);
+    filter: brightness(1.12);
+  }
+}
+
+/* 4. HRVL DIAGNOSTIC HUB: Indigo/Blue Diagnostic Activity Pulse (Soft: 3.0s Cycle) */
+@keyframes hubActivityPulseRing {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.65;
+  }
+  75% {
+    transform: scale(1.35);
+    opacity: 0.15;
+  }
+  100% {
+    transform: scale(1.65);
+    opacity: 0;
+  }
+}
+
+@keyframes hubCoreGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);
+    filter: brightness(1);
+  }
+  50% {
+    box-shadow: 0 0 12px 3px rgba(99, 102, 241, 0.7), 0 4px 14px rgba(79, 70, 229, 0.45);
+    filter: brightness(1.12);
+  }
+}
+
+/* Live Legend Indicator Pulse */
+@keyframes liveDotGlow {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.18);
+    box-shadow: 0 0 8px 2.5px rgba(239, 68, 68, 0.85);
+  }
+}
+
+/* Helper utility classes for Leaflet custom HTML markers */
+.live-signal-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible !important;
+}
+
+.live-signal-ring-confirmed {
+  animation: confirmedPulseRing 1.6s ease-out infinite;
+}
+
+.live-signal-core-confirmed {
+  animation: confirmedCoreGlow 1.6s ease-in-out infinite, signalAppear 0.4s ease-out;
+}
+
+.live-signal-ring-suspected {
+  animation: suspectedPulseRing 2.2s ease-out infinite;
+}
+
+.live-signal-core-suspected {
+  animation: suspectedCoreGlow 2.2s ease-in-out infinite, signalAppear 0.4s ease-out;
+}
+
+.live-signal-ring-mission {
+  animation: fieldMissionPulseRing 2.5s ease-out infinite;
+}
+
+.live-signal-core-mission {
+  animation: fieldMissionCoreGlow 2.5s ease-in-out infinite, signalAppear 0.4s ease-out;
+}
+
+.live-signal-ring-hub {
+  animation: hubActivityPulseRing 3.0s ease-out infinite;
+}
+
+.live-signal-core-hub {
+  animation: hubCoreGlow 3.0s ease-in-out infinite;
+}
+
+.live-dot-pulse {
+  animation: liveDotGlow 1.8s ease-in-out infinite;
+}
+
+/* Ensure Leaflet icon containers do not clip outer expanding pulse rings */
+.leaflet-marker-icon.custom-outbreak-pin,
+.leaflet-marker-icon.custom-hub-icon,
+.leaflet-marker-icon.custom-field-investigation-pin {
+  overflow: visible !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Accessibility: Respect Reduced Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  .live-signal-ring-confirmed,
+  .live-signal-core-confirmed,
+  .live-signal-ring-suspected,
+  .live-signal-core-suspected,
+  .live-signal-ring-mission,
+  .live-signal-core-mission,
+  .live-signal-ring-hub,
+  .live-signal-core-hub,
+  .live-dot-pulse {
+    animation: none !important;
+  }
+}
+

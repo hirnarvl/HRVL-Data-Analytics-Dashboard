@@ -150,6 +150,7 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
   // Selected Inspect Item
   const [selectedOutbreak, setSelectedOutbreak] = useState<Outbreak | null>(outbreaks[0] || null);
   const [selectedWoreda, setSelectedWoreda] = useState<WoredaInfo | null>(null);
+  const [isHubSelected, setIsHubSelected] = useState<boolean>(false);
 
   // Search & Filter
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -172,7 +173,7 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
   }, []);
 
   // Fetch Weather for current focus
-  const loadWeatherForCurrentFocus = async (lat: number = 9.2178, lng: number = 41.1012, name: string = 'Hirna Lab Hub') => {
+  const loadWeatherForCurrentFocus = async (lat: number = HIRNA_LAB_COORDS.lat, lng: number = HIRNA_LAB_COORDS.lng, name: string = 'HRVL Diagnostic Hub') => {
     setIsWeatherLoading(true);
     try {
       const data = await fetchLiveWeather(lat, lng, name);
@@ -533,36 +534,96 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
       const hubIcon = L.divIcon({
         className: 'custom-hub-icon',
         html: `
-          <div style="
-            width: 38px; height: 38px;
-            background: linear-gradient(135deg, #4f46e5, #4338ca);
-            border: 2.5px solid #ffffff;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-            animation: pulse-ring 2.5s infinite;
-          ">
-            <span style="font-size: 16px;">🏥</span>
+          <div class="live-signal-container" style="width: 40px; height: 40px; position: relative;" aria-label="Hirna Regional Veterinary Laboratory — HRVL Diagnostic Hub">
+            <div class="live-signal-ring-hub" style="
+              position: absolute;
+              inset: -5px;
+              border-radius: 50%;
+              border: 2px solid #818cf8;
+              background: rgba(99, 102, 241, 0.18);
+              pointer-events: none;
+            "></div>
+            <div class="live-signal-core-hub" style="
+              width: 34px; height: 34px;
+              background: linear-gradient(135deg, #4f46e5, #4338ca);
+              border: 2px solid #ffffff;
+              border-radius: 50%;
+              display: flex; align-items: center; justify-content: center;
+              position: relative;
+              z-index: 2;
+              cursor: pointer;
+            ">
+              <span style="font-size: 15px;">🏥</span>
+              <span class="live-dot-pulse" style="
+                position: absolute;
+                top: -1px; right: -1px;
+                width: 6px; height: 6px;
+                background: #38bdf8;
+                border: 1.5px solid #ffffff;
+                border-radius: 50%;
+              "></span>
+            </div>
           </div>
         `,
-        iconSize: [38, 38],
-        iconAnchor: [19, 19],
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
       });
 
-      const hubMarker = L.marker([HIRNA_LAB_COORDS.lat, HIRNA_LAB_COORDS.lng], { icon: hubIcon });
+      const hubMarker = L.marker([HIRNA_LAB_COORDS.lat, HIRNA_LAB_COORDS.lng], {
+        icon: hubIcon,
+        title: 'Hirna Regional Veterinary Laboratory (HRVL)',
+        alt: 'Hirna Regional Veterinary Laboratory — HRVL Diagnostic Hub'
+      });
+
       hubMarker.bindTooltip(`
         <div style="font-family: sans-serif; padding: 4px 6px;">
+          <div style="display: flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 800; color: #4f46e5; text-transform: uppercase; margin-bottom: 2px;">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: #4f46e5; display: inline-block;"></span>
+            LIVE DIAGNOSTIC HUB
+          </div>
           <b style="color: #4338ca; font-size: 11px;">🏥 Hirna Regional Veterinary Laboratory (HRVL)</b>
           <div style="font-size: 10px; color: #475569; margin-top: 2px;">
-            Central Surveillance & Diagnostic Hub • W/H
+            Plus Code: <b>64C3+GP</b> • Hirna, W/H
           </div>
         </div>
       `, { sticky: true });
 
+      hubMarker.bindPopup(`
+        <div style="font-family: sans-serif; padding: 6px 8px; min-width: 230px; max-width: 275px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+            <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 800; color: #4338ca; text-transform: uppercase; background: rgba(99, 102, 241, 0.12); padding: 2px 6px; border-radius: 4px;">
+              <span style="width: 5px; height: 5px; border-radius: 50%; background: #4f46e5; display: inline-block;"></span>
+              HRVL DIAGNOSTIC HUB
+            </span>
+            <span style="font-size: 9px; color: #64748b; font-weight: 700;">Active Hub</span>
+          </div>
+          <b style="color: #1e1b4b; font-size: 12px; display: block; line-height: 1.3;">Hirna Regional Veterinary Laboratory</b>
+          <div style="font-size: 10.5px; color: #334155; margin-top: 5px; line-height: 1.45;">
+            <b>Location:</b> Hirna, West Hararghe, Oromia, Ethiopia<br/>
+            <b>Plus Code:</b> <span style="background: #f1f5f9; padding: 1px 4px; border-radius: 3px; font-weight: 800; color: #0f766e; font-family: monospace;">64C3+GP</span><br/>
+            <b>Coordinates:</b> 9.221312° N, 41.104313° E<br/>
+            <b>Status:</b> Diagnostic Hub
+          </div>
+          <div style="margin-top: 8px; padding-top: 6px; border-top: 1px solid #e2e8f0;">
+            <a
+              href="${HIRNA_LAB_COORDS.googleMapsUrl}"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open Hirna Regional Veterinary Laboratory in Google Maps"
+              style="display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%; background: #4f46e5; color: #ffffff; text-decoration: none; padding: 6px 10px; border-radius: 7px; font-size: 11px; font-weight: 700; box-shadow: 0 2px 4px rgba(79, 70, 229, 0.25); text-align: center;"
+            >
+              <span>🌐 View on Google Maps ↗</span>
+            </a>
+          </div>
+        </div>
+      `, { minWidth: 230, maxWidth: 285 });
+
       hubMarker.on('click', () => {
         setSelectedOutbreak(null);
         setSelectedWoreda(null);
-        loadWeatherForCurrentFocus(HIRNA_LAB_COORDS.lat, HIRNA_LAB_COORDS.lng, 'HRVL Hub (Hirna)');
+        setIsHubSelected(true);
+        setIsInspectorOpen(true);
+        loadWeatherForCurrentFocus(HIRNA_LAB_COORDS.lat, HIRNA_LAB_COORDS.lng, 'HRVL Diagnostic Hub');
       });
 
       survGroup.addLayer(hubMarker);
@@ -577,36 +638,67 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
 
         const profile = getDiseaseRiskProfile(ob.disease);
         const color = isConfirmed ? '#ef4444' : '#f59e0b';
+        const ringClass = isConfirmed ? 'live-signal-ring-confirmed' : 'live-signal-ring-suspected';
+        const coreClass = isConfirmed ? 'live-signal-core-confirmed' : 'live-signal-core-suspected';
+        const ringBorder = isConfirmed ? '#ef4444' : '#f59e0b';
+        const ringBg = isConfirmed ? 'rgba(239, 68, 68, 0.22)' : 'rgba(245, 158, 11, 0.2)';
+        const liveDotBg = isConfirmed ? '#ef4444' : '#f59e0b';
 
         const markerIcon = L.divIcon({
           className: 'custom-outbreak-pin',
           html: `
-            <div style="
-              width: 30px; height: 30px;
-              background-color: ${color};
-              border: 2px solid #ffffff;
-              border-radius: 50%;
-              display: flex; align-items: center; justify-content: center;
-              box-shadow: 0 3px 8px rgba(0,0,0,0.35);
-              cursor: pointer;
-            ">
-              <span style="font-size: 12px; color: white; font-weight: bold;">
-                ${ob.cases > 20 ? '🔥' : '⚠️'}
-              </span>
+            <div class="live-signal-container" style="width: 36px; height: 36px; position: relative;">
+              <div class="${ringClass}" style="
+                position: absolute;
+                inset: -6px;
+                border-radius: 50%;
+                border: 2px solid ${ringBorder};
+                background: ${ringBg};
+                pointer-events: none;
+              "></div>
+              <div class="${coreClass}" style="
+                width: 30px; height: 30px;
+                background-color: ${color};
+                border: 2px solid #ffffff;
+                border-radius: 50%;
+                display: flex; align-items: center; justify-content: center;
+                position: relative;
+                z-index: 2;
+                cursor: pointer;
+              ">
+                <span style="font-size: 12px; color: white; font-weight: bold;">
+                  ${ob.cases > 20 ? '🔥' : '⚠️'}
+                </span>
+                <span class="live-dot-pulse" style="
+                  position: absolute;
+                  top: -1px; right: -1px;
+                  width: 6px; height: 6px;
+                  background: #ffffff;
+                  border: 1.5px solid ${liveDotBg};
+                  border-radius: 50%;
+                "></span>
+              </div>
             </div>
           `,
-          iconSize: [30, 30],
-          iconAnchor: [15, 15],
+          iconSize: [36, 36],
+          iconAnchor: [18, 18],
         });
 
         const marker = L.marker([ob.lat, ob.lng], { icon: markerIcon });
         marker.bindTooltip(`
-          <div style="font-family: sans-serif; padding: 4px 6px; min-width: 140px;">
+          <div style="font-family: sans-serif; padding: 4px 6px; min-width: 150px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px;">
+              <span style="display: inline-flex; align-items: center; gap: 3px; font-size: 9px; font-weight: 800; color: ${color}; text-transform: uppercase; background: ${isConfirmed ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)'}; padding: 1px 5px; border-radius: 4px;">
+                <span style="width: 5px; height: 5px; border-radius: 50%; background: ${color}; display: inline-block;"></span>
+                LIVE SIGNAL
+              </span>
+              <span style="font-size: 9px; color: #64748b; font-weight: 600;">${ob.status}</span>
+            </div>
             <b style="color: ${color}; font-size: 11px;">${ob.disease}</b>
             <div style="font-size: 10px; color: #334155; margin-top: 2px;">
               <b>Location:</b> ${ob.woreda} (${ob.zone})<br/>
               <b>Cases:</b> ${ob.cases} | <b>Deaths:</b> ${ob.deaths}<br/>
-              <b>Status:</b> ${ob.status}
+              <b>CFR:</b> ${ob.cfr}%
             </div>
           </div>
         `, { sticky: true });
@@ -627,24 +719,48 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
         const invIcon = L.divIcon({
           className: 'custom-field-investigation-pin',
           html: `
-            <div style="
-              width: 26px; height: 26px;
-              background-color: #10b981;
-              border: 2px solid #ffffff;
-              border-radius: 6px;
-              display: flex; align-items: center; justify-content: center;
-              box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-            ">
-              <span style="font-size: 12px;">🔬</span>
+            <div class="live-signal-container" style="width: 34px; height: 34px; position: relative;">
+              <div class="live-signal-ring-mission" style="
+                position: absolute;
+                inset: -5px;
+                border-radius: 8px;
+                border: 2px solid #10b981;
+                background: rgba(16, 185, 129, 0.2);
+                pointer-events: none;
+              "></div>
+              <div class="live-signal-core-mission" style="
+                width: 26px; height: 26px;
+                background-color: #10b981;
+                border: 2px solid #ffffff;
+                border-radius: 6px;
+                display: flex; align-items: center; justify-content: center;
+                position: relative;
+                z-index: 2;
+                cursor: pointer;
+              ">
+                <span style="font-size: 12px;">🔬</span>
+                <span class="live-dot-pulse" style="
+                  position: absolute;
+                  top: -1px; right: -1px;
+                  width: 5px; height: 5px;
+                  background: #ffffff;
+                  border: 1.5px solid #10b981;
+                  border-radius: 50%;
+                "></span>
+              </div>
             </div>
           `,
-          iconSize: [26, 26],
-          iconAnchor: [13, 13],
+          iconSize: [34, 34],
+          iconAnchor: [17, 17],
         });
 
         const invMarker = L.marker([inv.lat || 9.2, inv.lng || 41.1], { icon: invIcon });
         invMarker.bindTooltip(`
           <div style="font-family: sans-serif; padding: 4px 6px;">
+            <div style="display: flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 800; color: #059669; text-transform: uppercase; margin-bottom: 2px;">
+              <span style="width: 5px; height: 5px; border-radius: 50%; background: #059669; display: inline-block;"></span>
+              LIVE FIELD MISSION
+            </div>
             <b style="color: #059669; font-size: 11px;">🔬 Field Mission: ${inv.investigationCode || inv.id}</b>
             <div style="font-size: 10px; color: #475569; margin-top: 2px;">
               <b>Woreda:</b> ${inv.woreda} (${inv.zone})<br/>
@@ -954,38 +1070,64 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
         )}
 
         {/* Bottom-Left Interactive Disease Legend */}
-        <div className="absolute bottom-4 left-3 z-20 bg-slate-900/90 dark:bg-slate-950/90 backdrop-blur-md border border-slate-700/80 rounded-2xl p-3 shadow-2xl text-xs text-slate-200 max-w-[260px] sm:max-w-xs transition-all">
+        <div className="absolute bottom-4 left-3 z-20 bg-slate-900/90 dark:bg-slate-950/90 backdrop-blur-md border border-slate-700/80 rounded-2xl p-3 shadow-2xl text-xs text-slate-200 max-w-[270px] sm:max-w-xs transition-all">
           <div className="flex items-center justify-between border-b border-slate-800 pb-1.5 mb-2">
             <div className="flex items-center space-x-1.5 font-extrabold text-white">
               <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />
               <span>Surveillance Legend</span>
             </div>
-            <button
-              onClick={() => setIsLegendExpanded(prev => !prev)}
-              className="p-1 text-slate-400 hover:text-white rounded transition-colors cursor-pointer"
-            >
-              {isLegendExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
-            </button>
+            <div className="flex items-center space-x-1.5">
+              <span className="flex items-center space-x-1 px-1.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[9px] font-extrabold">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 live-dot-pulse inline-block" />
+                <span>LIVE SIGNAL</span>
+              </span>
+              <button
+                onClick={() => setIsLegendExpanded(prev => !prev)}
+                className="p-1 text-slate-400 hover:text-white rounded transition-colors cursor-pointer"
+              >
+                {isLegendExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
+              </button>
+            </div>
           </div>
 
           {isLegendExpanded && (
             <div className="space-y-2">
-              <div className="space-y-1 text-[11px]">
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500 border border-white"></div>
-                  <span>Confirmed Outbreak</span>
+              <div className="space-y-1.5 text-[11px]">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div className="relative flex items-center justify-center w-3.5 h-3.5">
+                      <div className="w-3 h-3 rounded-full bg-red-500 border border-white live-signal-core-confirmed relative z-10"></div>
+                    </div>
+                    <span>Confirmed Outbreak</span>
+                  </div>
+                  <span className="text-[9px] font-mono text-rose-400 font-bold bg-rose-950/50 px-1.5 py-0.5 rounded border border-rose-800/40">1.6s Pulse</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 rounded-full bg-amber-500 border border-white"></div>
-                  <span>Suspected / Field Signal</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div className="relative flex items-center justify-center w-3.5 h-3.5">
+                      <div className="w-3 h-3 rounded-full bg-amber-500 border border-white live-signal-core-suspected relative z-10"></div>
+                    </div>
+                    <span>Suspected / Field Signal</span>
+                  </div>
+                  <span className="text-[9px] font-mono text-amber-400 font-bold bg-amber-950/50 px-1.5 py-0.5 rounded border border-amber-800/40">2.2s Pulse</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 rounded-md bg-emerald-500 border border-white"></div>
-                  <span>Field Investigation Mission</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div className="relative flex items-center justify-center w-3.5 h-3.5">
+                      <div className="w-3 h-3 rounded-md bg-emerald-500 border border-white live-signal-core-mission relative z-10"></div>
+                    </div>
+                    <span>Field Investigation Mission</span>
+                  </div>
+                  <span className="text-[9px] font-mono text-emerald-400 font-bold bg-emerald-950/50 px-1.5 py-0.5 rounded border border-emerald-800/40">2.5s Pulse</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 rounded-full bg-indigo-600 border border-white"></div>
-                  <span>HRVL Diagnostic Hub</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div className="relative flex items-center justify-center w-3.5 h-3.5">
+                      <div className="w-3 h-3 rounded-full bg-indigo-600 border border-white live-signal-core-hub relative z-10"></div>
+                    </div>
+                    <span>HRVL Diagnostic Hub</span>
+                  </div>
+                  <span className="text-[9px] font-mono text-indigo-400 font-bold bg-indigo-950/50 px-1.5 py-0.5 rounded border border-indigo-800/40">3.0s Hub</span>
                 </div>
               </div>
 
@@ -1003,7 +1145,7 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
         </div>
 
         {/* Bottom-Right Selected Item Inspector Panel */}
-        {(selectedOutbreak || selectedWoreda) && isInspectorOpen && (
+        {(selectedOutbreak || selectedWoreda || isHubSelected) && isInspectorOpen && (
           <div className="absolute bottom-4 right-3 z-20 bg-slate-900/95 dark:bg-slate-950/95 backdrop-blur-md border border-slate-700/80 rounded-2xl p-4 shadow-2xl text-xs text-slate-200 w-80 sm:w-88 transition-all animate-fade-in">
             <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
               <div className="flex items-center space-x-1.5 font-extrabold text-white">
@@ -1014,6 +1156,7 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
                 onClick={() => {
                   setSelectedOutbreak(null);
                   setSelectedWoreda(null);
+                  setIsHubSelected(false);
                 }}
                 className="p-1 text-slate-400 hover:text-white rounded cursor-pointer"
               >
@@ -1021,14 +1164,86 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
               </button>
             </div>
 
+            {/* Diagnostic Hub Inspector Card */}
+            {isHubSelected && !selectedOutbreak && !selectedWoreda && (
+              <div className="space-y-3">
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex items-center space-x-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 live-dot-pulse inline-block" />
+                      <span>LIVE DIAGNOSTIC HUB</span>
+                    </span>
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-800 text-slate-300 border border-slate-700">
+                      REFERENCE FACILITY
+                    </span>
+                  </div>
+                  <h4 className="text-sm font-black text-white mt-1.5">
+                    Hirna Regional Veterinary Laboratory (HRVL)
+                  </h4>
+                  <p className="text-[11px] text-slate-400">
+                    Hirna, West Hararghe, Oromia, Ethiopia
+                  </p>
+                </div>
+
+                <div className="p-2.5 bg-slate-950/80 rounded-xl border border-slate-800 text-[11px] space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-400">Plus Code:</span>
+                    <span className="font-mono font-bold text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800/40">
+                      64C3+GP
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-400">Full OLC:</span>
+                    <span className="font-mono text-slate-300 text-[10px]">6HX364C3+GP</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-400">Coordinates:</span>
+                    <span className="font-mono text-sky-400">{HIRNA_LAB_COORDS.lat.toFixed(6)}° N, {HIRNA_LAB_COORDS.lng.toFixed(6)}° E</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-1 border-t border-slate-800/80 text-[10px]">
+                    <span className="text-slate-400">Surveillance Scope:</span>
+                    <span className="font-semibold text-slate-200">36 Woredas (E/H & W/H)</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 pt-1">
+                  <a
+                    href={HIRNA_LAB_COORDS.googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Open Hirna Regional Veterinary Laboratory in Google Maps"
+                    className="py-2 px-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center space-x-1.5 cursor-pointer shadow-md text-center"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Google Maps ↗</span>
+                  </a>
+                  <button
+                    onClick={() => {
+                      mapInstanceRef.current?.flyTo([HIRNA_LAB_COORDS.lat, HIRNA_LAB_COORDS.lng], 14, { duration: 1.0 });
+                    }}
+                    className="py-2 px-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl text-xs transition-colors flex items-center justify-center space-x-1.5 cursor-pointer border border-slate-700"
+                  >
+                    <Crosshair className="w-3.5 h-3.5 text-indigo-400" />
+                    <span>Center Map</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
             {selectedOutbreak && (
               <div className="space-y-3">
                 <div>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-rose-500/20 text-rose-300 border border-rose-500/30">
-                    {selectedOutbreak.disease}
-                  </span>
-                  <h4 className="text-sm font-black text-white mt-1">
-                    {selectedOutbreak.woreda} ({selectedOutbreak.zone})
+                  <div className="flex items-center space-x-2">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-rose-500/20 text-rose-300 border border-rose-500/30 flex items-center space-x-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-rose-400 live-dot-pulse inline-block" />
+                      <span>LIVE SIGNAL</span>
+                    </span>
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-800 text-slate-300 border border-slate-700">
+                      {selectedOutbreak.status.toUpperCase()}
+                    </span>
+                  </div>
+                  <h4 className="text-sm font-black text-white mt-1.5">
+                    {selectedOutbreak.disease} — {selectedOutbreak.woreda} ({selectedOutbreak.zone})
                   </h4>
                   <p className="text-[11px] text-slate-400">Outbreak Code: {selectedOutbreak.outbreakCode}</p>
                 </div>

@@ -146,22 +146,48 @@ export const WoredaReportMap: React.FC<WoredaReportMapProps> = ({
           className: 'custom-report-marker',
           html: `
             <div style="
-              background-color: ${color};
-              color: white;
-              font-size: 9px;
-              font-weight: 800;
-              font-family: sans-serif;
-              padding: 2px 5px;
-              border-radius: 9999px;
-              border: 1.5px solid white;
-              box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-              white-space: nowrap;
-              display: flex;
+              position: relative;
+              display: inline-flex;
               align-items: center;
-              gap: 3px;
             ">
-              <span>${w.name}</span>
-              <span style="background: rgba(255,255,255,0.3); padding: 0 3px; border-radius: 4px;">${w.totalCases}</span>
+              ${w.activeOutbreakCount > 0 ? `
+                <div class="live-signal-ring-confirmed" style="
+                  position: absolute;
+                  inset: -4px;
+                  border-radius: 9999px;
+                  border: 1.5px solid #dc2626;
+                  background: rgba(220, 38, 38, 0.2);
+                  pointer-events: none;
+                "></div>
+              ` : ''}
+              <div class="${w.activeOutbreakCount > 0 ? 'live-signal-core-confirmed' : ''}" style="
+                background-color: ${color};
+                color: white;
+                font-size: 9px;
+                font-weight: 800;
+                font-family: sans-serif;
+                padding: 2px 5px;
+                border-radius: 9999px;
+                border: 1.5px solid white;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                white-space: nowrap;
+                display: flex;
+                align-items: center;
+                gap: 3px;
+                position: relative;
+                z-index: 2;
+              ">
+                <span>${w.name}</span>
+                <span style="background: rgba(255,255,255,0.3); padding: 0 3px; border-radius: 4px;">${w.totalCases}</span>
+                ${w.activeOutbreakCount > 0 ? `
+                  <span class="live-dot-pulse" style="
+                    width: 5px; height: 5px;
+                    background: #ffffff;
+                    border: 1px solid #dc2626;
+                    border-radius: 50%;
+                  "></span>
+                ` : ''}
+              </div>
             </div>
           `,
           iconSize: [60, 20],
@@ -171,8 +197,16 @@ export const WoredaReportMap: React.FC<WoredaReportMapProps> = ({
         const marker = L.marker([w.lat, w.lng], { icon: pinIcon }).addTo(map);
 
         marker.bindPopup(`
-          <div style="font-family: sans-serif; padding: 6px; width: 170px;">
-            <div style="font-weight: 800; font-size: 12px; color: #0f172a;">${w.name} Woreda</div>
+          <div style="font-family: sans-serif; padding: 6px; width: 175px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px;">
+              <span style="font-weight: 800; font-size: 12px; color: #0f172a;">${w.name} Woreda</span>
+              ${w.activeOutbreakCount > 0 ? `
+                <span style="display: inline-flex; align-items: center; gap: 2px; font-size: 8px; font-weight: 800; color: #dc2626; background: rgba(220,38,38,0.1); padding: 1px 4px; border-radius: 4px;">
+                  <span style="width: 4px; height: 4px; border-radius: 50%; background: #dc2626; display: inline-block;"></span>
+                  LIVE OUTBREAK
+                </span>
+              ` : ''}
+            </div>
             <div style="font-size: 10px; color: #64748b; margin-bottom: 4px;">Zone: ${w.zone}</div>
             <div style="font-size: 11px; font-weight: 700; color: #0284c7;">Total Cases: ${w.totalCases}</div>
             <div style="font-size: 11px; font-weight: 700; color: #dc2626;">Fatalities: ${w.totalDeaths}</div>
@@ -188,26 +222,69 @@ export const WoredaReportMap: React.FC<WoredaReportMapProps> = ({
     const labIcon = L.divIcon({
       className: 'hrvl-lab-pin',
       html: `
-        <div style="
-          background-color: #0f172a;
-          color: #38bdf8;
-          font-size: 10px;
-          font-weight: 900;
-          font-family: sans-serif;
-          padding: 3px 7px;
-          border-radius: 6px;
-          border: 2px solid #38bdf8;
-          box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-          white-space: nowrap;
-        ">
-          🏥 HRVL LAB HUB
+        <div class="live-signal-container" style="position: relative; display: inline-flex;" aria-label="Hirna Regional Veterinary Laboratory — HRVL Diagnostic Hub">
+          <div class="live-signal-ring-hub" style="
+            position: absolute;
+            inset: -4px;
+            border-radius: 8px;
+            border: 1.5px solid #38bdf8;
+            background: rgba(56, 189, 248, 0.15);
+            pointer-events: none;
+          "></div>
+          <div class="live-signal-core-hub" style="
+            background-color: #0f172a;
+            color: #38bdf8;
+            font-size: 10px;
+            font-weight: 900;
+            font-family: sans-serif;
+            padding: 3px 7px;
+            border-radius: 6px;
+            border: 2px solid #38bdf8;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            white-space: nowrap;
+            position: relative;
+            z-index: 2;
+            cursor: pointer;
+          ">
+            🏥 HRVL LAB HUB
+          </div>
         </div>
       `,
       iconSize: [100, 24],
       iconAnchor: [50, 12],
     });
 
-    L.marker([HIRNA_LAB_COORDS.lat, HIRNA_LAB_COORDS.lng], { icon: labIcon }).addTo(map);
+    const hrvlMarker = L.marker([HIRNA_LAB_COORDS.lat, HIRNA_LAB_COORDS.lng], {
+      icon: labIcon,
+      title: 'Hirna Regional Veterinary Laboratory (HRVL)',
+      alt: 'Hirna Regional Veterinary Laboratory — HRVL Diagnostic Hub'
+    }).addTo(map);
+
+    hrvlMarker.bindPopup(`
+      <div style="font-family: sans-serif; padding: 6px 8px; width: 220px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px;">
+          <span style="font-weight: 800; font-size: 11px; color: #0284c7; text-transform: uppercase;">HRVL Diagnostic Hub</span>
+          <span style="font-size: 8px; font-weight: 700; background: #e0f2fe; color: #0369a1; padding: 1px 4px; border-radius: 3px;">Central Lab</span>
+        </div>
+        <div style="font-weight: 800; font-size: 12px; color: #0f172a; line-height: 1.25;">Hirna Regional Veterinary Laboratory</div>
+        <div style="font-size: 10px; color: #475569; margin-top: 3px; line-height: 1.4;">
+          <b>Location:</b> Hirna, West Hararghe, Ethiopia<br/>
+          <b>Plus Code:</b> <span style="background: #f1f5f9; padding: 1px 3px; border-radius: 3px; font-weight: 700; color: #0f766e;">64C3+GP</span><br/>
+          <b>Coordinates:</b> 9.221312° N, 41.104313° E
+        </div>
+        <div style="margin-top: 6px; padding-top: 5px; border-top: 1px solid #e2e8f0;">
+          <a
+            href="${HIRNA_LAB_COORDS.googleMapsUrl}"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open Hirna Regional Veterinary Laboratory in Google Maps"
+            style="display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; background: #0284c7; color: #ffffff; text-decoration: none; padding: 4px 8px; border-radius: 5px; font-size: 10px; font-weight: 700; text-align: center;"
+          >
+            <span>🌐 Open in Google Maps ↗</span>
+          </a>
+        </div>
+      </div>
+    `);
 
     // Invalidate size after mount
     setTimeout(() => {
