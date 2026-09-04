@@ -4,6 +4,7 @@ import { MapPin, Activity, Flame, ShieldAlert, Layers, Table, Check } from 'luci
 import { Outbreak, SurveillanceRecord } from '../types';
 import { HARARGHE_WOREDAS, HIRNA_LAB_COORDS } from '../data/woredas';
 import { HARARGHE_WOREDAS_GEOJSON } from '../data/geoData';
+import { useMarkerPulseRAF } from '../utils/markerPulseRAF';
 
 interface WoredaReportMapProps {
   records: SurveillanceRecord[];
@@ -22,6 +23,9 @@ export const WoredaReportMap: React.FC<WoredaReportMapProps> = ({
   const mapInstanceRef = useRef<L.Map | null>(null);
   const [activeTab, setActiveTab] = useState<'map' | 'matrix'>('map');
   const [selectedZoneFilter, setSelectedZoneFilter] = useState<'All' | 'E/H' | 'W/H'>('All');
+
+  // Hardware-accelerated marker pulse animation loop (requestAnimationFrame)
+  useMarkerPulseRAF();
 
   // Compute Woreda-level aggregations
   const woredaStats = HARARGHE_WOREDAS.map(woreda => {

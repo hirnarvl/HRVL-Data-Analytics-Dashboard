@@ -50,6 +50,7 @@ import { DISEASE_RISK_PROFILES, getDiseaseRiskProfile } from '../data/diseaseRis
 import { fetchLiveWeather } from '../utils/weatherService';
 import { loadFieldInvestigations } from '../utils/fieldToolkitStorage';
 import { FieldInvestigation } from '../types/fieldToolkit';
+import { useMarkerPulseRAF } from '../utils/markerPulseRAF';
 import { GeoHierarchyNav } from './gis/GeoHierarchyNav';
 import { LayerControlPanel } from './gis/LayerControlPanel';
 import { WeatherOverlayPanel } from './gis/WeatherOverlayPanel';
@@ -100,6 +101,9 @@ export const OutbreakMap: React.FC<OutbreakMapProps> = ({
   const riskLayerGroupRef = useRef<L.LayerGroup | null>(null);
   const surveillanceLayerGroupRef = useRef<L.LayerGroup | null>(null);
   const weatherLayerGroupRef = useRef<L.LayerGroup | null>(null);
+
+  // Hardware-accelerated marker pulse animation loop (requestAnimationFrame)
+  useMarkerPulseRAF();
 
   // Layout & Fullscreen
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);

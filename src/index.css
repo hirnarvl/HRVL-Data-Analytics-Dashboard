@@ -206,40 +206,119 @@ body {
   overflow: visible !important;
 }
 
+/* 
+ * CSS Keyframe Default Fallbacks
+ */
 .live-signal-ring-confirmed {
   animation: confirmedPulseRing 1.6s ease-out infinite;
+  transform-origin: center center;
+  will-change: transform, opacity;
 }
 
 .live-signal-core-confirmed {
   animation: confirmedCoreGlow 1.6s ease-in-out infinite, signalAppear 0.4s ease-out;
+  transform-origin: center center;
+  will-change: filter, box-shadow;
 }
 
 .live-signal-ring-suspected {
   animation: suspectedPulseRing 2.2s ease-out infinite;
+  transform-origin: center center;
+  will-change: transform, opacity;
 }
 
 .live-signal-core-suspected {
   animation: suspectedCoreGlow 2.2s ease-in-out infinite, signalAppear 0.4s ease-out;
+  transform-origin: center center;
+  will-change: filter, box-shadow;
 }
 
 .live-signal-ring-mission {
   animation: fieldMissionPulseRing 2.5s ease-out infinite;
+  transform-origin: center center;
+  will-change: transform, opacity;
 }
 
 .live-signal-core-mission {
   animation: fieldMissionCoreGlow 2.5s ease-in-out infinite, signalAppear 0.4s ease-out;
+  transform-origin: center center;
+  will-change: filter, box-shadow;
 }
 
 .live-signal-ring-hub {
   animation: hubActivityPulseRing 3.0s ease-out infinite;
+  transform-origin: center center;
+  will-change: transform, opacity;
 }
 
 .live-signal-core-hub {
   animation: hubCoreGlow 3.0s ease-in-out infinite;
+  transform-origin: center center;
+  will-change: filter, box-shadow;
 }
 
 .live-dot-pulse {
   animation: liveDotGlow 1.8s ease-in-out infinite;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+/*
+ * High-Performance requestAnimationFrame (rAF) Hardware-Accelerated Mode
+ * Active when RAF controller is running - synchronizes all markers to a single composite pass
+ */
+.raf-pulse-active .live-signal-ring-confirmed {
+  animation: none !important;
+  transform: translate3d(0, 0, 0) scale(var(--raf-confirmed-scale, 1)) !important;
+  opacity: var(--raf-confirmed-opacity, 0.5) !important;
+}
+
+.raf-pulse-active .live-signal-core-confirmed {
+  animation: signalAppear 0.4s ease-out !important;
+  box-shadow: 0 0 calc(var(--raf-confirmed-glow, 0) * 14px) calc(var(--raf-confirmed-glow, 0) * 4px) rgba(239, 68, 68, 0.8), 0 3px 8px rgba(0, 0, 0, 0.4) !important;
+  filter: brightness(calc(1 + var(--raf-confirmed-glow, 0) * 0.18)) !important;
+}
+
+.raf-pulse-active .live-signal-ring-suspected {
+  animation: none !important;
+  transform: translate3d(0, 0, 0) scale(var(--raf-suspected-scale, 1)) !important;
+  opacity: var(--raf-suspected-opacity, 0.5) !important;
+}
+
+.raf-pulse-active .live-signal-core-suspected {
+  animation: signalAppear 0.4s ease-out !important;
+  box-shadow: 0 0 calc(var(--raf-suspected-glow, 0) * 10px) calc(var(--raf-suspected-glow, 0) * 3px) rgba(245, 158, 11, 0.75), 0 3px 8px rgba(0, 0, 0, 0.35) !important;
+  filter: brightness(calc(1 + var(--raf-suspected-glow, 0) * 0.14)) !important;
+}
+
+.raf-pulse-active .live-signal-ring-mission {
+  animation: none !important;
+  transform: translate3d(0, 0, 0) scale(var(--raf-mission-scale, 1)) !important;
+  opacity: var(--raf-mission-opacity, 0.4) !important;
+}
+
+.raf-pulse-active .live-signal-core-mission {
+  animation: signalAppear 0.4s ease-out !important;
+  box-shadow: 0 0 calc(var(--raf-mission-glow, 0) * 8px) calc(var(--raf-mission-glow, 0) * 2px) rgba(16, 185, 129, 0.65), 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+  filter: brightness(calc(1 + var(--raf-mission-glow, 0) * 0.12)) !important;
+}
+
+.raf-pulse-active .live-signal-ring-hub {
+  animation: none !important;
+  transform: translate3d(0, 0, 0) scale(var(--raf-hub-scale, 1)) !important;
+  opacity: var(--raf-hub-opacity, 0.3) !important;
+}
+
+.raf-pulse-active .live-signal-core-hub {
+  animation: none !important;
+  box-shadow: 0 0 calc(var(--raf-hub-glow, 0) * 12px) calc(var(--raf-hub-glow, 0) * 3px) rgba(99, 102, 241, 0.7), 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  filter: brightness(calc(1 + var(--raf-hub-glow, 0) * 0.12)) !important;
+}
+
+.raf-pulse-active .live-dot-pulse {
+  animation: none !important;
+  transform: translate3d(0, 0, 0) scale(var(--raf-dot-scale, 1)) !important;
+  opacity: var(--raf-dot-opacity, 1) !important;
 }
 
 /* Ensure Leaflet icon containers do not clip outer expanding pulse rings */
@@ -261,8 +340,20 @@ body {
   .live-signal-core-mission,
   .live-signal-ring-hub,
   .live-signal-core-hub,
-  .live-dot-pulse {
+  .live-dot-pulse,
+  .raf-pulse-active .live-signal-ring-confirmed,
+  .raf-pulse-active .live-signal-core-confirmed,
+  .raf-pulse-active .live-signal-ring-suspected,
+  .raf-pulse-active .live-signal-core-suspected,
+  .raf-pulse-active .live-signal-ring-mission,
+  .raf-pulse-active .live-signal-core-mission,
+  .raf-pulse-active .live-signal-ring-hub,
+  .raf-pulse-active .live-signal-core-hub,
+  .raf-pulse-active .live-dot-pulse {
     animation: none !important;
+    transform: none !important;
+    opacity: 0.5 !important;
   }
 }
+
 

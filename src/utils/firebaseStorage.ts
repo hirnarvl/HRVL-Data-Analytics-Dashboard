@@ -33,8 +33,17 @@ export function subscribeToFirestoreRecords(
         }
       },
       (error) => {
-        handleFirestoreError(error, OperationType.LIST, COLLECTION_NAME);
-        // Fall back gracefully to cached records on unavailable / offline
+        const errMsg = error instanceof Error ? error.message : String(error);
+        // Suppress expected closing/hidden/offline errors when tab unloads, navigates or page visibility changes
+        if (
+          !errMsg.includes('closing') && 
+          !errMsg.includes('hidden') && 
+          !errMsg.includes('offline') && 
+          !errMsg.includes('aborted')
+        ) {
+          handleFirestoreError(error, OperationType.LIST, COLLECTION_NAME);
+        }
+        // Fall back gracefully to cached records on unavailable / offline / backgrounding
         const cached = loadCachedRecords();
         if (cached && cached.length > 0) {
           onUpdate(cached);
@@ -44,7 +53,10 @@ export function subscribeToFirestoreRecords(
     );
     return unsubscribe;
   } catch (err) {
-    handleFirestoreError(err, OperationType.LIST, COLLECTION_NAME);
+    const errMsg = err instanceof Error ? err.message : String(err);
+    if (!errMsg.includes('closing') && !errMsg.includes('hidden')) {
+      handleFirestoreError(err, OperationType.LIST, COLLECTION_NAME);
+    }
     const cached = loadCachedRecords();
     if (cached && cached.length > 0) {
       onUpdate(cached);
